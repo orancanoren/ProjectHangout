@@ -1,0 +1,43 @@
+.brand-logo {
+    font-weight: 200;
+    color: white;
+}
+
+#title {
+    margin-top: 10%;
+}
+#auth {
+    font-weight: 300;
+}
+
+h2 {
+    font-weight: 300;
+}
+
+ /* label focus color */
+ .input-field input[type=text]:focus + label {
+    color: #03a9f4;
+}
+/* label underline focus color */
+.input-field input[type=text]:focus {
+    border-bottom: 1px solid #03a9f4;
+    box-shadow: 0 1px 0 0 #03a9f4;
+}
+
+ /* label focus color */
+ .input-field input[type=password]:focus + label {
+    color: #03a9f4;
+}
+/* label underline focus color */
+.input-field input[type=password]:focus {
+    border-bottom: 1px solid #03a9f4;
+    box-shadow: 0 1px 0 0 #03a9f4;
+}
+
+#signupBut:hover {
+    text-decoration: underline;
+}
+
+input[type="search"] {
+    height: 64px !important;
+}
