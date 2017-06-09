@@ -34,6 +34,18 @@ h2 {
     box-shadow: 0 1px 0 0 #03a9f4;
 }
 
+.picker__date-display, .picker__weekday-display{
+    background-color: #03a9f4;
+}
+
+div.picker__day.picker__day--infocus.picker__day--selected.picker__day--highlighted {
+    background-color: #03a9f4;
+}
+
+button.picker__today, button.picker__close {
+    color: #03a9f4;
+}
+
 #signupBut:hover {
     text-decoration: underline;
 }

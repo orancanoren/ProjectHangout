@@ -42,10 +42,10 @@ module.exports = function(passport) {
 
 				// if no user is found, return the message
 				if (!user)
-					return done(null, false, req.flash('loginMessage', 'Invalid email'));
+					return done(null, false, req.flash('loginMessage', 'Email not found'));
 
 				if (!User.validPassword(password, user.properties.localPassword))
-					return done(null, false, req.flash('loginMessage', 'Wrong password.'));
+					return done(null, false, req.flash('loginMessage', 'Wrong password'));
 
 				// all is well, return user
 				else {

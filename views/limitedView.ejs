@@ -67,7 +67,7 @@
                                         </ul>
                                     </div>
                                     <div class="right">
-                                        <a class="waves-effect waves-light btn light-blue" href="/follow">FOLLOW</a>
+                                        <a class="waves-effect waves-light btn light-blue" href="/follow/<%=id%>">FOLLOW</a>
                                     </div>
                                 </div>
                                     
@@ -81,7 +81,7 @@
         <footer>
 
         </footer>
-        <%  if (message != null && message.length > 0) { %>
+        <%  if (message.length > 0) { %>
         <script>
             Materialize.toast('<%= message %>', 4000);
         </script>

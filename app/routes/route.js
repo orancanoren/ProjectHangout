@@ -34,8 +34,14 @@ module.exports = function(app, passport) {
         var targetId = req.params.id;
         User.get(parseInt(targetId), function(err, user) {
             if (err == "user not found") {
-                req.flash('loginMessage', 'User doesn\'t exist');
-                res.redirect('/');
+                if (! req.isAuthenticated()) {
+                    req.flash('loginMessage', 'User doesn\'t exist');
+                    res.redirect('/');
+                }
+                else {
+                    req.flash('profileMessage', 'User doesn\'t exist');
+                    res.redirect('/profile');
+                }
             }
             else if (err) {
                 console.log(err);
@@ -50,14 +56,14 @@ module.exports = function(app, passport) {
                         console.log(err);
                         res.status(500).send('<h1>Internal Server Error</h1>');
                     } else {
-                        req.session.targetFollow = + targetId;
                         res.render('limitedView.ejs', {
                             fname: user.properties['fname'],
                             lname: user.properties['lname'],
                             bday: user.properties['bday'],
                             numFollowers: counts[0]['numFollowers'],
                             numFollowing: counts[0]['numFollowing'],
-                            message: req.flash('limitedViewMessage')
+                            message: req.flash('limitedViewMessage'),
+                            id: targetId
                         });
                     }
                 });
@@ -105,29 +111,48 @@ module.exports = function(app, passport) {
         res.redirect('/');
     });
 
-    app.get('/follow', function(req, res) {
-        var target = parseInt(req.session.targetFollow);
-        if (target == parseInt(req._id)) {
+    app.get('/follow/:id', function(req, res) {
+        var target = parseInt(req.params.id);
+        var selfId = parseInt(req.user._id);
+        console.log(selfId + ' wants to follow ' + target);
+        if (target == selfId) {
+            console.log('same');
             req.flash('limitedViewMessage', 'You cannot follow yourself');
-            res.redirect('/views/'+target);
+            res.redirect('/view/'+target);
         }
-        console.log('follow target:', target);
-        if (!target) {
+        else if (target == null) {
             req.flash('profileMessage', 'Cannot follow');
             res.redirect('/profile');
         } else {
-           User.addUserRelationship('FOLLOW', parseInt(req.user._id), target, function(err) {
+           User.addUserRelationship('FOLLOW', selfId, target, function(err) {
                 if (err) {
-                    console.log('failed');
                     console.log(err);
                     req.flash('profileMessage', 'following failed');
-                    
+                    res.redirect('/profile');
                 } else {
                     req.flash('profileMessage', 'following success');
+                    res.redirect('/profile');
                 }
-                res.redirect('/profile');
+                
             });
         }
+    });
+
+    app.use(function(req, res, next) {
+        res.status(404);
+
+        if (req.accepts('html')) {
+            res.render('404.ejs', { url: req.url });
+            return;
+        }
+
+        if (req.accepts('json')) {
+            res.send({ error: 'Not found',
+                        url: req.url});
+            return;
+        }
+
+        res.type('txt').send('Not found');
     });
 };
 
