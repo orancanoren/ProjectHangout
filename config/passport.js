@@ -12,12 +12,13 @@ module.exports = function(passport) {
 
 	// used to serialize the user for the session
 	passport.serializeUser(function(user, done) {
+		// embed the id to the session
 		done(null, user._id);
 	});
 
 	// used to deserialize the user
 	passport.deserializeUser(function(id, done) {
-		User.get(id, function(err, user) {
+		User.getByCredId(id, function(err, user) {
 			if (err) return next(err);
 			done(err, user);
 		});
@@ -35,16 +36,17 @@ module.exports = function(passport) {
 	function(req, email, password, done) {
 		// asynchronous
 		process.nextTick(function() {
-			User.getBy('user.localEmail', email, function(err, user) {
+			User.getUserByEmail(email, function(err, user) {
 				// if there are any errors, return the error
 				if (err)
 					return done(err);
 
 				// if no user is found, return the message
-				if (!user)
+				else if (!user)
 					return done(null, false, req.flash('loginMessage', 'Email not found'));
-
-				if (!User.validPassword(password, user.properties.localPassword))
+				
+				
+				else if (!User.validPassword(password, user.properties.pwHash))
 					return done(null, false, req.flash('loginMessage', 'Wrong password'));
 
 				// all is well, return user
@@ -70,12 +72,12 @@ module.exports = function(passport) {
 			var fname = req.body.fname;
 			var lname = req.body.lname;
 			var bday = req.body.bday;
+			var sex = req.body.sex;
 			//  Whether we're signing up or connecting an account, we'll need
 			//  to know if the email address is in use.
-			User.getBy('user.localEmail', email, function(err, existingUser) {
+			User.checkEmail(email, function(err, existingUser) {
 				// if there are any errors, return the error
 				if (err){
-					console.log(err);
 					return done(err);
 				}
 
@@ -101,17 +103,14 @@ module.exports = function(passport) {
 					});
 				} else {
 					//  We're not logged in, so we're creating a brand new user.
-					// create the user
-					var newUser = {};
-						newUser.localEmail = email;
-						newUser.localPassword = User.generateHash(password);
-						newUser.fname = fname;
-						newUser.lname = lname;
-						newUser.bday = bday;
-					User.create(newUser, function (err, user) {
-						if (err)
-							return next(err);
-						return done(null, user);
+					var pwHash = User.generateHash(password);
+					User.addNewUser(fname, lname, email, bday, pwHash, sex, function (err, user) {
+						if (err) {
+							console.log(err);
+							return done(err);
+						} else {
+							return done(null, user);
+						}
 					});
 				}
 			});

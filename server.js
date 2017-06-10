@@ -24,7 +24,12 @@ app.set('views', __dirname + '/views');
 require('./config/passport.js')(passport);
 
 // for passport
-app.use(session({ secret: "LordOfFlavorWorldIsOranCanOren" }));
+app.use(session({ 
+    secret: "LordOfFlavorWorldIsOranCanOren" ,
+    name: "graph cookie",
+    resave: true,
+    saveUninitialized: true
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash()); // for flash messages stored in session

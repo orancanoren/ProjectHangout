@@ -39,14 +39,15 @@
                                         <div class="divider"></div>
                                         <h6 class="right">Info</h6>
                                     </div>
-                                    <% if (user.properties.localEmail) { %>
+                                    <% if (email) { %>
                                     <div class="col s12">
                                         <ul>
-                                            <li><strong>ID </strong> <%= user._id %></li>
-                                            <li><strong>First Name </strong> <%= user.properties.fname %></li>
-                                            <li><strong>Last Name </strong> <%= user.properties.lname %></li>
-                                            <li><strong>Birthday </strong> <%= user.properties.bday %></li>
-                                            <li><strong>Email </strong> <%= user.properties.localEmail %></li>
+                                            <li><strong>ID </strong> <%= id %></li>
+                                            <li><strong>First Name </strong> <%= fname %></li>
+                                            <li><strong>Last Name </strong> <%= lname %></li>
+                                            <li><strong>Birthday </strong> <%= bday %></li>
+                                            <li><strong>Email </strong> <%= email %></li>
+                                            <li><strong>Sex </strong> <%= sex %></li>
                                         </ul>
                                         <div class="divider"></div>
                                         <h6 class="right">Follower info</h6>

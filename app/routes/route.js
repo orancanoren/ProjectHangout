@@ -31,14 +31,13 @@ module.exports = function(app, passport) {
 
     // LIMITED PROFILE VIEW
     app.get('/view/:id', function(req, res) {
-        var targetId = req.params.id;
-        User.get(parseInt(targetId), function(err, user) {
+        var targetId = parseInt(req.params.id);
+        User.getByCredId(targetId, function(err, user) {
             if (err == "user not found") {
                 if (! req.isAuthenticated()) {
                     req.flash('loginMessage', 'User doesn\'t exist');
                     res.redirect('/');
-                }
-                else {
+                } else {
                     req.flash('profileMessage', 'User doesn\'t exist');
                     res.redirect('/profile');
                 }
@@ -47,11 +46,7 @@ module.exports = function(app, passport) {
                 console.log(err);
                 res.status(500).send("<h1>Internal Server Error</h1>");
             } else {
-                var fname = user['fname'];
-                var lname = user['lname'];
-                var bday = user['bday'];
-
-                User.getFollowCounts(parseInt(targetId), function(err, counts) {
+                User.getFollowCounts(targetId, function(err, counts) {
                     if (err) {
                         console.log(err);
                         res.status(500).send('<h1>Internal Server Error</h1>');
@@ -60,6 +55,7 @@ module.exports = function(app, passport) {
                             fname: user.properties['fname'],
                             lname: user.properties['lname'],
                             bday: user.properties['bday'],
+                            sex: user.properties['sex'],
                             numFollowers: counts[0]['numFollowers'],
                             numFollowing: counts[0]['numFollowing'],
                             message: req.flash('limitedViewMessage'),
@@ -82,7 +78,6 @@ module.exports = function(app, passport) {
     });
 
     app.get('/profile', function(req, res) {
-        req.session.targetFollow = null;
         // TODO: Manage async clearly w/Streamline.js
         User.getFollowers(req.user._id, function(err, followers) {
             if (err) {
@@ -95,7 +90,12 @@ module.exports = function(app, passport) {
                         res.status(500).send("<h1>Internal Server Error</h1>");
                     } else {
                         res.render('profile.ejs', {
-                            user: req.user,
+                            id: req.user._id,
+                            fname: req.user.properties.fname,
+                            lname: req.user.properties.lname,
+                            bday: req.user.properties.bday,
+                            sex: req.user.properties.sex,
+                            email: req.user.properties.email,
                             following: following,
                             followers: followers,
                             message: req.flash('profileMessage')
@@ -119,17 +119,17 @@ module.exports = function(app, passport) {
             console.log('same');
             req.flash('limitedViewMessage', 'You cannot follow yourself');
             res.redirect('/view/'+target);
-        }
-        else if (target == null) {
+        } else if (target == null) {
             req.flash('profileMessage', 'Cannot follow');
             res.redirect('/profile');
         } else {
-           User.addUserRelationship('FOLLOW', selfId, target, function(err) {
+           User.addUserRelationship('FOLLOW', selfId, target, function(err, rel) {
                 if (err) {
                     console.log(err);
                     req.flash('profileMessage', 'following failed');
                     res.redirect('/profile');
                 } else {
+                    console.log(rel);
                     req.flash('profileMessage', 'following success');
                     res.redirect('/profile');
                 }
