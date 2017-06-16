@@ -20,7 +20,11 @@ module.exports = function(app, passport) {
 
     // SIGNUP
     app.get('/signup', function(req, res) {
-        res.render('signup.ejs', { message: req.flash('signupMessage') });
+        if (req.isAuthenticated()) {
+            res.redirect('/profile');
+        } else {
+            res.render('signup.ejs', { message: req.flash('signupMessage') });
+        }
     });
 
     app.post('/signup', passport.authenticate('local-signup', {
@@ -32,6 +36,10 @@ module.exports = function(app, passport) {
     // LIMITED PROFILE VIEW
     app.get('/view/:id', function(req, res) {
         var targetId = parseInt(req.params.id);
+        if (req.isAuthenticated() && req.user._id == targetId) {
+            res.redirect('/profile');
+            return;
+        }
         User.getByCredId(targetId, function(err, user) {
             if (err == "user not found") {
                 if (! req.isAuthenticated()) {
@@ -67,17 +75,8 @@ module.exports = function(app, passport) {
         });
     });
 
-    // AFTER THIS POINT, CLIENT SHOULD BE AUTHORIZED
-    app.use(function(req, res, next) {
-        if (!req.isAuthenticated()) {
-            req.flash('loginMessage', 'Please login first');
-            res.redirect('/');
-        } else {
-            next();
-        }
-    });
-
     app.get('/profile', function(req, res) {
+        isLoggedIn(req, res);
         // TODO: Manage async clearly w/Streamline.js
         User.getFollowers(req.user._id, function(err, followers) {
             if (err) {
@@ -107,11 +106,14 @@ module.exports = function(app, passport) {
     });
 
     app.get('/logout', function(req, res) {
+        isLoggedIn(req, res);
         req.logout();
         res.redirect('/');
     });
 
     app.get('/follow/:id', function(req, res) {
+        isLoggedIn(req, res);
+
         var target = parseInt(req.params.id);
         var selfId = parseInt(req.user._id);
         console.log(selfId + ' wants to follow ' + target);
@@ -140,23 +142,10 @@ module.exports = function(app, passport) {
 
     app.use(function(req, res, next) {
         res.status(404);
-
-        if (req.accepts('html')) {
-            res.render('404.ejs', { url: req.url });
-            return;
-        }
-
-        if (req.accepts('json')) {
-            res.send({ error: 'Not found',
-                        url: req.url});
-            return;
-        }
-
-        res.type('txt').send('Not found');
+        res.render('404.ejs', { url: req.url });
     });
 };
 
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) { return next(); }
-    res.redirect('/');
+function isLoggedIn(req, res) {
+    if (! req.isAuthenticated()) { return res.redirect('/'); }
 }

@@ -175,49 +175,6 @@ User.getFollowCounts = function(id, callback) {
         callback(null, result);
     });
 }
-/*
-User.get = function(id, callback) {
-    var qp = {
-        query: [
-            'MATCH (user:User)',
-            'WHERE ID(user) = {userId}',
-            'RETURN user'
-        ].join('\n'),
-        params: {
-            userId: id
-        }
-    };
-    db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
-        if (result.length == 0) {
-            callback("user not found");
-        } else {
-            callback(null, result[0]['user']);
-        }
-    });
-};
-
-User.getBy = function(field, value, callback) {
-    var qp = {
-        query: [
-            'MATCH (user:User)',
-            'WHERE ' + field + ' = {value}',
-            'RETURN user',
-        ].join('\n'),
-        params: {
-            value: value
-        }
-    }
-    
-    db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
-        if (!result[0]) {
-            callback(null, null);
-        } else {
-            callback(null, result[0]['user']);
-        }
-    });
-}; */
 
 User.addUserRelationship = function(relation, userId, otherId, callback) {
     switch(relation) {
