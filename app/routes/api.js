@@ -36,9 +36,11 @@ router.get('/badlogin', (req, res) => {
 })
 
 function isLoggedIn(req, res, errmsg) {
-    res.send(JSON.stringify({
-        error: errmsg
-    }));
+    if (!req.isAuthenticated()) {
+        res.send(JSON.stringify({
+            error: errmsg
+        }));
+    }
 }
 
 module.exports = router;
