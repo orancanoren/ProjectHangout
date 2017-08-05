@@ -15,7 +15,6 @@ app.use(express.static('./public'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
 app.use(morgan('tiny'));
 
 app.set('view engine', 'ejs');
@@ -35,8 +34,15 @@ app.use(passport.session());
 app.use(flash()); // for flash messages stored in session
 
 // routes
-require('./app/routes/route.js')(app, passport);
-require('./app/models/user.js')(app, passport);
+var routes = require('./app/routes/route.js');
+var api_routes = require('./app/routes/api.js');
+app.use('/', routes);
+app.use('/api', api_routes);
+
+app.use(function(req, res, next) {
+    res.status(404);
+    res.render('404.ejs', { url: req.url });
+});
 
 // MARK: SERVER
 app.listen(port, function() {

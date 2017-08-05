@@ -19,7 +19,7 @@ module.exports = function(passport) {
 	// used to deserialize the user
 	passport.deserializeUser(function(id, done) {
 		User.getByCredId(id, function(err, user) {
-			if (err) return next(err);
+			if (err) return console.log(err);
 			done(err, user);
 		});
 	});
