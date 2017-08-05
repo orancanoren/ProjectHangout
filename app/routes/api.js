@@ -8,11 +8,8 @@ router.use('*', (req, res, next) => {
 })
 
 router.get('/profile', (req, res) => {
-    if (!req.isAuthenticated()) {
-        res.send(JSON.stringify({
-            error: "not authenticated"
-        }));
-    }
+    isLoggedIn(req, res, "not authenticated");
+    
     res.send(JSON.stringify({
         email: req.user.properties.email,
         bday: req.user.properties.bday,
@@ -26,10 +23,22 @@ router.post('/login', passport.authenticate('local-login', {
     failureFlash: true
 }));
 
+router.get('/logout', (req, res) => {
+    isLoggedIn(req, res, "not authenticated");
+
+    req.logout();
+});
+
 router.get('/badlogin', (req, res) => {
     res.send(JSON.stringify({
         error: "invalid credentials"
     }));
 })
+
+function isLoggedIn(req, res, errmsg) {
+    res.send(JSON.stringify({
+        error: errmsg
+    }));
+}
 
 module.exports = router;
