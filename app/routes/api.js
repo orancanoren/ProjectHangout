@@ -7,6 +7,34 @@ router.use('*', (req, res, next) => {
     next();
 })
 
+// MARK: AUTHENTICATION
+
+router.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/api/profile',
+    failureRedirect: '/api/badlogin',
+    failureFlash: true
+}));
+
+router.post('/signup', passport.authenticate('local-signup', {
+    successRedirect: '/api/profile',
+    failureRedirect: '/api/badsignup',
+    failureFlash: true
+}));
+
+router.get('/badlogin', (req, res) => {
+    res.send(JSON.stringify({
+        error: "invalid credentials"
+    }));
+});
+
+router.get('/badsignup', (req, res) => {
+    res.send(JSON.stringify({
+        error: "error during signup"
+    }));
+});
+
+// MARK: AUTHENTICATED BEYOND THIS POINT (except for 404)
+
 router.get('/profile', (req, res) => {
     isLoggedIn(req, res, "not authenticated");
     
@@ -17,12 +45,6 @@ router.get('/profile', (req, res) => {
     }));
 });
 
-router.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/api/profile',
-    failureRedirect: '/api/badlogin',
-    failureFlash: true
-}));
-
 router.get('/logout', (req, res) => {
     isLoggedIn(req, res, "not authenticated");
 
@@ -32,11 +54,16 @@ router.get('/logout', (req, res) => {
     }));
 });
 
-router.get('/badlogin', (req, res) => {
+// 404
+
+router.get('*', (req, res) => {
+    res.status(404);
     res.send(JSON.stringify({
-        error: "invalid credentials"
+        error: "invalid URL"
     }));
 })
+
+// Utilities
 
 function isLoggedIn(req, res, errmsg) {
     if (!req.isAuthenticated()) {
