@@ -27,6 +27,9 @@ router.get('/logout', (req, res) => {
     isLoggedIn(req, res, "not authenticated");
 
     req.logout();
+    res.send(JSON.stringify({
+        message: "logout success"
+    }));
 });
 
 router.get('/badlogin', (req, res) => {
