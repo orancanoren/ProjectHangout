@@ -93,7 +93,7 @@ User.getByEmail = function(email, callback) {
     db.cypher(qp, function(err, result) {
         if (err) return callback(err);
         if (!result[0]) {
-            callback("no user with email " + email + " exists", null); // LOOK HERE!
+            callback(null, null); // LOOK HERE!
         } else {
             return callback(null, result[0]['user']);
         }
