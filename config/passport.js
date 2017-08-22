@@ -18,8 +18,10 @@ module.exports = function(passport) {
 
 	// used to deserialize the user
 	passport.deserializeUser(function(id, done) {
-		User.getByCredId(id, function(err, user) {
-			if (err) return console.log(err);
+		User.getByUserId(id, function(err, user) {
+			if (err) { 
+				console.log(err);
+			}
 			done(err, user);
 		});
 	});
@@ -36,7 +38,7 @@ module.exports = function(passport) {
 	function(req, email, password, done) {
 		// asynchronous
 		process.nextTick(function() {
-			User.getUserByEmail(email, function(err, user) {
+			User.getByEmail(email, function(err, user) {
 				// if there are any errors, return the error
 				if (err)
 					return done(err);
@@ -51,6 +53,7 @@ module.exports = function(passport) {
 
 				// all is well, return user
 				else {
+					delete user.pwHash;
 					return done(null, user);
 				}
 			});
@@ -76,6 +79,7 @@ module.exports = function(passport) {
 			//  Whether we're signing up or connecting an account, we'll need
 			//  to know if the email address is in use.
 			User.checkEmail(email, function(err, existingUser) {
+				console.log('checkemail called');
 				// if there are any errors, return the error
 				if (err){
 					return done(err);
@@ -83,24 +87,12 @@ module.exports = function(passport) {
 
 				// check to see if there's already a user with that email
 				if (existingUser) {
-					return done(null, false, req.flash('signupMessage', 'That email is already in use.'));
+					return done(null, false, req.flash('signupMessage', 'Email in use.'));
 				}
 
 				//  If the user is logged in, this means that the user is updating info
 				if(req.user) {
-					var update = {};
-						update.id = req.user._id;
-						update.props = {};
-							update.props.localEmail = email;
-							update.props.localPassword = User.generateHash(password);
-							update.props.fname = fname;
-							update.props.lname = lname;
-							update.props.bday = bday;
-					User.update(update, function(err, user) {
-						if (err)
-							throw err;
-						return done(null, user);
-					});
+					return done(null, false, req.flash('signupMessage', 'Authenticated user cannot signup!'))
 				} else {
 					//  We're not logged in, so we're creating a brand new user.
 					var pwHash = User.generateHash(password);

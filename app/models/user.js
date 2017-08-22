@@ -14,9 +14,9 @@ var User = module.exports = function(_node) {
 User.checkEmail = function(email, callback) {
     var qp = {
         query: [
-            'MATCH (email:Email)',
-            'WHERE email.address = {email}',
-            'RETURN COUNT(email)'
+            'MATCH (user: User)',
+            'WHERE user.email = {email}',
+            'RETURN COUNT(user)'
         ].join('\n'),
         params: {
             email: email
@@ -24,20 +24,20 @@ User.checkEmail = function(email, callback) {
     };
 
     db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
+        if (err) 
+            return callback(err);
+
         return callback(false, result == 0);
     });
 }
 
+// returned data contains pwHash - needed for Passport local Login strategy
 User.addNewUser = function(fname, lname, email, dob, pwHash, sex, callback) {
     var qp = {
         query: [
-            'CREATE (cred:Credential {address: {email}, hash: {pwHash}}),',
-            '(user:User {fname: {fname}, lname: {lname}, sex:{sex}})',
-            'MERGE (dob:Date {date: {dob}})',
-            'CREATE (user)-[:BORN_IN]->(dob),',
-            '(cred)-[:BELONGS]->(user)',
-            'RETURN user, cred'
+            'CREATE (user:User {fname: {fname}, lname: {lname}, sex:{sex}, \
+                dob:{dob}, email: {email}, pwHash:{pwHash}})',
+            'RETURN user'
         ].join('\n'),
         params: {
             email: email,
@@ -50,17 +50,18 @@ User.addNewUser = function(fname, lname, email, dob, pwHash, sex, callback) {
     };
     db.cypher(qp, function(err, result) {
         if (err) return callback(err);
-        var userData = prepareSessionData(result);
-        return callback(null, userData);
+        delete result[0]['user'].pwHash;
+        delete result[0]['user'].labels;
+        return callback(null, result[0]['user']);
     });
 }
 
-User.getByCredId = function(id, callback) {
+User.getByUserId = function(id, callback) {
     var qp = {
         query: [
-            'MATCH (bday:Date)<-[:BORN_IN]-(user:User)<-[:BELONGS]-(cred:Credential)',
-            'WHERE ID(cred)={id}',
-            'RETURN user, cred, bday'
+            'MATCH (user:User)',
+            'WHERE ID(user)={id}',
+            'RETURN user'
         ].join('\n'),
         params: {
             id: id
@@ -69,21 +70,21 @@ User.getByCredId = function(id, callback) {
     db.cypher(qp, function(err, result) {
         if (err) return callback(err);
         if (!result[0]) {
-            callback("user not found", null);
+            callback("getByUserId(): user not found!", null);
         } else {
-            var userData = prepareSessionData(result);
-            return callback(null, userData);
+            delete result[0]['user'].pwHash;
+            return callback(null, result[0]['user']);
         }
     });
 }
 
 // called only for logins - returned data contains pw hash
-User.getUserByEmail = function(email, callback) {
+User.getByEmail = function(email, callback) {
     var qp = {
         query: [
-            'MATCH (user:User)<-[:BELONGS]-(cred:Credential)',
-            'WHERE cred.address={email}',
-            'RETURN user, cred'
+            'MATCH (user:User)',
+            'WHERE user.email={email}',
+            'RETURN user'
         ].join('\n'),
         params: {
             email: email
@@ -92,40 +93,19 @@ User.getUserByEmail = function(email, callback) {
     db.cypher(qp, function(err, result) {
         if (err) return callback(err);
         if (!result[0]) {
-            callback(null, null);
+            callback("no user with email " + email + " exists", null); // LOOK HERE!
         } else {
-            var userData = prepareSessionData(result);
-            userData.properties.pwHash = result[0]['cred'].properties.hash;
-            return callback(null, userData);
+            return callback(null, result[0]['user']);
         }
-    });
-}
-
-User.checkFollowing = function(follower_id, following_id, callback) {
-    // returns true if <follower> is following <following>
-    var qp = {
-        query: [
-            'MATCH (n:User)-[f:FOLLOWS]->(o:User)',
-            'WHERE ID(n)={follower_id} AND ID(o)={following_id}',
-            'RETURN COUNT(f) AS isFollowing'
-        ].join('\n'),
-        params: {
-            follower_id: follower_id,
-            following_id: following_id
-        }
-    };
-    db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
-        return callback(null, result == 1);
     });
 }
 
 User.getFollowers = function(id, callback) {
     var qp = {
         query: [
-            'MATCH (follower)-[:FOLLOWS]->()<-[:BELONGS]-(cred:Credential)',
-            'WHERE ID(cred) = {userId}',
-            'RETURN follower.fname, follower.lname'
+            'MATCH (follower: User)-[:FOLLOWS]->(following: User)',
+            'WHERE ID(following) = {userId}',
+            'RETURN follower.fname AS first_name, follower.lname AS last_name'
         ].join('\n'),
         params: {
             userId: id
@@ -141,9 +121,9 @@ User.getFollowers = function(id, callback) {
 User.getFollowing = function(id, callback) {
     var qp = {
         query: [
-            'MATCH (cred:Credential)-[:BELONGS]->()-[:FOLLOWS]->(following)',
-            'WHERE ID(cred) = {userId}',
-            'RETURN following.fname, following.lname'
+            'MATCH (follower: User)-[:FOLLOWS]->(following: User)',
+            'WHERE ID(follower) = {userId}',
+            'RETURN following.fname AS first_name, following.lname AS last_name'
         ].join('\n'),
         params: {
             userId: id
@@ -156,62 +136,45 @@ User.getFollowing = function(id, callback) {
     });
 }
 
-User.getFollowCounts = function(id, callback) {
+User.newFollow = function(follower, following, callback) {
     var qp = {
         query: [
-            'MATCH (follower)-[:FOLLOWS]->(n)',
-            'WHERE ID(n)={userId}',
-            'WITH follower',
-            'MATCH (n)-[:FOLLOWS]->(following)',
-            'RETURN COUNT(following) AS numFollowing, COUNT(follower) AS numFollowers',
+            'MATCH (follower :User), (following :User)',
+            'WHERE ID(follower) = {follower_id} AND ID(following) = {following_id}',
+            'CREATE UNIQUE (follower)-[rel:FOLLOWS {since: {since}}]->(following)',
+            'RETURN rel'
         ].join('\n'),
         params: {
-            userId: id
+            follower_id: follower,
+            following_id: following,
+            since: new Date
         }
     };
-
+    
     db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
-        callback(null, result);
+        return callback(err);
     });
 }
 
-User.addUserRelationship = function(relation, userId, otherId, callback) {
-    switch(relation) {
-        case 'FOLLOW':
-            var qp = {
-                query: [
-                    'MATCH (cred1:Credential)-[:BELONGS]->(user:User), (other:User)<-[:BELONGS]-(cred2:Credential)',
-                    'WHERE ID(cred1) = {userId} AND ID(cred2) = {otherId}',
-                    'MERGE (user)-[rel:FOLLOWS]->(other)',
-                ].join('\n'),
-                params: {
-                    userId: userId,
-                    otherId: otherId
-                }
-            };
-            break;
-        case 'UNFOLLOW':
-            var qp = {
-                query: [
-                    'MATCH (user:User)-[rel:FOLLOWS]->(other:User)',
-                    'WHERE user.id = {userId} AND other.id = {otherId}',
-                    'DELETE rel'
-                ].join('\n'),
-                params: {
-                    userId: userId,
-                    otherId: otherId
-                }
-            };
-            break;
-    }
+User.unfollow = function(follower, following, callback) {
+    var qp = {
+        query: [
+            'MATCH (user:User)-[rel:FOLLOWS]->(other:User)',
+            'WHERE ID(user) = {userId} AND ID(other) = {otherId}',
+            'DELETE rel'
+        ].join('\n'),
+        params: {
+            userId: userId,
+            otherId: otherId
+        }
+    };
 
     db.cypher(qp, function(err, result) {
         return callback(err);
     });
-};
-
-User.update = function(data, callback) {
+}
+/*
+User.updateUserFields = function(user_id, data, callback) {
     var qp = {
         query: [
             'MATCH (user:User)',
@@ -229,7 +192,7 @@ User.update = function(data, callback) {
         if (err) return callback(err);
         callback(null, results[0]['user']);
     });
-};
+};*/
 
 User.generateHash = function(password, next) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null, next);
@@ -238,13 +201,3 @@ User.generateHash = function(password, next) {
 User.validPassword = function(password, pass, next) {
     return bcrypt.compareSync(password, pass, next);
 };
-
-function prepareSessionData(DBresult) {
-    var userData = DBresult[0]['user'];
-    userData.properties['email'] = DBresult[0]['cred'].properties.address;
-    userData._id = DBresult[0]['cred']._id;
-    if (DBresult[0]['bday']) {
-        userData.properties.bday = DBresult[0]['bday'].properties.date;
-    }
-    return userData;
-}

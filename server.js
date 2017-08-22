@@ -1,4 +1,3 @@
-// SET UP
 var express = require('express');
 var passport = require('passport');
 var flash = require('connect-flash');
@@ -17,7 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('tiny'));
 
-app.set('view engine', 'ejs');
+app.set('view engine', 'ejs'); /* temporary */
 app.set('views', __dirname + '/views');
 
 require('./config/passport.js')(passport);

@@ -39,9 +39,9 @@ router.get('/view/:id', function(req, res) {
         res.redirect('/profile');
         return;
     }
-    User.getByCredId(targetId, function(err, user) {
-        if (err == "user not found") {
-            if (! req.isAuthenticated()) {
+    User.getByUserId(targetId, function(err, user) {
+        if (err == "getByUserId(): user not found!") {
+            if (!req.isAuthenticated()) {
                 req.flash('loginMessage', 'User doesn\'t exist');
                 res.redirect('/');
             } else {
@@ -53,20 +53,28 @@ router.get('/view/:id', function(req, res) {
             console.log(err);
             res.status(500).send("<h1>Internal Server Error</h1>");
         } else {
-            User.getFollowCounts(targetId, function(err, counts) {
+            User.getFollowers(targetId, function(err, follower_data) {
                 if (err) {
                     console.log(err);
-                    res.status(500).send('<h1>Internal Server Error</h1>');
+                    res.status(500).send('<h1>Internal Server Error</h1>\
+                    <h5>Cannot retrieve follower data</h5>');
                 } else {
-                    res.render('limitedView.ejs', {
-                        fname: user.properties['fname'],
-                        lname: user.properties['lname'],
-                        bday: user.properties['bday'],
-                        sex: user.properties['sex'],
-                        numFollowers: counts[0]['numFollowers'],
-                        numFollowing: counts[0]['numFollowing'],
-                        message: req.flash('limitedViewMessage'),
-                        id: targetId
+                    User.getFollowing(targetId, function(err, following_data) {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).send('<h1>Internal Server Error</h1>\
+                            <h5>Cannot retrieve following data</h5>');
+                        }
+                        res.render('limitedView.ejs', {
+                            fname: user.properties['fname'],
+                            lname: user.properties['lname'],
+                            bday: user.properties['dob'],
+                            sex: user.properties['sex'],
+                            follower_data: follower_data,
+                            following_data: following_data,
+                            message: req.flash('limitedViewMessage'),
+                            id: targetId
+                        });
                     });
                 }
             });
@@ -75,7 +83,9 @@ router.get('/view/:id', function(req, res) {
 });
 
 router.get('/profile', function(req, res) {
-    isLoggedIn(req, res);
+    if (!req.isAuthenticated()) {
+        res.redirect('/');
+    }
     // TODO: Manage async clearly w/Streamline.js
     User.getFollowers(req.user._id, function(err, followers) {
         if (err) {
@@ -91,7 +101,7 @@ router.get('/profile', function(req, res) {
                         id: req.user._id,
                         fname: req.user.properties.fname,
                         lname: req.user.properties.lname,
-                        bday: req.user.properties.bday,
+                        bday: req.user.properties.dob,
                         sex: req.user.properties.sex,
                         email: req.user.properties.email,
                         following: following,
@@ -105,13 +115,18 @@ router.get('/profile', function(req, res) {
 });
 
 router.get('/logout', function(req, res) {
-    isLoggedIn(req, res);
+    if (!req.isAuthenticated()) {
+        res.redirect('/');
+    }
+
     req.logout();
     res.redirect('/');
 });
 
 router.get('/follow/:id', function(req, res) {
-    isLoggedIn(req, res);
+    if (!req.isAuthenticated()) {
+        res.redirect('/');
+    }
 
     var target = parseInt(req.params.id);
     var selfId = parseInt(req.user._id);
@@ -124,7 +139,7 @@ router.get('/follow/:id', function(req, res) {
         req.flash('profileMessage', 'Cannot follow');
         res.redirect('/profile');
     } else {
-        User.addUserRelationship('FOLLOW', selfId, target, function(err, rel) {
+        User.newFollow(selfId, target, function(err, rel) {
             if (err) {
                 console.log(err);
                 req.flash('profileMessage', 'following failed');
@@ -134,13 +149,8 @@ router.get('/follow/:id', function(req, res) {
                 req.flash('profileMessage', 'following success');
                 res.redirect('/profile');
             }
-            
         });
     }
 });
-
-function isLoggedIn(req, res) {
-    if (! req.isAuthenticated()) { return res.redirect('/'); }
-}
 
 module.exports = router;
