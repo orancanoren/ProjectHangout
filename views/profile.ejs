@@ -58,7 +58,7 @@
                                             <% } else { %>
                                                 <ol>
                                                 <% for (var i=0; i < followers.length; i++) { %>
-                                                    <li><%= followers[i]['follower.fname'] %> <%= followers[i]['follower.lname'] %></li>
+                                                    <li><%= followers[i]['first_name'] %> <%= followers[i]['last_name'] %></li>
                                                 <% }
                                             }%>
                                                 </ol>
@@ -69,7 +69,7 @@
                                             <% } else { %>
                                                 <ol>
                                                 <% for (var i=0; i < following.length; i++) { %>
-                                                    <li><%= following[i]['following.fname'] %> <%= following[i]['following.lname'] %></li>
+                                                    <li><%= following[i]['first_name'] %> <%= following[i]['last_name'] %></li>
                                                 <% }
                                             }%>
                                                 </ol>
