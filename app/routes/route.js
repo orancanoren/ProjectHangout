@@ -98,7 +98,6 @@ router.get('/profile', function(req, res) {
                     res.status(500).send("<h1>Internal Server Error</h1>");
                 } else {
                     res.render('profile.ejs', {
-                        id: req.user._id,
                         fname: req.user.properties.fname,
                         lname: req.user.properties.lname,
                         bday: req.user.properties.dob,

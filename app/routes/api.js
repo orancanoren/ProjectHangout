@@ -33,19 +33,43 @@ router.get('/badsignup', (req, res) => {
     }));
 });
 
-// MARK: AUTHENTICATED BEYOND THIS POINT (except for 404)
-
-router.get('/profile', (req, res) => {
-    isLoggedIn(req, res, "not authenticated");
-    
+router.get('/not_authenticated', (req, res) => {
     res.send(JSON.stringify({
-        email: req.user.properties.email,
-        bday: req.user.properties.bday,
-        name: (req.user.properties.fname + " " + req.user.properties.lname)
+        error: "not authenticated"
     }));
 });
 
-router.get('/logout', (req, res) => {
+// MARK: AUTHENTICATED BEYOND THIS POINT (except for 404)
+
+router.get('/profile', isLoggedIn, (req, res) => {
+
+    User.getFollowers(req.user._id, function(err, followers) {
+        if (err) {
+            console.log('ERROR: Couldn\'t get followers');
+            res.status(500).send(JSON.stringify({error: err}));
+        } else {
+            User.getFollowing(req.user._id, function(err, following) {
+                if (err) {
+                    console.log('ERROR: Couldn\'t get following');
+                    res.status(500).send(JSON.stringify({error: err}));
+                } else {
+                    res.send(JSON.stringify({
+                        fname: req.user.properties.fname,
+                        lname: req.user.properties.lname,
+                        bday: req.user.properties.dob,
+                        sex: req.user.properties.sex,
+                        email: req.user.properties.email,
+                        following: following,
+                        followers: followers,
+                        message: req.flash('profileMessage')
+                    }))
+                }
+            });
+        }
+    });
+});
+
+router.get('/logout', isLoggedIn, (req, res) => {
     isLoggedIn(req, res, "not authenticated");
 
     req.logout();
@@ -65,12 +89,12 @@ router.get('*', (req, res) => {
 
 // Utilities
 
-function isLoggedIn(req, res, errmsg) {
-    if (!req.isAuthenticated()) {
-        res.send(JSON.stringify({
-            error: errmsg
-        }));
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
     }
+
+    res.redirect('/api/not_authenticated');
 }
 
 module.exports = router;
