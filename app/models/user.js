@@ -2,14 +2,28 @@ var neo4j = require('neo4j');
 var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
 
+var postgresql_config = {};
+const DEBUG = false;
+if (DEBUG) {
+    postgresql_config = {
+        host: 'localhost',
+        user: 'jdobscdwjpnhxq',
+        password: 'f681ba03a2d0e8c26b1e2be020ab19c963edcfb2ab2e1a76cc89929bb189e490',
+        database: 'd8bpk7igid6vkp',
+        port: 5432
+    };
+} else {
+    postgresql_config = {
+        host: 'ec2-54-228-255-234.eu-west-1.compute.amazonaws.com',
+        user: 'postgres',
+        password: 'admin',
+        database: 'hangoutsdb',
+        port: 5432
+    }
+}
+
 // PostgreSQL connection
-const pool = new Pool({
-    host: 'localhost',
-    user: 'postgres',
-    password: 'admin',
-    database: 'hangoutsDB',
-    port: 5432
-});
+const pool = new Pool(postgresql_config);
 // Important: Use a query builder in production to avoid SQL injection
 
 // neo4j connection
