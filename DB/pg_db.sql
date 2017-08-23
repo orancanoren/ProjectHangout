@@ -1,23 +1,24 @@
 CREATE TABLE Users(
 	dob DATE,
     sex BOOL,
-    school CHAR(35),
-    occupation CHAR(25),
-    email CHAR(25) PRIMARY KEY,
-    fname CHAR(25),
-    lname CHAR(25),
+    school TEXT,
+    occupation TEXT,
+    email TEXT PRIMARY KEY,
+    pwHash CHAR(60),
+    fname TEXT,
+    lname TEXT,
     bio TEXT
 );
 
 CREATE TABLE Vendors(
-	vname CHAR(35) PRIMARY KEY
+	vname TEXT PRIMARY KEY
 );
 
 CREATE TABLE Events(
 	host_email CHAR(25) PRIMARY KEY
     	REFERENCES Users(email),
-    vendor CHAR(35) REFERENCES Vendors(vname),
-    title CHAR(35),
+    vendor TEXT REFERENCES Vendors(vname),
+    title TEXT,
     description TEXT,
     place TEXT
 );

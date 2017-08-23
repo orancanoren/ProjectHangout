@@ -103,22 +103,22 @@ router.get('/profile', function(req, res) {
         res.redirect('/');
     }
     // TODO: Manage async clearly w/Streamline.js
-    User.getFollowers(req.user._id, function(err, followers) {
+    User.getFollowers(req.user.email, function(err, followers) {
         if (err) {
             console.log('ERROR: Couldn\'t get followers');
             res.status(500).send("<h1>Internal Server Error</h1>");
         } else {
-            User.getFollowing(req.user._id, function(err, following) {
+            User.getFollowing(req.user.email, function(err, following) {
                 if (err) {
                     console.log('ERROR: Couldn\'t get following');
                     res.status(500).send("<h1>Internal Server Error</h1>");
                 } else {
                     res.render('profile.ejs', {
-                        fname: req.user.properties.fname,
-                        lname: req.user.properties.lname,
-                        bday: req.user.properties.dob,
-                        sex: req.user.properties.sex,
-                        email: req.user.properties.email,
+                        fname: req.user.fname,
+                        lname: req.user.lname,
+                        bday: req.user.dob,
+                        sex: req.user.sex,
+                        email: req.user.email,
                         following: following,
                         followers: followers,
                         message: req.flash('profileMessage')

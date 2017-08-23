@@ -80,8 +80,6 @@ module.exports = function(passport) {
 
 				// All is well, return the user data without the password hash
 				else {
-					console.log('passport has authenticated!');
-					delete user.pwHash;
 					return done(null, user);
 				}
 			});
@@ -117,6 +115,7 @@ module.exports = function(passport) {
 			var lname = req.body.lname;
 			var bday = req.body.bday;
 			var sex = req.body.sex;
+			var school = 'Sabanci University';// FOR DEBUG ONLY
 
 			User.checkEmail(email, function(err, existingUser) {
 				console.log('checkemail called');
@@ -134,7 +133,7 @@ module.exports = function(passport) {
 				else {
 					//  We're not logged in, so we're creating a brand new user.
 					var pwHash = User.generateHash(password);
-					User.addNewUser(fname, lname, email, bday, pwHash, sex, function (err, user) {
+					User.addNewUser(fname, lname, email, bday, pwHash, sex, school, function (err, user) {
 						if (err) {
 							console.log(err);
 							return done(err);

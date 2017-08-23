@@ -33,53 +33,51 @@ User.checkEmail = function(email, callback) {
     const values = [ email ];
 
     pool.query(query, values, (err, res) => {
-        if (err)
+        if (err) {
             console.error(err.stack);
+            return callback(err);
+        }
         
         else {
-            return res.rows[0].email_count == '0';
+            return callback(null, res.rows[0].email_count != '0');
         }
     });
 }
 
 // returned data contains pwHash - needed for Passport local Login strategy
-User.addNewUser = function(fname, lname, email, dob, pwHash, sex, callback) {
-    const query = [
-        'INSERT INTO Users(',
-        'FROM Users',
-        'WHERE email=$1'
-    ].join('\n');
-
-    const values = [ email ];
-
-    pool.query(query, values, (err, res) => {
-        if (err)
-            console.error(err.stack);
-        
-        else {
-            return res.rows[0].email_count == '0';
-        }
-    });
-}
-
-User.getByUserId = function(id, callback) {
+User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callback) {
+    // 1 - INSERTION INTO NEO4J
     var qp = {
         query: [
-            'MATCH (user:User)',
-            'WHERE ID(user)={id}',
-            'RETURN user'
+            'CREATE (u:User { email: {email} })',
         ].join('\n'),
         params: {
-            id: id
+            email: email
         }
     };
+    
     db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
-        if (!result[0]) {
-            callback("getByUserId(): user not found!", null);
-        } else {
-            delete result[0]['user'].pwHash;
-            return callback(null, result[0]['user']);
+        if (err)
+            return callback(err);
+    });
+
+    // 2 - INSERTION INTO POSTGRES
+    const query = [
+        'INSERT INTO Users(dob, sex, school, email, pwhash, fname, lname)',
+        'VALUES ($1, $2 ,$3, $4, $5, $6, $7)',
+        'RETURNING dob, sex, school, email, fname, lname'
+    ].join('\n');
+
+    const values = [ dob, sex=='female', school, email, pwhash, fname, lname ];
+
+    pool.query(query, values, (err, res) => {
+        if (err) {
+            console.error(err.stack);
+            return callback(err);
+        }
+        
+        else {
+            return callback(null, res.rows[0]);
         }
     });
 }
@@ -104,33 +102,36 @@ User.getByEmail = function(email, callback) {
     });
 }
 
-User.getFollowers = function(id, callback) {
+User.getFollowers = function(email, callback) {
     var qp = {
         query: [
             'MATCH (follower: User)-[:FOLLOWS]->(following: User)',
-            'WHERE ID(following) = {userId}',
+            'WHERE following.email = {email}',
             'RETURN follower.fname AS first_name, follower.lname AS last_name'
         ].join('\n'),
         params: {
-            userId: id
+            email: email
         }
     };
 
     db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
         callback(null, result);
     });
 };
 
-User.getFollowing = function(id, callback) {
+User.getFollowing = function(email, callback) {
     var qp = {
         query: [
             'MATCH (follower: User)-[:FOLLOWS]->(following: User)',
-            'WHERE ID(follower) = {userId}',
+            'WHERE follower.email = {email}',
             'RETURN following.fname AS first_name, following.lname AS last_name'
         ].join('\n'),
         params: {
-            userId: id
+            email: email
         }
     };
 
@@ -140,17 +141,17 @@ User.getFollowing = function(id, callback) {
     });
 }
 
-User.newFollow = function(follower, following, callback) {
+User.newFollow = function(follower_mail, following_mail, callback) {
     var qp = {
         query: [
             'MATCH (follower :User), (following :User)',
-            'WHERE ID(follower) = {follower_id} AND ID(following) = {following_id}',
+            'WHERE follower.email = {follower_mail} AND following.email = {following_mail}',
             'CREATE UNIQUE (follower)-[rel:FOLLOWS {since: {since}}]->(following)',
             'RETURN rel'
         ].join('\n'),
         params: {
-            follower_id: follower,
-            following_id: following,
+            follower_mail: follower_mail,
+            following_mail: following_mail,
             since: new Date
         }
     };
@@ -160,16 +161,16 @@ User.newFollow = function(follower, following, callback) {
     });
 }
 
-User.unfollow = function(follower, following, callback) {
+User.unfollow = function(follower_mail, following_mail, callback) {
     var qp = {
         query: [
             'MATCH (user:User)-[rel:FOLLOWS]->(other:User)',
-            'WHERE ID(user) = {userId} AND ID(other) = {otherId}',
+            'WHERE user.email = {follower_mail} AND other.email = {following_mail}',
             'DELETE rel'
         ].join('\n'),
         params: {
-            userId: userId,
-            otherId: otherId
+            follower_mail: follower_mail,
+            following_mail: callback
         }
     };
 
@@ -177,26 +178,6 @@ User.unfollow = function(follower, following, callback) {
         return callback(err);
     });
 }
-/*
-User.updateUserFields = function(user_id, data, callback) {
-    var qp = {
-        query: [
-            'MATCH (user:User)',
-            'WHERE ID(user) = {userId}',
-            'SET user += {props}',
-            'RETURN user'
-        ].join('\n'),
-        params: {
-            userId: data.id,
-            props: data.props
-        }
-    };
-
-    db.cypher(qp, function(err, results) {
-        if (err) return callback(err);
-        callback(null, results[0]['user']);
-    });
-};*/
 
 User.generateHash = function(password, next) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null, next);
