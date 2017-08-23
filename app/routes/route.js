@@ -12,10 +12,26 @@ router.get('/', function(req, res) { // home page
 });
 
 router.post('/', passport.authenticate('local-login', {
-    successRedirect: '/profile',
-    failureRedirect: '/',
-    failureFlash: true
-}));
+        failureRedirect: '/',
+        failureFlash: true 
+    }),
+    (req, res, next) => {
+        if (!req.body.remember_me) return next();
+
+        issueToken(req.user, (err, token) => {
+            if (err) return next(err);
+            res.cookie('remember_me', token, {
+                path: '/',
+                httpOnly: true,
+                maxAge: 604800000
+            });
+            return next();
+        });
+    },
+        (req, res) => {
+            res.redirect('/');
+        }
+    );
 
 // SIGNUP
 router.get('/signup', function(req, res) {
@@ -117,7 +133,7 @@ router.get('/logout', function(req, res) {
     if (!req.isAuthenticated()) {
         res.redirect('/');
     }
-
+    res.clearCookie('remember_me');
     req.logout();
     res.redirect('/');
 });
@@ -151,5 +167,12 @@ router.get('/follow/:id', function(req, res) {
         });
     }
 });
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+
+    res.status(401).redirect('/login');
+}
 
 module.exports = router;

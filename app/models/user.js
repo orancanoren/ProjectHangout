@@ -1,6 +1,18 @@
 var neo4j = require('neo4j');
 var bcrypt = require('bcrypt-nodejs');
+const { Pool } = require('pg');
 
+// PostgreSQL connection
+const pool = new Pool({
+    host: 'localhost',
+    user: 'postgres',
+    password: 'admin',
+    database: 'hangoutsDB',
+    port: 5432
+});
+// Important: Use a query builder in production to avoid SQL injection
+
+// neo4j connection
 var db = new neo4j.GraphDatabase(
     process.env['GRAPHENEDB_URL'] ||
     'http://neo4j:admin@localhost:7474'
@@ -12,47 +24,41 @@ var User = module.exports = function(_node) {
 }
 
 User.checkEmail = function(email, callback) {
-    var qp = {
-        query: [
-            'MATCH (user: User)',
-            'WHERE user.email = {email}',
-            'RETURN COUNT(user)'
-        ].join('\n'),
-        params: {
-            email: email
+    const query = [
+        'SELECT COUNT(*) AS email_count',
+        'FROM Users',
+        'WHERE email=$1'
+    ].join('\n');
+
+    const values = [ email ];
+
+    pool.query(query, values, (err, res) => {
+        if (err)
+            console.error(err.stack);
+        
+        else {
+            return res.rows[0].email_count == '0';
         }
-    };
-
-    db.cypher(qp, function(err, result) {
-        if (err) 
-            return callback(err);
-
-        return callback(false, result == 0);
     });
 }
 
 // returned data contains pwHash - needed for Passport local Login strategy
 User.addNewUser = function(fname, lname, email, dob, pwHash, sex, callback) {
-    var qp = {
-        query: [
-            'CREATE (user:User {fname: {fname}, lname: {lname}, sex:{sex}, \
-                dob:{dob}, email: {email}, pwHash:{pwHash}})',
-            'RETURN user'
-        ].join('\n'),
-        params: {
-            email: email,
-            pwHash: pwHash,
-            fname: fname,
-            lname: lname,
-            dob: dob,
-            sex: sex
+    const query = [
+        'INSERT INTO Users(',
+        'FROM Users',
+        'WHERE email=$1'
+    ].join('\n');
+
+    const values = [ email ];
+
+    pool.query(query, values, (err, res) => {
+        if (err)
+            console.error(err.stack);
+        
+        else {
+            return res.rows[0].email_count == '0';
         }
-    };
-    db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
-        delete result[0]['user'].pwHash;
-        delete result[0]['user'].labels;
-        return callback(null, result[0]['user']);
     });
 }
 
@@ -80,23 +86,21 @@ User.getByUserId = function(id, callback) {
 
 // called only for logins - returned data contains pw hash
 User.getByEmail = function(email, callback) {
-    var qp = {
-        query: [
-            'MATCH (user:User)',
-            'WHERE user.email={email}',
-            'RETURN user'
-        ].join('\n'),
-        params: {
-            email: email
+    const query = [
+        'SELECT *',
+        'FROM Users',
+        'WHERE email=$1'
+    ].join('\n');
+
+    const values = [ email ];
+
+    pool.query(query, values, (err, res) => {
+        if (err) {
+            console.error(err.stack);
+            return callback(err, null);
         }
-    };
-    db.cypher(qp, function(err, result) {
-        if (err) return callback(err);
-        if (!result[0]) {
-            callback(null, null); // LOOK HERE!
-        } else {
-            return callback(null, result[0]['user']);
-        }
+        
+        return callback(null, res.rows[0]);
     });
 }
 
