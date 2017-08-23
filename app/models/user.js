@@ -6,7 +6,7 @@ var postgresql_config = {};
 const DEBUG = false;
 if (DEBUG) {
     postgresql_config = {
-        host: 'localhost',
+        host: 'ec2-54-228-255-234.eu-west-1.compute.amazonaws.com',
         user: 'jdobscdwjpnhxq',
         password: 'f681ba03a2d0e8c26b1e2be020ab19c963edcfb2ab2e1a76cc89929bb189e490',
         database: 'd8bpk7igid6vkp',
@@ -14,7 +14,7 @@ if (DEBUG) {
     };
 } else {
     postgresql_config = {
-        host: 'ec2-54-228-255-234.eu-west-1.compute.amazonaws.com',
+        host: 'localhost',
         user: 'postgres',
         password: 'admin',
         database: 'hangoutsdb',
