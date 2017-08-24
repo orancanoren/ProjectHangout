@@ -19,14 +19,14 @@ router.post('/', passport.authenticate('local-login', {
         failureFlash: true 
     }), 
     (req, res, next) => {
-        if (!req.body.remember_me) return next();
+        //if (!req.body.remember_me) return next();
 
         issueToken(req.user, (err, token) => {
             if (err) return next(err);
             res.cookie('remember_me', token, {
                 path: '/',
                 httpOnly: true,
-                maxAge: 604800000
+                maxAge: 604800000 // 7 days
             });
             return next();
         });
