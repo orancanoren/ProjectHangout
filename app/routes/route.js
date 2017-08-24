@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var passport = require('passport');
 var User = require('../models/user');
+const Token = require('../utils/token');
 
 const err500 = '<h1>Internal Server Error</h1><br />';
 
@@ -21,7 +22,7 @@ router.post('/', passport.authenticate('local-login', {
     (req, res, next) => {
         //if (!req.body.remember_me) return next();
 
-        issueToken(req.user, (err, token) => {
+        Token.issueToken(req.user, (err, token) => {
             if (err) return next(err);
             res.cookie('remember_me', token, {
                 path: '/',
