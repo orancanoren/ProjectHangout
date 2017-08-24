@@ -3,7 +3,7 @@ var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
 
 var postgresql_config = {};
-const DEBUG = false;
+const DEBUG = true;
 if (DEBUG) {
     postgresql_config = {
         host: 'localhost',
@@ -234,7 +234,7 @@ User.unfollow = function(follower_mail, following_mail, callback) {
         ].join('\n'),
         params: {
             follower_mail: follower_mail,
-            following_mail: callback
+            following_mail: following_mail
         }
     };
 

@@ -27,7 +27,7 @@ router.post('/login', passport.authenticate('local-login', {
             });
         },
         (req, res) => {
-            res.redirect('/');
+            res.redirect('/api/profile');
         }
 );
 
@@ -38,21 +38,21 @@ router.post('/signup', passport.authenticate('local-signup', {
 }));
 
 router.get('/badlogin', (req, res) => {
-    res.send(JSON.stringify({
+    res.send({
         error: "invalid credentials"
-    }));
+    });
 });
 
 router.get('/badsignup', (req, res) => {
-    res.send(JSON.stringify({
+    res.send({
         error: "error during signup"
-    }));
+    });
 });
 
 router.get('/not_authenticated', (req, res) => {
-    res.send(JSON.stringify({
+    res.send({
         error: "not authenticated"
-    }));
+    });
 });
 
 router.get('/view/:target_email', (req, res) => {
@@ -82,31 +82,30 @@ router.get('/view/:target_email', (req, res) => {
             User.getFollowers(target_email, function(err, follower_data) {
                 if (err) {
                     console.log(err);
-                    res.status(500).json(JSON.stringify({
+                    res.status(500).json({
                         error: err500,
                         description: 'Error in getFollowers()'
-                    }));
+                    });
                 } else {
                     User.getFollowing(target_email, function(err, following_data) {
                         if (err) {
                             console.log(err);
-                            res.status(500).json(JSON.stringify({
+                            res.status(500).json({
                                 error: err500,
                                 description: 'Error in getFollowing()'
-                            }));
+                            });
                         }
-                        const response_obj = {
-                            fname: user['fname'],
-                            lname: user['lname'],
-                            bday: user['dob'],
-                            sex: user['sex'] ? "female" : "male",
+
+                        res.json({
+                            fname: user.fname,
+                            lname: user.lname,
+                            bday: user.dob,
+                            sex: user.sex ? "female" : "male",
                             follower_data: follower_data,
                             following_data: following_data,
                             message: req.flash('limitedViewMessage'),
                             target_email: target_email
-                        };
-                        console.log('responding with\n', response_obj);
-                        res.json(JSON.stringify(response_obj));
+                        });
                     });
                 }
             });
@@ -119,13 +118,12 @@ router.post('/search', (req, res) => {
     User.searchByName(search_query, (err, result) => {
         if (err) {
             console.error(err);
-            res.json(JSON.stringify({
+            res.json({
                 error: 'Error in searchByName()',
                 description: err
-            }));
+            });
         }
         else {
-            console.log('search results:', result);
             res.json(result[0]);
         }
     });
@@ -135,18 +133,18 @@ router.post('/search', (req, res) => {
 
 router.get('/profile', isLoggedIn, (req, res) => {
 
-    User.getFollowers(req.user._id, function(err, followers) {
+    User.getFollowers(req.user.email, function(err, followers) {
         if (err) {
             console.log('ERROR: Couldn\'t get followers');
             res.status(500).send(JSON.stringify({error: err}));
         } else {
-            User.getFollowing(req.user._id, function(err, following) {
+            User.getFollowing(req.user.email, function(err, following) {
                 if (err) {
                     console.log('ERROR: Couldn\'t get following');
                     res.status(500).send(JSON.stringify({error: err}));
                 } else {
                     const sex = req.user.sex ? "female" : "male";
-                    res.send(JSON.stringify({
+                    res.send({
                         fname: req.user.fname,
                         lname: req.user.lname,
                         bday: req.user.dob,
@@ -155,7 +153,7 @@ router.get('/profile', isLoggedIn, (req, res) => {
                         following: following,
                         followers: followers,
                         message: req.flash('profileMessage')
-                    }))
+                    });
                 }
             });
         }
@@ -163,13 +161,70 @@ router.get('/profile', isLoggedIn, (req, res) => {
 });
 
 router.get('/logout', isLoggedIn, (req, res) => {
-    isLoggedIn(req, res, "not authenticated");
-
     req.logout();
-    res.send(JSON.stringify({
-        message: "logout success"
-    }));
+    res.send({
+        message: "logout success",
+        success: true
+    });
 });
+
+router.get('/follow/:target_email', isLoggedIn, (req, res) => {
+    var target_email = req.params.target_email;
+    if (target_email == req.user.email) {
+        res.json({
+            error: 'You cannot follow yourself',
+            success: false
+        });
+    } else if (target_email == null) {
+        res.json({
+            error: 'Follow target not specified',
+            success: false
+        });
+    } else {
+        User.newFollow(req.user.email, target_email, function(err) {
+            if (err) {
+                console.log(err);
+                res.json({
+                    error: err,
+                    success: false
+                });
+            } else {
+                res.json({
+                    succes: true
+                });
+            }
+        });
+    }
+});
+
+router.get('/unfollow/:target_email', isLoggedIn, (req, res) => {
+    var target_email = req.params.target_email;
+    if (target_email == req.user.email) {
+        res.json({
+            error: 'You cannot unfollow yourself',
+            success: false
+        });
+    } else if (target_email == null) {
+        res.json({
+            error: 'Unfollow target not specified',
+            success: false
+        });
+    } else {
+        User.unfollow(req.user.email, target_email, function(err) {
+            if (err) {
+                console.log(err);
+                res.json({
+                    error: err,
+                    success: false
+                });
+            } else {
+                res.json({
+                    succes: true
+                });
+            }
+        });
+    }
+})
 
 // 404
 

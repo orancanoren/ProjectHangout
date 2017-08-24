@@ -184,13 +184,12 @@ router.get('/follow/:target_email', function(req, res) {
         req.flash('profileMessage', 'Cannot follow');
         res.redirect('/profile');
     } else {
-        User.newFollow(req.user.email, target_email, function(err, rel) {
+        User.newFollow(req.user.email, target_email, function(err) {
             if (err) {
                 console.log(err);
                 req.flash('profileMessage', 'following failed');
                 res.redirect('/profile');
             } else {
-                console.log(rel);
                 req.flash('profileMessage', 'following success');
                 res.redirect('/profile');
             }
