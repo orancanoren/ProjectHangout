@@ -86,7 +86,7 @@ module.exports = function(passport) {
 		});
 	}));
 
-	passport.use(new RememberMeStrategy((token, done) => {
+	passport.use('remember-me', new RememberMeStrategy((token, done) => {
 		consumeRememberMeToken(token, (err, email) => {
 			if (err) return done(err);
 			if (!email) return done(null, false);

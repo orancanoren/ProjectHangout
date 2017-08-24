@@ -9,6 +9,7 @@ router.get('/', function(req, res) { // home page
     if (req.isAuthenticated()) {
         res.redirect('/profile');
     } else {
+        passport.authenticate('remember-me');
         res.render('index.ejs', { message: req.flash('loginMessage') });
     } 
 });

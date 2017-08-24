@@ -28,6 +28,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(passport.authenticate('remember-me'));
 app.use(flash()); // for flash messages stored in session
 
 require('./config/passport.js')(passport);
