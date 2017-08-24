@@ -2,6 +2,8 @@ var router = require('express').Router();
 var passport = require('passport');
 var User = require('../models/user');
 
+const err500 = '<h1>Internal Server Error</h1><br />';
+
 // LOGIN
 router.get('/', function(req, res) { // home page
     if (req.isAuthenticated()) {
@@ -14,7 +16,7 @@ router.get('/', function(req, res) { // home page
 router.post('/', passport.authenticate('local-login', {
         failureRedirect: '/',
         failureFlash: true 
-    }),
+    }), 
     (req, res, next) => {
         if (!req.body.remember_me) return next();
 
@@ -49,14 +51,19 @@ router.post('/signup', passport.authenticate('local-signup', {
 }));
 
 // LIMITED PROFILE VIEW
-router.get('/view/:id', function(req, res) {
-    var targetId = parseInt(req.params.id);
-    if (req.isAuthenticated() && req.user._id == targetId) {
+router.get('/view/:target_email', function(req, res) {
+    var target_email = req.params.target_email;
+    if (req.isAuthenticated() && req.user.email == target_email) {
         res.redirect('/profile');
         return;
     }
-    User.getByUserId(targetId, function(err, user) {
-        if (err == "getByUserId(): user not found!") {
+
+    User.getByEmail(target_email, function(err, user) {
+        if (err) {
+            console.error(err);
+            res.status(500).send(err500 + '<h4>Error during getByEmail()<h4>');
+        }
+        if (!user) {
             if (!req.isAuthenticated()) {
                 req.flash('loginMessage', 'User doesn\'t exist');
                 res.redirect('/');
@@ -64,32 +71,26 @@ router.get('/view/:id', function(req, res) {
                 req.flash('profileMessage', 'User doesn\'t exist');
                 res.redirect('/profile');
             }
-        }
-        else if (err) {
-            console.log(err);
-            res.status(500).send("<h1>Internal Server Error</h1>");
         } else {
-            User.getFollowers(targetId, function(err, follower_data) {
+            User.getFollowers(target_email, function(err, follower_data) {
                 if (err) {
                     console.log(err);
-                    res.status(500).send('<h1>Internal Server Error</h1>\
-                    <h5>Cannot retrieve follower data</h5>');
+                    res.status(500).send(err500 + '<h4>Cannot retrieve follower data</h4>');
                 } else {
-                    User.getFollowing(targetId, function(err, following_data) {
+                    User.getFollowing(target_email, function(err, following_data) {
                         if (err) {
                             console.log(err);
-                            res.status(500).send('<h1>Internal Server Error</h1>\
-                            <h5>Cannot retrieve following data</h5>');
+                            res.status(500).send(err500 + '<h4>Cannot retrieve following data</h4>');
                         }
                         res.render('limitedView.ejs', {
-                            fname: user.properties['fname'],
-                            lname: user.properties['lname'],
-                            bday: user.properties['dob'],
-                            sex: user.properties['sex'],
+                            fname: user['fname'],
+                            lname: user['lname'],
+                            bday: user['dob'],
+                            sex: user['sex'],
                             follower_data: follower_data,
                             following_data: following_data,
                             message: req.flash('limitedViewMessage'),
-                            id: targetId
+                            target_email: target_email
                         });
                     });
                 }
@@ -106,18 +107,19 @@ router.get('/profile', function(req, res) {
     User.getFollowers(req.user.email, function(err, followers) {
         if (err) {
             console.log('ERROR: Couldn\'t get followers');
-            res.status(500).send("<h1>Internal Server Error</h1>");
+            res.status(500).send(err500 + '<h5>Error in getFollowers()</h5>');
         } else {
             User.getFollowing(req.user.email, function(err, following) {
                 if (err) {
                     console.log('ERROR: Couldn\'t get following');
-                    res.status(500).send("<h1>Internal Server Error</h1>");
+                    res.status(500).send(err500 + '<h5>Error in getFollowing()</h5>');
                 } else {
+                    const sex = req.user.sex ? "female" : "male";
                     res.render('profile.ejs', {
                         fname: req.user.fname,
                         lname: req.user.lname,
                         bday: req.user.dob,
-                        sex: req.user.sex,
+                        sex: sex,
                         email: req.user.email,
                         following: following,
                         followers: followers,
@@ -138,23 +140,21 @@ router.get('/logout', function(req, res) {
     res.redirect('/');
 });
 
-router.get('/follow/:id', function(req, res) {
+router.get('/follow/:target_email', function(req, res) {
     if (!req.isAuthenticated()) {
         res.redirect('/');
     }
 
-    var target = parseInt(req.params.id);
-    var selfId = parseInt(req.user._id);
-    console.log(selfId + ' wants to follow ' + target);
-    if (target == selfId) {
-        console.log('same');
+    var target_email = req.params.target_email;
+    console.log(req.user.email + ' wants to follow ' + target_email);
+    if (target_email == req.user.email) {
         req.flash('limitedViewMessage', 'You cannot follow yourself');
         res.redirect('/view/'+target);
-    } else if (target == null) {
+    } else if (target_email == null) {
         req.flash('profileMessage', 'Cannot follow');
         res.redirect('/profile');
     } else {
-        User.newFollow(selfId, target, function(err, rel) {
+        User.newFollow(req.user.email, target_email, function(err, rel) {
             if (err) {
                 console.log(err);
                 req.flash('profileMessage', 'following failed');

@@ -64,7 +64,7 @@ User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callba
     // 1 - INSERTION INTO NEO4J
     var qp = {
         query: [
-            'CREATE (u:User { email: {email} })',
+            'MERGE (u:User { email: {email} })',
         ].join('\n'),
         params: {
             email: email
@@ -120,30 +120,9 @@ User.getByEmail = function(email, callback) {
 User.getFollowers = function(email, callback) {
     var qp = {
         query: [
-            'MATCH (follower: User)-[:FOLLOWS]->(following: User)',
+            'MATCH (follower:User)-[:FOLLOWS]->(following:User)',
             'WHERE following.email = {email}',
-            'RETURN follower.fname AS first_name, follower.lname AS last_name'
-        ].join('\n'),
-        params: {
-            email: email
-        }
-    };
-
-    db.cypher(qp, function(err, result) {
-        if (err) {
-            console.error(err);
-            return callback(err);
-        }
-        callback(null, result);
-    });
-};
-
-User.getFollowing = function(email, callback) {
-    var qp = {
-        query: [
-            'MATCH (follower: User)-[:FOLLOWS]->(following: User)',
-            'WHERE follower.email = {email}',
-            'RETURN following.fname AS first_name, following.lname AS last_name'
+            'RETURN follower.email AS email'
         ].join('\n'),
         params: {
             email: email
@@ -152,7 +131,77 @@ User.getFollowing = function(email, callback) {
 
     db.cypher(qp, function(err, result) {
         if (err) return callback(err);
-        callback(null, result);
+        follower_emails = result;
+        follower_names = []; // USING AN ARRAY IS INEFFICIENT HERE! USE A LINKED LIST
+        if (follower_emails.length == 0) {
+            return callback(null, []);
+        }
+
+        for (var i = 0; i < follower_emails.length; i++) {
+            const pg_query = [
+                'SELECT fname, lname',
+                'FROM Users',
+                'WHERE email=$1'
+            ].join('\n');
+            const params = [follower_emails[i].email];
+
+            pool.query(pg_query, params, (err, result) => {
+                if (err) {
+                    console.error(err.stack);
+                    return callback(err);
+                } else {
+                    follower_names.push(result.rows[0]);
+                    // Following line is an insult to JS Async
+                    if (i + 1 >= follower_emails.length) {
+                        return callback(null, follower_names);
+                    }
+                }
+            });
+        }
+    });
+};
+
+User.getFollowing = function(email, callback) {
+    var qp = {
+        query: [
+            'MATCH (follower:User)-[:FOLLOWS]->(following:User)',
+            'WHERE follower.email = {email}',
+            'RETURN following.email AS email'
+        ].join('\n'),
+        params: {
+            email: email
+        }
+    };
+
+    db.cypher(qp, function(err, result) {
+        if (err) return callback('res:', err);
+        following_emails = result;
+        following_names = []; // USING AN ARRAY IS INEFFICIENT HERE! USE A LINKED LIST
+        if (following_emails.length == 0) {
+            return callback(null, []);
+        }
+
+        for (var i = 0; i < following_emails.length; i++) {
+            const pg_query = [
+                'SELECT fname, lname',
+                'FROM Users',
+                'WHERE email=$1'
+            ].join('\n');
+            const params = [following_emails[i].email];
+
+            pool.query(pg_query, params, (err, result) => {
+                if (err) {
+                    console.error(err.stack);
+                    return callback(err);
+                } else {
+                    following_names.push(result.rows[0]);
+                    // Following line is an insult to JS Async
+                    if (i + 1 >= following_emails.length) {
+                        return callback(null, following_names);
+                    }
+                }
+            });
+        }
     });
 }
 

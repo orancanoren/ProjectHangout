@@ -57,7 +57,7 @@
                                                 No followers
                                             <% } else { 
                                                 for (var i = 0; i < follower_data.length; i++) {
-                                                    var follower_name = follower_data[i].first_name + " " + follower_data[i].last_name;
+                                                    var follower_name = follower_data[i].fname + " " + follower_data[i].lname;
                                                 %>
                                                     <%= follower_name %>
                                                     <br />
@@ -70,7 +70,7 @@
                                                 No followers
                                             <% } else { 
                                                 for (var i = 0; i < following_data.length; i++) {
-                                                    var following_name = following_data[i].first_name + " " + following_data[i].last_name;
+                                                    var following_name = following_data[i].fname + " " + following_data[i].lname;
                                                 %>
                                                     <%= following_name  %>
                                                     <br />
@@ -80,7 +80,7 @@
                                         </ul>
                                     </div>
                                     <div class="right">
-                                        <a class="waves-effect waves-light btn light-blue" href="/follow/<%=id%>">FOLLOW</a>
+                                        <a class="waves-effect waves-light btn light-blue" href="/follow/<%=target_email%>">FOLLOW</a>
                                     </div>
                                 </div>
                                     

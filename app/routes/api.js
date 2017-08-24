@@ -10,10 +10,26 @@ router.use('*', (req, res, next) => {
 // MARK: AUTHENTICATION
 
 router.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/api/profile',
-    failureRedirect: '/api/badlogin',
-    failureFlash: true
-}));
+        failureRedirect: '/api/badlogin',
+        failureFlash: true
+    }),
+        (req, res, next) => {
+            if (!req.body.remember_me) return next();
+
+            issueToken(req.user, (err, token) => {
+                if (err) return next(err);
+                res.cookie('remember_me', token, {
+                    path: '/',
+                    httpOnly: true,
+                    maxAge: 604800000
+                });
+                return next();
+            });
+        },
+        (req, res) => {
+            res.redirect('/');
+        }
+);
 
 router.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/api/profile',
@@ -53,12 +69,13 @@ router.get('/profile', isLoggedIn, (req, res) => {
                     console.log('ERROR: Couldn\'t get following');
                     res.status(500).send(JSON.stringify({error: err}));
                 } else {
+                    const sex = req.user.sex ? "female" : "male";
                     res.send(JSON.stringify({
-                        fname: req.user.properties.fname,
-                        lname: req.user.properties.lname,
-                        bday: req.user.properties.dob,
-                        sex: req.user.properties.sex,
-                        email: req.user.properties.email,
+                        fname: req.user.fname,
+                        lname: req.user.lname,
+                        bday: req.user.dob,
+                        sex: sex,
+                        email: req.user.email,
                         following: following,
                         followers: followers,
                         message: req.flash('profileMessage')
