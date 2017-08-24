@@ -52,6 +52,34 @@ router.post('/signup', passport.authenticate('local-signup', {
     failureFlash: true
 }));
 
+// SEARCH
+router.post('/search', (req, res) => {
+    const target = req.body.search_query;
+    User.searchByName(target, (err, results) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send(err500 + '<h5>Error in searchByName()</h5>');
+        }
+        // attach the request so that it carries search results
+        req.body.search_results = results;
+        req.body.search_query = target;
+        res.redirect('/search');
+    });
+});
+
+router.get('/search/', (req, res) => {
+    if (!req.body.search_results) {
+        console.log('search results does not exist in the request');
+        res.redirect('/');
+    }
+    else {
+        res.render('search.ejs', {
+            search_results: req.search_results,
+            search_query: req.search_query
+        });
+    }
+});
+
 // LIMITED PROFILE VIEW
 router.get('/view/:target_email', function(req, res) {
     var target_email = req.params.target_email;

@@ -3,7 +3,7 @@ var Token = {}
 Token.tokens = {}
 
 Token.consumeRememberMeToken = function(token, callback) {
-    var user_email = tokens[token];
+    var user_email = this.tokens[token];
 
     // invalidate single use token
     delete this.tokens[token];

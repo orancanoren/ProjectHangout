@@ -3,7 +3,7 @@ var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
 
 var postgresql_config = {};
-const DEBUG = false;
+const DEBUG = true;
 if (DEBUG) {
     postgresql_config = {
         host: 'localhost',
@@ -240,6 +240,26 @@ User.unfollow = function(follower_mail, following_mail, callback) {
 
     db.cypher(qp, function(err, result) {
         return callback(err);
+    });
+}
+
+User.searchByName = function(name, callback) {
+    const query = [
+        'SELECT fname, lname, email',
+        'FROM Users',
+        'WHERE LOWER(fname) LIKE $1 OR LOWER(lname) LIKE $1',
+        'ORDER BY fname',
+        'LIMIT 10'
+    ].join('\n');
+
+    const values = [ name + '%' ];
+
+    pool.query(query, values, (err, result) => {
+        if (err) {
+            console.error(err.stack);
+            return callback(err, null);
+        }
+        return callback(null, result.rows);
     });
 }
 

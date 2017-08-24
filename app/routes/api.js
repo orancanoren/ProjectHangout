@@ -55,6 +55,82 @@ router.get('/not_authenticated', (req, res) => {
     }));
 });
 
+router.get('/view/:target_email', (req, res) => {
+    const target_email = req.params.target_email;
+    if (req.isAuthenticated() && req.user.email == target_email) {
+        res.redirect('/api/profile');
+        return;
+    }
+
+    User.getByEmail(target_email, function(err, user) {
+        if (err) {
+            console.error(err);
+            res.status(500).json(JSON.stringify({
+                error: err500,
+                description: 'Error in getByEmail()'
+            }));
+        }
+        if (!user) {
+            if (!req.isAuthenticated()) {
+                req.flash('loginMessage', 'User doesn\'t exist');
+                res.redirect('/api/');
+            } else {
+                req.flash('profileMessage', 'User doesn\'t exist');
+                res.redirect('/api/profile');
+            }
+        } else {
+            User.getFollowers(target_email, function(err, follower_data) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json(JSON.stringify({
+                        error: err500,
+                        description: 'Error in getFollowers()'
+                    }));
+                } else {
+                    User.getFollowing(target_email, function(err, following_data) {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).json(JSON.stringify({
+                                error: err500,
+                                description: 'Error in getFollowing()'
+                            }));
+                        }
+                        const response_obj = {
+                            fname: user['fname'],
+                            lname: user['lname'],
+                            bday: user['dob'],
+                            sex: user['sex'] ? "female" : "male",
+                            follower_data: follower_data,
+                            following_data: following_data,
+                            message: req.flash('limitedViewMessage'),
+                            target_email: target_email
+                        };
+                        console.log('responding with\n', response_obj);
+                        res.json(JSON.stringify(response_obj));
+                    });
+                }
+            });
+        }
+    });
+});
+
+router.post('/search', (req, res) => {
+    const search_query = req.body.search_query;
+    User.searchByName(search_query, (err, result) => {
+        if (err) {
+            console.error(err);
+            res.json(JSON.stringify({
+                error: 'Error in searchByName()',
+                description: err
+            }));
+        }
+        else {
+            console.log('search results:', result);
+            res.json(result[0]);
+        }
+    });
+});
+
 // MARK: AUTHENTICATED BEYOND THIS POINT (except for 404)
 
 router.get('/profile', isLoggedIn, (req, res) => {
