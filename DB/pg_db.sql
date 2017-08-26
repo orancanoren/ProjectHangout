@@ -15,12 +15,14 @@ CREATE TABLE Vendors(
 );
 
 CREATE TABLE Events(
-	host_email CHAR(25) PRIMARY KEY
-    	REFERENCES Users(email),
+	host_email CHAR(25) REFERENCES Users(email),
     vendor TEXT REFERENCES Vendors(vname),
     title TEXT,
     description TEXT,
-    place TEXT
+    place TEXT,
+    start_time DATE,
+    end_time DATE,
+    eid SERIAL PRIMARY KEY
 );
 
 CREATE OR REPLACE FUNCTION vendor_insertion() RETURNS TRIGGER AS

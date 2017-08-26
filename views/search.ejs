@@ -37,7 +37,7 @@
                                         <% } else { %>
                                             <div class="collection">
                                             <% for (var i = 0; i < search_results.length; i++) {  %>
-                                                <a href= <%= search_results[i].email %> class="collection-item">
+                                                <a href= "/view/<%= search_results[i].email %>" class="collection-item">
                                                     <%= search_results[i].fname %> <%= search_results[i].lname %>
                                                 </a>
                                             <% } %>
@@ -56,10 +56,7 @@
         <footer>
 
         </footer>
-        <%  if (message != null && message.length > 0) { %>
         <script>
-            Materialize.toast('<%= message %>', 4000);
         </script>
-        <% } %>
     </body>
 </html>

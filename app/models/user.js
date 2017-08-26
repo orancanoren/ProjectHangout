@@ -3,7 +3,7 @@ var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
 
 var postgresql_config = {};
-const DEBUG = true;
+const DEBUG = false;
 if (DEBUG) {
     postgresql_config = {
         host: 'localhost',
@@ -62,6 +62,7 @@ User.checkEmail = function(email, callback) {
 // returned data contains pwHash - needed for Passport local Login strategy
 User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callback) {
     // 1 - INSERTION INTO NEO4J
+    console.log('addnewUser invoked');
     var qp = {
         query: [
             'MERGE (u:User { email: {email} })',
@@ -252,7 +253,7 @@ User.searchByName = function(name, callback) {
         'LIMIT 10'
     ].join('\n');
 
-    const values = [ name + '%' ];
+    const values = [ '%' + name + '%' ];
 
     pool.query(query, values, (err, result) => {
         if (err) {
@@ -260,6 +261,57 @@ User.searchByName = function(name, callback) {
             return callback(err, null);
         }
         return callback(null, result.rows);
+    });
+}
+
+User.newEvent = function(eventObject, callback) {
+    if (eventObject.title == null || eventObject.place == null || eventObject.host_email == null
+            || eventObject.start_time == null || eventObject.end_time == null) {
+        callback("Event fields not provided to newEvent()", null);
+        return;
+    }
+
+    // 1 - Create the event entity in Postgres
+    const query = [
+        'INSERT INTO Events(title, description, place, host_email, start_time, end_time, vendor)',
+        'VALUES($1, $2, $3, $4, $5, $6, $7)',
+        'RETURNING eid'
+    ].join('\n');
+    
+
+    const values = [eventObject.title, eventObject.description, eventObject.place, eventObject.host_email,
+        eventObject.start_time, eventObject.end_time, eventObject.vendor];
+
+    pool.query(query, values, (err, result) => {
+        if (err) {
+            console.error(err);
+            callback(err);
+        }
+        else {
+            // 2 - Create the event node and necessary relationships in neo4j
+            const eid = result.rows[0].eid;
+
+            var qp = {
+                query: [
+                    'MATCH (u:User)',
+                    'WHERE u.email={host_email}',
+                    'MERGE (e:Event {})-[:HOSTED_BY]->(u:User)'
+                ].join('\n'),
+                params: {
+                    host_email: eventObject.host_email
+                }
+            };
+
+            db.cypher(query, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    callback(err);
+                }
+                else {
+                    callback(null);
+                }
+            });
+        }
     });
 }
 

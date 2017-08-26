@@ -70,19 +70,23 @@ module.exports = function(passport) {
 		passReqToCallback : true, // allows us to pass in the req from our route (lets us check if a user is logged in or not)
 	},
 	function(req, email, password, done) {
+		console.log('local signup function invoked');
 		// asynchronous
 		process.nextTick(() => {
+			console.log('local signup function invoked inside next tick');
 			var fname = req.body.fname;
 			var lname = req.body.lname;
 			var bday = req.body.bday;
 			var sex = req.body.sex;
-			var school = 'Sabanci University';// FOR DEBUG ONLY
+			var school = req.body.school;// FOR DEBUG ONLY
 
 			User.checkEmail(email, function(err, existingUser) {
 				console.log('checkemail called');
 				// if there are any errors, return the error
-				if (err)
+				if (err) {
+					console.error(err);
 					return done(err);
+				}
 
 				// check to see if there's already a user with that email
 				if (existingUser)
@@ -96,7 +100,7 @@ module.exports = function(passport) {
 					var pwHash = User.generateHash(password);
 					User.addNewUser(fname, lname, email, bday, pwHash, sex, school, function (err, user) {
 						if (err) {
-							console.log(err);
+							console.error(err);
 							return done(err);
 						} else {
 							return done(null, user);

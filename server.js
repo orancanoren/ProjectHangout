@@ -6,45 +6,41 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 
-// CONFIGURE
 var app = express();
-var port = process.env.PORT || 3000;
+// CONFIGURE
+
+app.set('port', process.env.PORT || 3000);
+app.set('view engine', 'ejs'); /* will use React.js later */
+app.set('views', __dirname + '/views');
 
 app.use(express.static('./public'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('tiny'));
+app.use(flash()); // for flash messages stored in session
 
-app.set('view engine', 'ejs'); /* temporary */
-app.set('views', __dirname + '/views');
-
-// for passport
+// for passport.js
 app.use(session({ 
-    secret: "LordOfFlavorWorldIsOranCanOren" ,
-    name: "graph cookie",
+    secret: "SuperSecretKey!" ,
+    name: "ProjectHangoutCookie",
     resave: true,
     saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate('remember-me'));
-app.use(flash()); // for flash messages stored in session
 
+// configure passport
 require('./config/passport.js')(passport);
 
-// routes
+// APP ROUTES
 var routes = require('./app/routes/route.js');
 var api_routes = require('./app/routes/api.js');
 app.use('/', routes);
 app.use('/api', api_routes);
 
-app.use(function(req, res, next) {
-    res.status(404);
-    res.render('404.ejs', { url: req.url });
-});
-
-// MARK: SERVER
-app.listen(port, function() {
-    console.log('Listening on port ' + port);
+// SERVER
+app.listen(app.get('port'), function() {
+    console.log('Listening on port ' + app.get('port'));
 });

@@ -37,23 +37,33 @@ router.post('/signup', passport.authenticate('local-signup', {
     failureFlash: true
 }));
 
+/* TODO 
+Handle badlogin and badsignup properly later!
+No need for seperate routes
+*/
+
 router.get('/badlogin', (req, res) => {
-    res.send({
+    res.json({
         error: "invalid credentials"
     });
 });
 
 router.get('/badsignup', (req, res) => {
-    res.send({
+    res.json({
         error: "error during signup"
     });
 });
 
 router.get('/not_authenticated', (req, res) => {
-    res.send({
+    res.json({
         error: "not authenticated"
     });
 });
+
+/* TODO
+Async function calls make the code unreadable, find
+a better way to deal with these
+*/
 
 router.get('/view/:target_email', (req, res) => {
     const target_email = req.params.target_email;
@@ -70,10 +80,14 @@ router.get('/view/:target_email', (req, res) => {
                 description: 'Error in getByEmail()'
             }));
         }
+        console.log('getByEmail result user:', user);
         if (!user) {
+            console.log('!user');
             if (!req.isAuthenticated()) {
                 req.flash('loginMessage', 'User doesn\'t exist');
-                res.redirect('/api/');
+                res.json({
+                    error: 'User not found'
+                });
             } else {
                 req.flash('profileMessage', 'User doesn\'t exist');
                 res.redirect('/api/profile');
@@ -113,6 +127,10 @@ router.get('/view/:target_email', (req, res) => {
     });
 });
 
+/* TODO
+/search queries the DB for every request,
+instead perform caching and indexing to reduce DB access
+*/
 router.post('/search', (req, res) => {
     const search_query = req.body.search_query;
     User.searchByName(search_query, (err, result) => {
@@ -124,7 +142,7 @@ router.post('/search', (req, res) => {
             });
         }
         else {
-            res.json(result[0]);
+            res.json(result);
         }
     });
 });
@@ -226,9 +244,32 @@ router.get('/unfollow/:target_email', isLoggedIn, (req, res) => {
     }
 })
 
+router.post('/event', isLoggedIn, (req, res) => {
+    const eventObject = {
+        title: req.body.title,
+        place: req.body.place,
+        host_email: req.user.email,
+        start_time: req.body.start_time,
+        end_time: req.body.end_time
+    };
+
+    User.newEvent(eventObject, (err) => {
+        if (err) {
+            console.log(err);
+            res.json({
+                error: err
+            });
+        }
+        else {
+            res.json({
+                success: true
+            });
+        }
+    });
+})
 // 404
 
-router.get('*', (req, res) => {
+router.all('*', (req, res) => {
     res.status(404);
     res.send(JSON.stringify({
         error: "invalid URL"
