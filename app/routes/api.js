@@ -109,17 +109,38 @@ router.get('/view/:target_email', (req, res) => {
                                 description: 'Error in getFollowing()'
                             });
                         }
-
-                        res.json({
-                            fname: user.fname,
-                            lname: user.lname,
-                            bday: user.dob,
-                            sex: user.sex ? "female" : "male",
-                            follower_data: follower_data,
-                            following_data: following_data,
-                            message: req.flash('limitedViewMessage'),
-                            target_email: target_email
-                        });
+                        if (req.isAuthenticated()) {
+                            User.getDistance(req.user.email, target_email, (err, distance) => {
+                                if (err) {
+                                    console.error(err);
+                                    res.status(500).send(err500 + '<h4>Cannot retrieve the distance of users</h4>');
+                                }
+                                res.render('limitedView.ejs', {
+                                    fname: user['fname'],
+                                    lname: user['lname'],
+                                    bday: user['dob'],
+                                    sex: user['sex'],
+                                    follower_data: follower_data,
+                                    following_data: following_data,
+                                    message: req.flash('limitedViewMessage'),
+                                    target_email: target_email,
+                                    distance: distance
+                                });
+                            });
+                        }
+                        else {
+                            res.render('limitedView.ejs', {
+                                fname: user['fname'],
+                                lname: user['lname'],
+                                bday: user['dob'],
+                                sex: user['sex'],
+                                follower_data: follower_data,
+                                following_data: following_data,
+                                message: req.flash('limitedViewMessage'),
+                                target_email: target_email,
+                                distance: null
+                            });
+                        }
                     });
                 }
             });

@@ -92,24 +92,50 @@ router.get('/view/:target_email', (req, res) => {
         } else {
             User.getFollowers(target_email, function(err, follower_data) {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     res.status(500).send(err500 + '<h4>Cannot retrieve follower data</h4>');
                 } else {
                     User.getFollowing(target_email, function(err, following_data) {
                         if (err) {
-                            console.log(err);
+                            console.error(err);
                             res.status(500).send(err500 + '<h4>Cannot retrieve following data</h4>');
                         }
-                        res.render('limitedView.ejs', {
-                            fname: user['fname'],
-                            lname: user['lname'],
-                            bday: user['dob'],
-                            sex: user['sex'],
-                            follower_data: follower_data,
-                            following_data: following_data,
-                            message: req.flash('limitedViewMessage'),
-                            target_email: target_email
-                        });
+                        if (req.isAuthenticated()) {
+                            User.getDistance(req.user.email, target_email, (err, distance) => {
+                                if (err) {
+                                    console.error(err);
+                                    res.status(500).send(err500 + '<h4>Cannot retrieve the distance of users</h4>');
+                                }
+                                var dist = null;
+                                if (distance.dist) {
+                                    dist = distance.dist;
+                                }
+                                res.render('limitedView.ejs', {
+                                    fname: user['fname'],
+                                    lname: user['lname'],
+                                    bday: user['dob'],
+                                    sex: user['sex'],
+                                    follower_data: follower_data,
+                                    following_data: following_data,
+                                    message: req.flash('limitedViewMessage'),
+                                    target_email: target_email,
+                                    distance: dist
+                                });
+                            });
+                        }
+                        else {
+                            res.render('limitedView.ejs', {
+                                fname: user['fname'],
+                                lname: user['lname'],
+                                bday: user['dob'],
+                                sex: user['sex'],
+                                follower_data: follower_data,
+                                following_data: following_data,
+                                message: req.flash('limitedViewMessage'),
+                                target_email: target_email,
+                                distance: null
+                            });
+                        }
                     });
                 }
             });
@@ -164,19 +190,19 @@ router.get('/follow/:target_email', ensureAuthenticated, (req, res) => {
     var target_email = req.params.target_email;
     if (target_email == req.user.email) {
         req.flash('limitedViewMessage', 'You cannot follow yourself');
-        res.redirect('/view/'+target);
+        return res.redirect('/view/'+target);
     } else if (target_email == null) {
         req.flash('profileMessage', 'Cannot follow');
-        res.redirect('/profile');
+        return res.redirect('/profile');
     } else {
         User.newFollow(req.user.email, target_email, function(err) {
             if (err) {
                 console.log(err);
                 req.flash('profileMessage', 'following failed');
-                res.redirect('/profile');
+                return res.redirect('/profile');
             } else {
                 req.flash('profileMessage', 'following success');
-                res.redirect('/profile');
+                return res.redirect('/profile');
             }
         });
     }

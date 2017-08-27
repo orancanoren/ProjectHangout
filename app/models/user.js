@@ -3,7 +3,7 @@ var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
 
 var postgresql_config = {};
-const DEBUG = false;
+const DEBUG = true;
 if (DEBUG) {
     postgresql_config = {
         host: 'localhost',
@@ -62,7 +62,6 @@ User.checkEmail = function(email, callback) {
 // returned data contains pwHash - needed for Passport local Login strategy
 User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callback) {
     // 1 - INSERTION INTO NEO4J
-    console.log('addnewUser invoked');
     var qp = {
         query: [
             'MERGE (u:User { email: {email} })',
@@ -93,6 +92,7 @@ User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callba
         }
         
         else {
+            console.log('after signup, postgres returned:\n', res.rows);
             return callback(null, res.rows[0]);
         }
     });
@@ -160,7 +160,7 @@ User.getFollowers = function(email, callback) {
             });
         }
     });
-};
+}
 
 User.getFollowing = function(email, callback) {
     var qp = {
@@ -211,7 +211,8 @@ User.newFollow = function(follower_mail, following_mail, callback) {
         query: [
             'MATCH (follower :User), (following :User)',
             'WHERE follower.email = {follower_mail} AND following.email = {following_mail}',
-            'CREATE UNIQUE (follower)-[rel:FOLLOWS {since: {since}}]->(following)',
+            'CREATE UNIQUE (follower)-[rel:FOLLOWS]->(following)',
+            'SET rel.since={since}',
             'RETURN rel'
         ].join('\n'),
         params: {
@@ -220,6 +221,10 @@ User.newFollow = function(follower_mail, following_mail, callback) {
             since: new Date
         }
     };
+
+    var postgres_query = [
+        ''
+    ].join('\n');
     
     db.cypher(qp, function(err, result) {
         return callback(err);
@@ -315,10 +320,36 @@ User.newEvent = function(eventObject, callback) {
     });
 }
 
+User.getDistance = function(email1, email2, callback) {
+    var qp = {
+        query: [
+            'MATCH (u1:User), (u2:User),',
+            'p=(u1)-[:FOLLOWS*]-(u2)',
+            'WHERE u1.email = {email1} AND u2.email={email2}',
+            'WITH p ORDER BY LENGTH(p)',
+            'LIMIT 1',
+            'RETURN LENGTH(p) AS dist'
+        ].join('\n'),
+        params: {
+            email1: email1,
+            email2: email2
+        }
+    };
+
+    db.cypher(qp, function(err, result) {
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+        else
+            return callback(null, result[0]);
+    });
+}
+
 User.generateHash = function(password, next) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null, next);
-};
+}
 
 User.validPassword = function(password, pass, next) {
     return bcrypt.compareSync(password, pass, next);
-};
+}

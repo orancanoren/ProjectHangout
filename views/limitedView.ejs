@@ -41,7 +41,18 @@
                                     </div>
                                     <div class="col s12">
                                         <ul>
-                                            <li><strong>First Name </strong> <%= fname %></li>
+                                            <div class="col s10">
+                                                <li><strong>First Name </strong> <%= fname %></li>
+                                            </div>
+                                            <% if (distance != null && distance != {}) { %>
+                                            <div class="col s2">
+                                                <% if (distance) { %>
+                                                (<%= distance %>)
+                                                <% } %>
+                                            </div>
+                                            <% } else { %>
+                                            <br />
+                                            <% } %>
                                             <li><strong>Last Name </strong> <%= lname %></li>
                                             <li><strong>Birthday </strong> <%= bday %></li>
                                             <li><strong>Sex </strong> <%= sex %></li>
