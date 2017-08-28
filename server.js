@@ -27,11 +27,12 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+
+// configure passport
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate('remember-me'));
 
-// configure passport
 require('./config/passport.js')(passport);
 
 // APP ROUTES

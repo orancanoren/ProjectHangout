@@ -1,8 +1,8 @@
 var Token = {}
 
-Token.tokens = {}
+Token.tokens = {} // tokens are stored in memory
 
-Token.consumeRememberMeToken = function(token, callback) {
+Token.consume = function(token, callback) {
     var user_email = this.tokens[token];
 
     // invalidate single use token
@@ -10,17 +10,16 @@ Token.consumeRememberMeToken = function(token, callback) {
     return callback(null, user_email);
 }
 
-Token.saveRememberMeToken = function(token, user_email, callback) {
+Token.save = function(token, user_email, callback) {
     this.tokens[token] = user_email;
     return callback();
 }
 
-Token.issueToken = function(user, done) {
+Token.issue = function(user_email, done) {
     var token = this.randomString(64);
-    this.saveRememberMeToken(token, user.email, (err) => {
-        if (err) return done(err);
+    this.save(token, user_email, () => {
         return done(null, token);
-    })
+    });
 }
 
 Token.randomString = function(len) {
@@ -29,13 +28,13 @@ Token.randomString = function(len) {
 	, charlen = chars.length;
   
 	for (var i = 0; i < len; ++i) {
-		buf.push(chars[this.getRandomInt(0, charlen - 1)]);
+		buf.push(chars[this.rand_int(0, charlen - 1)]);
 	}
 
 	return buf.join('');
   };
 
-  Token.getRandomInt = function(min, max) {
+  Token.rand_int = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 

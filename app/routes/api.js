@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var passport = require('passport');
 var User = require('../models/user');
+var Token = require('../utils/token');
 
 router.use('*', (req, res, next) => {
     res.setHeader('Content-Type', 'application/json');
@@ -14,9 +15,9 @@ router.post('/login', passport.authenticate('local-login', {
         failureFlash: true
     }),
         (req, res, next) => {
-            if (!req.body.remember_me) return next();
+            if (!req.isAuthenticated() && !req.body.remember_me) return next();
 
-            issueToken(req.user, (err, token) => {
+            Token.issue(req.user, (err, token) => {
                 if (err) return next(err);
                 res.cookie('remember_me', token, {
                     path: '/',

@@ -25,10 +25,12 @@ module.exports = function(passport) {
 		passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
 	},
 	(req, email, password, done) => {
+		console.log('inside passport.local-login');
 		// asynchronous
 		process.nextTick(() => {
 			User.getByEmail(email, (err, user) => {
 				// if there are any errors, return the error
+				console.log('inside getbyemail');
 				if (err)
 					return done(err);
 				// if no user is found, return the message
@@ -48,16 +50,17 @@ module.exports = function(passport) {
 	}));
 
 	passport.use('remember-me', new RememberMeStrategy((token, done) => {
-		Token.consumeRememberMeToken(token, (err, email) => {
+		Token.consume(token, (err, email) => {
 			if (err) return done(err);
 			if (!email) return done(null, false);
 
-			Token.getByEmail(email, (err, user) => {
+			User.getByEmail(email, (err, user) => {
 				if (err) return done(err);
 				if (!user) return done(err, false);
 				return done(null, user);
-			})
-		})}, Token.issueToken
+			});
+		}
+	)}, Token.issue
 	));
 
 	// =========================================================================
@@ -76,7 +79,7 @@ module.exports = function(passport) {
 			var lname = req.body.lname;
 			var bday = req.body.bday;
 			var sex = req.body.sex;
-			var school = req.body.school;// FOR DEBUG ONLY
+			var school = req.body.school;
 
 			User.checkEmail(email, function(err, existingUser) {
 				// if there are any errors, return the error

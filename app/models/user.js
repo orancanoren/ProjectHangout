@@ -39,6 +39,7 @@ var User = module.exports = function(_node) {
 }
 
 User.checkEmail = function(email, callback) {
+    console.log('User.checkEmail invoked');
     const query = [
         'SELECT COUNT(*) AS email_count',
         'FROM Users',
@@ -62,6 +63,7 @@ User.checkEmail = function(email, callback) {
 // returned data contains pwHash - needed for Passport local Login strategy
 User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callback) {
     // 1 - INSERTION INTO NEO4J
+    console.log('User.addNewUser invoked');
     var qp = {
         query: [
             'MERGE (u:User { email: {email} })',
@@ -100,6 +102,7 @@ User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callba
 
 // called only for logins - returned data contains pw hash
 User.getByEmail = function(email, callback) {
+    console.log('User.getByEmail invoked');
     const query = [
         'SELECT *',
         'FROM Users',
