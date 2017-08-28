@@ -57,6 +57,7 @@ module.exports = function(passport) {
 			User.getByEmail(email, (err, user) => {
 				if (err) return done(err);
 				if (!user) return done(err, false);
+				console.log("remember me strategy works with user:\n", user);
 				return done(null, user);
 			});
 		}

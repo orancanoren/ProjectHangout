@@ -8,8 +8,8 @@ const Token = require('../utils/token');
 const err500 = '<h1>Internal Server Error</h1><br />';
 
 var rememberMe_auth = function(req, res, next) {
-    if (!req.body.rememberMe) return next();
-    console.log('req wants to issue a remmeberMe token');
+
+    //if (!req.body.rememberMe) return next();
 
     Token.issue(req.user, (err, token) => {
         if (err) { 
@@ -21,7 +21,7 @@ var rememberMe_auth = function(req, res, next) {
             httpOnly: true,
             maxAge: 604800000 // 7 days
         });
-        return next();
+        console.log('token', token, ' issued!');
     });
 }
 
@@ -39,8 +39,8 @@ router.route('/')
         failureFlash: true
     }), (req, res, next) => {
         if (req.isAuthenticated()) {
-            //rememberMe_auth(req, res, next);
-            console.log('redirecting to /profile');
+            rememberMe_auth(req, res, next);
+            console.log('redirecting to profile');
             res.redirect('/profile');
         } else {
             console.log('user not authenticated');
@@ -159,21 +159,17 @@ router.get('/view/:target_email', (req, res) => {
 
 router.get('/profile', ensureAuthenticated, (req, res) => {
     // TODO: Manage async clearly w/Streamline.js
-    console.log('inside profile!');
     User.getFollowers(req.user.email, function(err, followers) {
         if (err) {
             console.error('ERROR: Couldn\'t get followers');
             //res.status(500).send(err500 + '<h5>Error in getFollowers()</h5>');
         } else {
-            console.log('obtained followers');
             User.getFollowing(req.user.email, function(err, following) {
                 if (err) {
                     console.error('ERROR: Couldn\'t get following');
                     //res.status(500).send(err500 + '<h5>Error in getFollowing()</h5>');
                 } else {
-                    console.log('obtained following');
                     const sex = req.user.sex ? "female" : "male";
-                    console.log('rendering profile.ejs!');
                     res.render('profile.ejs', {
                         fname: req.user.fname,
                         lname: req.user.lname,
