@@ -36,7 +36,7 @@ router.route('/')
             
             req.body.rememberMe = true; // for DEBUG
             if (req.body.rememberMe) {
-                Token.issue(req.user, (err, token) => {
+                Token.issue(req.user.email, (err, token) => {
                     if (err) { 
                         console.error(err);
                         return done(err);
