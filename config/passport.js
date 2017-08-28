@@ -25,17 +25,17 @@ module.exports = function(passport) {
 		passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
 	},
 	(req, email, password, done) => {
-		console.log('inside passport.local-login');
 		// asynchronous
 		process.nextTick(() => {
 			User.getByEmail(email, (err, user) => {
 				// if there are any errors, return the error
-				console.log('inside getbyemail');
 				if (err)
 					return done(err);
 				// if no user is found, return the message
-				if (!user)
+				if (!user) {
+					console.log('user not found');
 					return done(null, false, req.flash('loginMessage', 'Email not found'));
+				}
 				
 				// Invalid credentials are provided
 				else if (!User.validPassword(password, user.pwhash))
@@ -43,6 +43,7 @@ module.exports = function(passport) {
 
 				// All is well, return the user data without the password hash
 				else {
+					console.log('passport local-login - success');
 					return done(null, user);
 				}
 			});

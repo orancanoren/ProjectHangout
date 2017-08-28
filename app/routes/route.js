@@ -7,28 +7,19 @@ const Token = require('../utils/token');
 
 const err500 = '<h1>Internal Server Error</h1><br />';
 
-var rememberMe_auth = function(req, res, next) {
-
-    //if (!req.body.rememberMe) return next();
-
-    Token.issue(req.user, (err, token) => {
-        if (err) { 
-            console.error(err);
-            return next(err);
-        }
-        res.cookie('rememberMe', token, {
-            path: '/',
-            httpOnly: true,
-            maxAge: 604800000 // 7 days
-        });
-        console.log('token', token, ' issued!');
-    });
-}
-
 // 1 - Authorization free routes
 
+var getProfileData = function(req, res, next) {
+
+}
+
+router.all('*', (req, res, next) => {
+    console.log('[' + req.method + ']', req.url);
+    next();
+})
+
 router.route('/')
-    .get( (req, res, next) => {
+    .get( (req, res) => {
         if (req.isAuthenticated()) {
             res.redirect('/profile');
         } else {
@@ -36,15 +27,28 @@ router.route('/')
         }
       })
     .post( passport.authenticate('local-login', {
-        failureFlash: true
+        failureFlash: true,
+        failureRedirect: '/'
     }), (req, res, next) => {
         if (req.isAuthenticated()) {
-            rememberMe_auth(req, res, next);
-            console.log('redirecting to profile');
+            console.log('user is authenticated');
+            
+            req.body.rememberMe = true; // for DEBUG
+            if (req.body.rememberMe) {
+                Token.issue(req.user, (err, token) => {
+                    if (err) { 
+                        console.error(err);
+                        return done(err);
+                    }
+                    res.cookie('rememberMe', token, {
+                        path: '/',
+                        httpOnly: true,
+                        maxAge: 604800000 // 7 days
+                    });
+                    console.log('token', token, ' issued!');
+                });
+            }
             res.redirect('/profile');
-        } else {
-            console.log('user not authenticated');
-            res.redirect('/');
         }
     });
 
@@ -157,20 +161,21 @@ router.get('/view/:target_email', (req, res) => {
 
 // 2 - Authorization required routes
 
-router.get('/profile', ensureAuthenticated, (req, res) => {
+router.get('/profile', (req, res) => {
     // TODO: Manage async clearly w/Streamline.js
     User.getFollowers(req.user.email, function(err, followers) {
         if (err) {
             console.error('ERROR: Couldn\'t get followers');
-            //res.status(500).send(err500 + '<h5>Error in getFollowers()</h5>');
+            res.status(500).send(err500 + '<h5>Error in getFollowers()</h5>');
         } else {
             User.getFollowing(req.user.email, function(err, following) {
+                var params = {};
                 if (err) {
                     console.error('ERROR: Couldn\'t get following');
-                    //res.status(500).send(err500 + '<h5>Error in getFollowing()</h5>');
+                    res.status(500).send(err500 + '<h5>Error in getFollowing()</h5>');
                 } else {
                     const sex = req.user.sex ? "female" : "male";
-                    res.render('profile.ejs', {
+                    params = {
                         fname: req.user.fname,
                         lname: req.user.lname,
                         school: req.user.school,
@@ -180,7 +185,9 @@ router.get('/profile', ensureAuthenticated, (req, res) => {
                         following: following,
                         followers: followers,
                         message: req.flash('profileMessage')
-                    });
+                    };
+                    console.log('sending profile response!');
+                    res.render('profile.ejs', params);
                 }
             });
         }

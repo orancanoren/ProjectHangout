@@ -39,7 +39,6 @@ var User = module.exports = function(_node) {
 }
 
 User.checkEmail = function(email, callback) {
-    console.log('User.checkEmail invoked');
     const query = [
         'SELECT COUNT(*) AS email_count',
         'FROM Users',
@@ -63,7 +62,6 @@ User.checkEmail = function(email, callback) {
 // returned data contains pwHash - needed for Passport local Login strategy
 User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callback) {
     // 1 - INSERTION INTO NEO4J
-    console.log('User.addNewUser invoked');
     var qp = {
         query: [
             'MERGE (u:User { email: {email} })',
@@ -102,7 +100,6 @@ User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callba
 
 // called only for logins - returned data contains pw hash
 User.getByEmail = function(email, callback) {
-    console.log('User.getByEmail invoked');
     const query = [
         'SELECT *',
         'FROM Users',
@@ -136,32 +133,18 @@ User.getFollowers = function(email, callback) {
     db.cypher(qp, function(err, result) {
         if (err) return callback(err);
         follower_emails = result;
-        follower_names = []; // USING AN ARRAY IS INEFFICIENT HERE! USE A LINKED LIST
         if (follower_emails.length == 0) {
             return callback(null, []);
         }
 
-        for (var i = 0; i < follower_emails.length; i++) {
-            const pg_query = [
-                'SELECT fname, lname',
-                'FROM Users',
-                'WHERE email=$1'
-            ].join('\n');
-            const params = [follower_emails[i].email];
-
-            pool.query(pg_query, params, (err, result) => {
-                if (err) {
-                    console.error(err.stack);
-                    return callback(err);
-                } else {
-                    follower_names.push(result.rows[0]);
-                    // Following line is an insult to JS Async
-                    if (i + 1 >= follower_emails.length) {
-                        return callback(null, follower_names);
-                    }
-                }
-            });
-        }
+        getNameByEmails(follower_emails, (err, result) => {
+            if (err) {
+                callback(err);
+            }
+            else {
+                callback(null, result);
+            }
+        });
     });
 }
 
@@ -185,27 +168,15 @@ User.getFollowing = function(email, callback) {
             return callback(null, []);
         }
 
-        for (var i = 0; i < following_emails.length; i++) {
-            const pg_query = [
-                'SELECT fname, lname',
-                'FROM Users',
-                'WHERE email=$1'
-            ].join('\n');
-            const params = [following_emails[i].email];
-
-            pool.query(pg_query, params, (err, result) => {
-                if (err) {
-                    console.error(err.stack);
-                    return callback(err);
-                } else {
-                    following_names.push(result.rows[0]);
-                    // Following line is an insult to JS Async
-                    if (i + 1 >= following_emails.length) {
-                        return callback(null, following_names);
-                    }
-                }
-            });
-        }
+        getNameByEmails(following_emails, (err, result) => {
+            if (err) {
+                console.error(err);
+                return callback(err);
+            } 
+            else {
+                return callback(null, result);
+            }
+        });
     });
 }
 
@@ -355,4 +326,30 @@ User.generateHash = function(password, next) {
 
 User.validPassword = function(password, pass, next) {
     return bcrypt.compareSync(password, pass, next);
+}
+
+var getNameByEmails = function(emails, callback) {
+    var pg_query = [
+        'SELECT fname, lname',
+        'FROM Users',
+        'WHERE email=$1'
+    ];
+
+    for (var i = 1; i < emails.length; i++) {
+        pg_query.push('OR email=$' + (i + 1));
+    }
+
+    email_param = [];
+    for (var i = 0; i < emails.length; i++) {
+        email_param.push(emails[i].email);
+    }
+
+    pool.query(pg_query.join('\n'), email_param, (err, result) => {
+        if (err) {
+            console.error(err.stack);
+            return callback(err);
+        } else {
+            return callback(null, result.rows);
+        }
+    });  
 }

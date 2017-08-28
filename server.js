@@ -17,7 +17,7 @@ app.use(express.static('./public'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(morgan('tiny'));
+//app.use(morgan('tiny'));
 app.use(flash()); // for flash messages stored in session
 
 // for passport.js
