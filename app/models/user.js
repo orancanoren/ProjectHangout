@@ -2,9 +2,10 @@ var neo4j = require('neo4j');
 var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
 
+const ENV = process.env.NODE_ENV || 'development';
+
 var postgresql_config = {};
-const DEBUG = false;
-if (DEBUG) {
+if (ENV == 'development') {
     postgresql_config = {
         host: 'localhost',
         user: 'postgres',

@@ -20,6 +20,7 @@ router.all('*', (req, res, next) => {
 
 router.route('/')
     .get( (req, res) => {
+        console.log('Current tokens:\n', Token.tokens);
         if (req.isAuthenticated()) {
             res.redirect('/profile');
         } else {
