@@ -3,7 +3,7 @@ var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
 
 var postgresql_config = {};
-const DEBUG = true;
+const DEBUG = false;
 if (DEBUG) {
     postgresql_config = {
         host: 'localhost',
