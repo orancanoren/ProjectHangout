@@ -51,6 +51,7 @@ module.exports = function(passport) {
 	}));
 
 	passport.use('remember-me', new RememberMeStrategy((token, done) => {
+		console.log('consuming token:', token);
 		Token.consume(token, (err, email) => {
 			if (err) return done(err);
 			if (!email) return done(null, false);
