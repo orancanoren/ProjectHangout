@@ -57,13 +57,11 @@ router.route('/signup')
             res.render('signup.ejs', { message: req.flash('signupMessage') });
         }
       })
-      .post( (req, res) => {
-        passport.authenticate('local-signup', {
+      .post( passport.authenticate('local-signup', {
             successRedirect: '/profile',
             failureRedirect: '/signup',
             failureFlash: true
-        });
-      });
+        }));
 
 router.route('/search')
       .post( (req, res) => {
