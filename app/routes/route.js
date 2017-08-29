@@ -34,17 +34,23 @@ router.route('/')
                     }
                     else {
                         if (user_email) {
-                            user = {}
-                            user.email = user_email;
-                            req.login(user, (err) => {
+                            User.getByEmail(user_email, (err, user) => {
                                 if (err) {
                                     console.error(err);
-                                    res.status(500).send(err500 + '<h4>Error during req.login()</h4>');
+                                    res.status(500).send(err500 + '<h4>Error in route(/).getByEmail()</h4>');
                                 }
                                 else {
-                                    res.redirect('/profile');
+                                    req.login(user, (err) => {
+                                        if (err) {
+                                            console.error(err);
+                                            res.status(500).send(err500 + '<h4>Error during req.login()</h4>');
+                                        }
+                                        else {
+                                            res.redirect('/profile');
+                                        }
+                                    })
                                 }
-                            })
+                            });
                         }
                         else {
                             res.render('index.ejs', { message: req.flash('loginMessage') });
