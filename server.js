@@ -40,6 +40,12 @@ var routes = require('./app/routes/route.js');
 var api_routes = require('./app/routes/api.js');
 app.use('/', routes);
 app.use('/api', api_routes);
+app.all('*', (req, res) => {
+    console.log('404:', req.method, req.url);
+    res.render('404.ejs', {
+        url: req.url
+    });
+});
 
 // SERVER
 app.listen(app.get('port'), function() {

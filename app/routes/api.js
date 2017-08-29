@@ -32,34 +32,18 @@ router.post('/login', passport.authenticate('local-login', {
         }
 );
 
-router.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: '/api/profile',
-    failureRedirect: '/api/badsignup',
-    failureFlash: true
-}));
-
-/* TODO 
-Handle badlogin and badsignup properly later!
-No need for seperate routes
-*/
-
-router.get('/badlogin', (req, res) => {
-    res.json({
-        error: "invalid credentials"
-    });
-});
-
-router.get('/badsignup', (req, res) => {
-    res.json({
-        error: "error during signup"
-    });
-});
-
-router.get('/not_authenticated', (req, res) => {
-    res.json({
-        error: "not authenticated"
-    });
-});
+router.post('/signup', passport.authenticate('local-signup', { failureFlash: true }),
+    (req, res) => {
+        if (req.isAuthenticated()) {
+            res.redirect('/profile');
+        }
+        else {
+            res.json({
+                error: "Not authenticated after signup"
+            });
+        }
+    }
+);
 
 /* TODO
 Async function calls make the code unreadable, find
@@ -149,10 +133,6 @@ router.get('/view/:target_email', (req, res) => {
     });
 });
 
-/* TODO
-/search queries the DB for every request,
-instead perform caching and indexing to reduce DB access
-*/
 router.post('/search', (req, res) => {
     const search_query = req.body.search_query;
     User.searchByName(search_query, (err, result) => {
@@ -171,36 +151,44 @@ router.post('/search', (req, res) => {
 
 // MARK: AUTHENTICATED BEYOND THIS POINT (except for 404)
 
-router.get('/profile', isLoggedIn, (req, res) => {
+router.get('/profile', ensureAuthenticated, (req, res) => {
 
     User.getFollowers(req.user.email, function(err, followers) {
         if (err) {
-            console.log('ERROR: Couldn\'t get followers');
             res.status(500).send(JSON.stringify({error: err}));
         } else {
             User.getFollowing(req.user.email, function(err, following) {
                 if (err) {
-                    console.log('ERROR: Couldn\'t get following');
                     res.status(500).send(JSON.stringify({error: err}));
                 } else {
-                    const sex = req.user.sex ? "female" : "male";
-                    res.send({
-                        fname: req.user.fname,
-                        lname: req.user.lname,
-                        bday: req.user.dob,
-                        sex: sex,
-                        email: req.user.email,
-                        following: following,
-                        followers: followers,
-                        message: req.flash('profileMessage')
+                    User.getNotifications(req.user.email, false, (err, notifs) => {
+                        if (err) {
+                            res.status(500).send(JSON.stringify({error: err}));
+                        }
+                        else {
+                            console.log(notifs);
+                            const sex = req.user.sex ? "female" : "male";
+                            res.send({
+                                fname: req.user.fname,
+                                lname: req.user.lname,
+                                bday: req.user.dob,
+                                sex: sex,
+                                email: req.user.email,
+                                following: following,
+                                followers: followers,
+                                notifications: notifs,
+                                message: req.flash('profileMessage')
+                            });
+                        }
                     });
+                   
                 }
             });
         }
     });
 });
 
-router.get('/logout', isLoggedIn, (req, res) => {
+router.get('/logout', ensureAuthenticated, (req, res) => {
     req.logout();
     res.send({
         message: "logout success",
@@ -208,7 +196,7 @@ router.get('/logout', isLoggedIn, (req, res) => {
     });
 });
 
-router.get('/follow/:target_email', isLoggedIn, (req, res) => {
+router.get('/follow/:target_email', ensureAuthenticated, (req, res) => {
     var target_email = req.params.target_email;
     if (target_email == req.user.email) {
         res.json({
@@ -237,7 +225,7 @@ router.get('/follow/:target_email', isLoggedIn, (req, res) => {
     }
 });
 
-router.get('/unfollow/:target_email', isLoggedIn, (req, res) => {
+router.get('/unfollow/:target_email', ensureAuthenticated, (req, res) => {
     var target_email = req.params.target_email;
     if (target_email == req.user.email) {
         res.json({
@@ -264,9 +252,9 @@ router.get('/unfollow/:target_email', isLoggedIn, (req, res) => {
             }
         });
     }
-})
+});
 
-router.post('/event', isLoggedIn, (req, res) => {
+router.post('/event', ensureAuthenticated, (req, res) => {
     const eventObject = {
         title: req.body.title,
         place: req.body.place,
@@ -288,7 +276,8 @@ router.post('/event', isLoggedIn, (req, res) => {
             });
         }
     });
-})
+});
+
 // 404
 
 router.all('*', (req, res) => {
@@ -296,16 +285,18 @@ router.all('*', (req, res) => {
     res.send(JSON.stringify({
         error: "invalid URL"
     }));
-})
+});
 
 // Utilities
 
-function isLoggedIn(req, res, next) {
+function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
 
-    res.redirect('/api/not_authenticated');
+    res.json({
+        error: "not authenticated"
+    });
 }
 
 module.exports = router;

@@ -3,7 +3,6 @@ var Token = {}
 Token.tokens = {} // tokens are stored in memory
 
 Token.consume = function(token, callback) {
-    console.log('Token.consume invoked');
     var user_email = this.tokens[token];
 
     // invalidate single use token
@@ -12,13 +11,11 @@ Token.consume = function(token, callback) {
 }
 
 Token.save = function(token, user_email, callback) {
-    console.log('Token.save invoked');
     this.tokens[token] = user_email;
     return callback();
 }
 
 Token.issue = function(user_email, done) {
-    console.log('Token.issue invoked');
     var token = this.randomString(64);
     this.save(token, user_email, () => {
         return done(null, token);

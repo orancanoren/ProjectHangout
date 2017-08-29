@@ -10,7 +10,7 @@ CREATE TABLE Users(
     bio TEXT
 );
 
-CREATE INDEX ON Users (
+CREATE INDEX ON Users(
     fname DESC,
     lname DESC
 );
@@ -56,14 +56,15 @@ CREATE INDEX ON Notifications(user_email);
 CREATE OR REPLACE FUNCTION vendor_insertion() RETURNS TRIGGER AS
 $BODY$
 BEGIN
-	INSERT INTO Vendors(vname)
+    INSERT INTO Vendors(vname)
     SELECT NEW.vendor
     WHERE NOT EXISTS (SELECT Vname FROM Vendors WHERE Vname=NEW.vendor);
-    RETURN NEW;
+    RETURN NEW; 
 END
 $BODY$
 language plpgsql;
 
 CREATE TRIGGER pre_events_insertion BEFORE INSERT ON Events
 	FOR EACH ROW
-    EXECUTE PROCEDURE vendor_insertion();
+    WHEN (NEW.vendor NOTNULL)
+        EXECUTE PROCEDURE vendor_insertion();

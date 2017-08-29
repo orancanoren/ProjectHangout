@@ -99,6 +99,65 @@ User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callba
     });
 }
 
+User.newNotification = function(email, text_id, value_arr, callback) {
+    const query = [
+        'INSERT INTO Notifications(user_email, text_id, value_arr, issued, is_read)',
+        'VALUES ($1, $2, $3, $4, $5)'
+    ].join('\n');
+    const values = [
+        email,
+        text_id,
+        value_arr,
+        new Date,
+        false
+    ];
+
+    pool.query(query, values, (err) => {
+        if (err) {
+            console.error(err);
+        }
+        callback(err);
+    });
+}
+
+User.getNotifications = function(email, unread_only, callback) {
+    const query = [
+        'SELECT NT.notif_text AS notif_text, N.value_arr AS value_arr,',
+        'N.issued AS issue_date, N.is_read AS is_read, N.id AS notif_id',
+        'FROM Notifications N, NotificationTexts NT',
+        'WHERE N.user_email=$1' + (unread_only ? 'AND is_read=false' : ''),
+        'AND NT.id=N.text_id'
+    ].join('\n');
+
+    const values = [ email ];
+
+    pool.query(query, values, (err, result) => {
+        if (err) {
+            console.error(err);
+            callback(err);
+        }
+        else {
+            callback(null, result.rows);
+        }
+    });
+}
+
+User.setNotificationRead = function(notif_id, callback) {
+    const query = [
+        'UPDATE Notifications',
+        'SET is_read=true',
+        'WHERE id=$1'
+    ].join('\n');
+    const values = [ notif_id ];
+
+    pool.query(query, values, (err) => {
+        if (err) {
+            console.error(err);
+        }
+        callback(err);
+    });
+}
+
 // called only for logins - returned data contains pw hash
 User.getByEmail = function(email, callback) {
     const query = [
@@ -187,8 +246,7 @@ User.newFollow = function(follower_mail, following_mail, callback) {
             'MATCH (follower :User), (following :User)',
             'WHERE follower.email = {follower_mail} AND following.email = {following_mail}',
             'CREATE UNIQUE (follower)-[rel:FOLLOWS]->(following)',
-            'SET rel.since={since}',
-            'RETURN rel'
+            'SET rel.since={since}'
         ].join('\n'),
         params: {
             follower_mail: follower_mail,
@@ -198,11 +256,24 @@ User.newFollow = function(follower_mail, following_mail, callback) {
     };
 
     var postgres_query = [
-        ''
+        'SELECT fname, lname',
+        'FROM Users',
+        'WHERE email=$1'
     ].join('\n');
+    const values = [ follower_mail ];
     
-    db.cypher(qp, function(err, result) {
-        return callback(err);
+    db.cypher(qp, function(err) {
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+
+        pool.query(postgres_query, values, (err, result) => {
+            const fname = result.rows[0].fname, lname = result.rows[0].lname;
+            User.newNotification(following_mail, 1, [ fname + ' ' + lname ], (err) => {
+                return callback(err);
+            });
+        });
     });
 }
 
@@ -270,19 +341,20 @@ User.newEvent = function(eventObject, callback) {
         else {
             // 2 - Create the event node and necessary relationships in neo4j
             const eid = result.rows[0].eid;
-
+            console.log('neo4j params:\nhost_email: ',eventObject.host_email, '\neid:', eid);
             var qp = {
                 query: [
                     'MATCH (u:User)',
                     'WHERE u.email={host_email}',
-                    'MERGE (e:Event {})-[:HOSTED_BY]->(u:User)'
+                    'MERGE (e:Event {eid: {eid}})-[:HOSTED_BY]->(u)'
                 ].join('\n'),
                 params: {
-                    host_email: eventObject.host_email
+                    host_email: eventObject.host_email,
+                    eid: eid
                 }
             };
 
-            db.cypher(query, (err, result) => {
+            db.cypher(qp, (err, result) => {
                 if (err) {
                     console.log(err);
                     callback(err);

@@ -62,8 +62,6 @@ router.route('/')
         failureRedirect: '/'
     }), (req, res, next) => {
         if (req.isAuthenticated()) {
-            console.log('user is authenticated');
-            
             req.body.rememberMe = true; // for DEBUG
             if (req.body.rememberMe) {
                 Token.issue(req.user.email, (err, token) => {
@@ -196,29 +194,28 @@ router.get('/profile', ensureAuthenticated, (req, res) => {
     // TODO: Manage async clearly w/Streamline.js
     User.getFollowers(req.user.email, function(err, followers) {
         if (err) {
-            console.error('ERROR: Couldn\'t get followers');
             res.status(500).send(err500 + '<h5>Error in getFollowers()</h5>');
         } else {
             User.getFollowing(req.user.email, function(err, following) {
-                var params = {};
                 if (err) {
-                    console.error('ERROR: Couldn\'t get following');
                     res.status(500).send(err500 + '<h5>Error in getFollowing()</h5>');
                 } else {
-                    const sex = req.user.sex ? "female" : "male";
-                    params = {
-                        fname: req.user.fname,
-                        lname: req.user.lname,
-                        school: req.user.school,
-                        bday: req.user.dob,
-                        sex: sex,
-                        email: req.user.email,
-                        following: following,
-                        followers: followers,
-                        message: req.flash('profileMessage')
-                    };
-                    console.log('sending profile response!');
-                    res.render('profile.ejs', params);
+                    User.getNotifications(req.user.email, false, (err, notifs) => {
+                        const sex = req.user.sex ? "female" : "male";
+                        const params = {
+                            fname: req.user.fname,
+                            lname: req.user.lname,
+                            school: req.user.school,
+                            bday: req.user.dob,
+                            sex: sex,
+                            email: req.user.email,
+                            following: following,
+                            followers: followers,
+                            notifications: notifs,
+                            message: req.flash('profileMessage')
+                        };
+                        res.render('profile.ejs', params);
+                    });
                 }
             });
         }
@@ -253,7 +250,7 @@ router.get('/follow/:target_email', ensureAuthenticated, (req, res) => {
     }
 });
 
-router.get('/ungollow/:target_email', (req, res) => {
+router.get('/unfollow/:target_email', (req, res) => {
     if (!req.isAuthenticated()) {
         res.redirect('/');
     }
@@ -277,15 +274,6 @@ router.get('/ungollow/:target_email', (req, res) => {
             }
         });
     }
-});
-
-// 3 - 404
-
-router.all('*', (req, res) => {
-    console.log('404:', req.method, req.url);
-    res.render('404.ejs', {
-        url: req.url
-    });
 });
 
 function ensureAuthenticated(req, res, next) {
