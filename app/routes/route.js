@@ -140,6 +140,7 @@ router.get('/view/:target_email', (req, res) => {
                     res.status(500).send(err500 + '<h4>Cannot retrieve follower data</h4>');
                 } else {
                     User.getFollowing(target_email, function(err, following_data) {
+                        const sex = user.sex ? 'female' : 'male';
                         if (err) {
                             console.error(err);
                             res.status(500).send(err500 + '<h4>Cannot retrieve following data</h4>');
@@ -154,7 +155,7 @@ router.get('/view/:target_email', (req, res) => {
                                 if (distance.dist) {
                                     dist = distance.dist;
                                 }
-                                const sex = user.sex ? 'female' : 'male';
+                                
                                 res.render('limitedView.ejs', {
                                     fname: user['fname'],
                                     lname: user['lname'],
@@ -173,7 +174,7 @@ router.get('/view/:target_email', (req, res) => {
                                 fname: user['fname'],
                                 lname: user['lname'],
                                 bday: user['dob'],
-                                sex: user['sex'],
+                                sex: sex,
                                 follower_data: follower_data,
                                 following_data: following_data,
                                 message: req.flash('limitedViewMessage'),

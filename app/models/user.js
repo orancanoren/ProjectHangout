@@ -16,10 +16,10 @@ if (ENV == 'development') {
 } else {
 
     postgresql_config = {
-        host: 'ec2-54-228-255-234.eu-west-1.compute.amazonaws.com',
-        user: 'jdobscdwjpnhxq',
-        password: 'f681ba03a2d0e8c26b1e2be020ab19c963edcfb2ab2e1a76cc89929bb189e490',
-        database: 'd8bpk7igid6vkp',
+        host: 'ec2-54-247-81-76.eu-west-1.compute.amazonaws.com',
+        user: 'riprxfgafvjxqy',
+        password: '879a37c83dc5fe36d2013e8ac85a9d92dc0910b41ce4f0325d683397f87c77e5',
+        database: 'd3npn811pmr6n2',
         port: 5432
     };
 }
