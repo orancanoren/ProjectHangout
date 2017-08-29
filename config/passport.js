@@ -50,22 +50,6 @@ module.exports = function(passport) {
 		});
 	}));
 
-	passport.use('remember-me', new RememberMeStrategy((token, done) => {
-		console.log('consuming token:', token);
-		Token.consume(token, (err, email) => {
-			if (err) return done(err);
-			if (!email) return done(null, false);
-
-			User.getByEmail(email, (err, user) => {
-				if (err) return done(err);
-				if (!user) return done(err, false);
-				console.log("remember me strategy works with user:\n", user);
-				return done(null, user);
-			});
-		}
-	)}, Token.issue
-	));
-
 	// =========================================================================
 	// LOCAL SIGNUP ============================================================
 	// =========================================================================

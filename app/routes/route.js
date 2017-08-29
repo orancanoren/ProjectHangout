@@ -24,7 +24,37 @@ router.route('/')
         if (req.isAuthenticated()) {
             res.redirect('/profile');
         } else {
-            res.render('index.ejs', { message: req.flash('loginMessage') });
+            // 1 - Check if there exists a remember-me cookie
+            const token = req.cookies.rememberMe;
+			if (token) {
+				Token.consume(token, (err, user_email) => {
+                    if (err) {
+                        console.error(err);
+                        res.status(500).send(err500 + '<h4>Error during token auth</h4>');
+                    }
+                    else {
+                        if (user_email) {
+                            user = {}
+                            user.email = user_email;
+                            req.login(user, (err) => {
+                                if (err) {
+                                    console.error(err);
+                                    res.status(500).send(err500 + '<h4>Error during req.login()</h4>');
+                                }
+                                else {
+                                    res.redirect('/profile');
+                                }
+                            })
+                        }
+                        else {
+                            res.render('index.ejs', { message: req.flash('loginMessage') });
+                        }
+                    }
+                })
+            }
+            else {
+                res.render('index.ejs', { message: req.flash('loginMessage') });
+            }
         }
       })
     .post( passport.authenticate('local-login', {

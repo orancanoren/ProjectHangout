@@ -31,8 +31,8 @@ app.use(session({
 // configure passport
 app.use(passport.initialize());
 app.use(passport.session());
+//app.use(passport.authenticate('remember-me'));
 require('./config/passport.js')(passport);
-app.use(passport.authenticate('remember-me'));
 
 
 
