@@ -391,6 +391,7 @@ User.getDistance = function(email1, email2, callback) {
             return callback(err);
         }
         else
+            console.log('getDistance returned:', result[0]);
             return callback(null, result[0]);
     });
 }

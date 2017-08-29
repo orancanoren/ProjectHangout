@@ -147,6 +147,7 @@ router.get('/view/:target_email', (req, res) => {
                         }
                         if (req.isAuthenticated()) {
                             User.getDistance(req.user.email, target_email, (err, distance) => {
+                                console.log('/view got the distance result:\n', distance);
                                 if (err) {
                                     console.error(err);
                                     res.status(500).send(err500 + '<h4>Cannot retrieve the distance of users</h4>');
