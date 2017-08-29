@@ -153,7 +153,7 @@ router.get('/view/:target_email', (req, res) => {
                                     res.status(500).send(err500 + '<h4>Cannot retrieve the distance of users</h4>');
                                 }
                                 var dist = null;
-                                if (distance.dist) {
+                                if (distance) {
                                     dist = distance.dist;
                                 }
                                 
