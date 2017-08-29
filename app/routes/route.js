@@ -34,21 +34,15 @@ router.route('/')
                     }
                     else {
                         if (user_email) {
-                            User.getByEmail(user_email, (err, user) => {
+                            var user = {};
+                            user.email = user_email;
+                            req.login(user, (err) => {
                                 if (err) {
                                     console.error(err);
-                                    res.status(500).send(err500 + '<h4>Error in route(/).getByEmail()</h4>');
+                                    res.status(500).send(err500 + '<h4>Error during req.login()</h4>');
                                 }
                                 else {
-                                    req.login(user, (err) => {
-                                        if (err) {
-                                            console.error(err);
-                                            res.status(500).send(err500 + '<h4>Error during req.login()</h4>');
-                                        }
-                                        else {
-                                            res.redirect('/profile');
-                                        }
-                                    })
+                                    res.redirect('/profile');
                                 }
                             });
                         }
@@ -198,7 +192,7 @@ router.get('/view/:target_email', (req, res) => {
 
 // 2 - Authorization required routes
 
-router.get('/profile', (req, res) => {
+router.get('/profile', ensureAuthenticated, (req, res) => {
     // TODO: Manage async clearly w/Streamline.js
     User.getFollowers(req.user.email, function(err, followers) {
         if (err) {
