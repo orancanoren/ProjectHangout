@@ -9,12 +9,8 @@ const err500 = '<h1>Internal Server Error</h1><br />';
 
 // 1 - Authorization free routes
 
-var getProfileData = function(req, res, next) {
-
-}
-
 router.all('*', (req, res, next) => {
-    console.log('[' + req.method + ']', req.url);
+    console.log('[' + req.method + ']', req.url, '-', req.ip);
     next();
 })
 
@@ -147,7 +143,6 @@ router.get('/view/:target_email', (req, res) => {
                         }
                         if (req.isAuthenticated()) {
                             User.getDistance(req.user.email, target_email, (err, distance) => {
-                                console.log('/view got the distance result:\n', distance);
                                 if (err) {
                                     console.error(err);
                                     res.status(500).send(err500 + '<h4>Cannot retrieve the distance of users</h4>');

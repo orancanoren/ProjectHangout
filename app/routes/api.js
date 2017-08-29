@@ -65,7 +65,6 @@ router.get('/view/:target_email', (req, res) => {
                 description: 'Error in getByEmail()'
             }));
         }
-        console.log('getByEmail result user:', user);
         if (!user) {
             console.log('!user');
             if (!req.isAuthenticated()) {
@@ -100,7 +99,7 @@ router.get('/view/:target_email', (req, res) => {
                                     console.error(err);
                                     res.status(500).send(err500 + '<h4>Cannot retrieve the distance of users</h4>');
                                 }
-                                res.render('limitedView.ejs', {
+                                res.json({
                                     fname: user['fname'],
                                     lname: user['lname'],
                                     bday: user['dob'],
@@ -114,7 +113,7 @@ router.get('/view/:target_email', (req, res) => {
                             });
                         }
                         else {
-                            res.render('limitedView.ejs', {
+                            res.json({
                                 fname: user['fname'],
                                 lname: user['lname'],
                                 bday: user['dob'],
@@ -164,7 +163,6 @@ router.get('/profile', ensureAuthenticated, (req, res) => {
                             res.status(500).send(JSON.stringify({error: err}));
                         }
                         else {
-                            console.log(notifs);
                             const sex = req.user.sex ? "female" : "male";
                             res.send({
                                 fname: req.user.fname,
