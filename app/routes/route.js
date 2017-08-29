@@ -276,6 +276,19 @@ router.get('/unfollow/:target_email', (req, res) => {
     }
 });
 
+router.get('/notifications', ensureAuthenticated, (req, res) => {
+    User.getNotifications(req.user.email, false, (err, notifs) => {
+        if (err) {
+            res.send(err500 + '<h4>Error in getNotifications()</h4>');
+        }
+        else {
+            res.render('notifications.ejs', {
+                notifications: notifs
+            });
+        }
+    });
+});
+
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated())
         return next();

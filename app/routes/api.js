@@ -149,8 +149,6 @@ router.post('/search', (req, res) => {
     });
 });
 
-// MARK: AUTHENTICATED BEYOND THIS POINT (except for 404)
-
 router.get('/profile', ensureAuthenticated, (req, res) => {
 
     User.getFollowers(req.user.email, function(err, followers) {

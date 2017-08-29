@@ -48,7 +48,8 @@ CREATE TABLE Notifications(
     text_id INTEGER NOT NULL REFERENCES NotificationTexts(id),
     value_arr TEXT[],
     issued DATE,
-    is_read BOOLEAN
+    is_read BOOLEAN,
+    notif_action TEXT
 );
 
 CREATE INDEX ON Notifications(user_email);

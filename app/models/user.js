@@ -99,17 +99,18 @@ User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callba
     });
 }
 
-User.newNotification = function(email, text_id, value_arr, callback) {
+User.newNotification = function(email, text_id, value_arr, action, callback) {
     const query = [
-        'INSERT INTO Notifications(user_email, text_id, value_arr, issued, is_read)',
-        'VALUES ($1, $2, $3, $4, $5)'
+        'INSERT INTO Notifications(user_email, text_id, value_arr, issued, is_read, notif_action)',
+        'VALUES ($1, $2, $3, $4, $5, $6)'
     ].join('\n');
     const values = [
         email,
         text_id,
         value_arr,
         new Date,
-        false
+        false,
+        action
     ];
 
     pool.query(query, values, (err) => {
@@ -123,10 +124,11 @@ User.newNotification = function(email, text_id, value_arr, callback) {
 User.getNotifications = function(email, unread_only, callback) {
     const query = [
         'SELECT NT.notif_text AS notif_text, N.value_arr AS value_arr,',
-        'N.issued AS issue_date, N.is_read AS is_read, N.id AS notif_id',
+        'N.issued AS issue_date, N.is_read AS is_read, N.id AS notif_id, N.notif_action AS action',
         'FROM Notifications N, NotificationTexts NT',
         'WHERE N.user_email=$1' + (unread_only ? 'AND is_read=false' : ''),
-        'AND NT.id=N.text_id'
+        'AND NT.id=N.text_id',
+        'ORDER BY issue_date'
     ].join('\n');
 
     const values = [ email ];
@@ -270,7 +272,7 @@ User.newFollow = function(follower_mail, following_mail, callback) {
 
         pool.query(postgres_query, values, (err, result) => {
             const fname = result.rows[0].fname, lname = result.rows[0].lname;
-            User.newNotification(following_mail, 1, [ fname + ' ' + lname ], (err) => {
+            User.newNotification(following_mail, 1, [ fname + ' ' + lname ], '/view/' + follower_mail, (err) => {
                 return callback(err);
             });
         });
