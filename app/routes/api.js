@@ -122,7 +122,8 @@ router.get('/view/:target_email', (req, res) => {
                                     following_data: following_data,
                                     message: req.flash('limitedViewMessage'),
                                     target_email: target_email,
-                                    distance: distance
+                                    distance: distance,
+                                    current_user_follows: distance == 1
                                 });
                             });
                         }
@@ -206,8 +207,8 @@ router.get('/logout', ensureAuthenticated, (req, res) => {
     });
 });
 
-router.get('/follow/:target_email', ensureAuthenticated, (req, res) => {
-    var target_email = req.params.target_email;
+router.post('/follow', ensureAuthenticated, (req, res) => {
+    var target_email = req.body.target_email;
     if (target_email == req.user.email) {
         res.json({
             error: 'You cannot follow yourself',
@@ -235,8 +236,8 @@ router.get('/follow/:target_email', ensureAuthenticated, (req, res) => {
     }
 });
 
-router.get('/unfollow/:target_email', ensureAuthenticated, (req, res) => {
-    var target_email = req.params.target_email;
+router.post('/unfollow/', ensureAuthenticated, (req, res) => {
+    var target_email = req.body.target_email;
     if (target_email == req.user.email) {
         res.json({
             error: 'You cannot unfollow yourself',

@@ -373,7 +373,7 @@ User.getDistance = function(email1, email2, callback) {
     var qp = {
         query: [
             'MATCH (u1:User), (u2:User),',
-            'p=(u1)-[:FOLLOWS*]-(u2)',
+            'p=(u1)-[:FOLLOWS*]->(u2)',
             'WHERE u1.email = {email1} AND u2.email={email2}',
             'WITH p ORDER BY LENGTH(p)',
             'LIMIT 1',
@@ -391,7 +391,7 @@ User.getDistance = function(email1, email2, callback) {
             return callback(err);
         }
         else
-            return callback(null, result[0]);
+            return callback(null, result[0].dist);
     });
 }
 

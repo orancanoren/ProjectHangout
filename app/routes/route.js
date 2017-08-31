@@ -111,10 +111,8 @@ router.route('/search')
 
 router.get('/view/:target_email', (req, res) => {
     var target_email = req.params.target_email;
-    if (req.isAuthenticated() && req.user.email == target_email) {
-        res.redirect('/profile');
-        return;
-    }
+    if (req.isAuthenticated() && req.user.email == target_email)
+        return res.redirect('/profile');
 
     User.getByEmail(target_email, function(err, user) {
         if (err) {
@@ -175,7 +173,8 @@ router.get('/view/:target_email', (req, res) => {
                                 following_data: following_data,
                                 message: req.flash('limitedViewMessage'),
                                 target_email: target_email,
-                                distance: null
+                                distance: null,
+                                current_user_follows: distance == 1
                             });
                         }
                     });
