@@ -11,11 +11,20 @@ router.use('*', (req, res, next) => {
 // MARK: AUTHENTICATION
 
 router.post('/login', passport.authenticate('local-login', {
-        failureRedirect: '/api/badlogin',
         failureFlash: true
     }),
         (req, res, next) => {
-            if (!req.isAuthenticated() && !req.body.remember_me) return next();
+            // 1 - Handle unauthorized POSTs
+            if (req.isAuthenticated()) 
+                return next();
+
+            return res.json({
+                error: "Invalid credentials"
+            });
+        },
+        (req, res, next) => {
+            // 2 - Set (or don't set) remember me cookie
+            if (!req.body.remember_me) return next();
 
             Token.issue(req.user, (err, token) => {
                 if (err) return next(err);
@@ -28,6 +37,7 @@ router.post('/login', passport.authenticate('local-login', {
             });
         },
         (req, res) => {
+            // 3 - Redirect to profile
             res.redirect('/api/profile');
         }
 );
@@ -39,7 +49,7 @@ router.post('/signup', passport.authenticate('local-signup', { failureFlash: tru
         }
         else {
             res.json({
-                error: "Not authenticated after signup"
+                error: "Not authenticated after signup, something gone wrong"
             });
         }
     }
@@ -52,21 +62,18 @@ a better way to deal with these
 
 router.get('/view/:target_email', (req, res) => {
     const target_email = req.params.target_email;
-    if (req.isAuthenticated() && req.user.email == target_email) {
-        res.redirect('/api/profile');
-        return;
-    }
+    if (req.isAuthenticated() && req.user.email == target_email)
+        return res.redirect('/api/profile');
 
-    User.getByEmail(target_email, function(err, user) {
+    User.getByEmail(target_email, (err, user) => {
         if (err) {
             console.error(err);
-            res.status(500).json(JSON.stringify({
+            res.status(500).json({
                 error: err500,
                 description: 'Error in getByEmail()'
-            }));
+            });
         }
         if (!user) {
-            console.log('!user');
             if (!req.isAuthenticated()) {
                 req.flash('loginMessage', 'User doesn\'t exist');
                 res.json({
