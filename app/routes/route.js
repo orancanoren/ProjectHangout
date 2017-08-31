@@ -147,7 +147,7 @@ router.get('/view/:target_email', (req, res) => {
                                 }
                                 var dist = null;
                                 if (distance) {
-                                    dist = distance.dist;
+                                    dist = distance;
                                 }
                                 
                                 res.render('limitedView.ejs', {
@@ -157,9 +157,10 @@ router.get('/view/:target_email', (req, res) => {
                                     sex: sex,
                                     follower_data: follower_data,
                                     following_data: following_data,
-                                    message: req.flash('limitedViewMessage'),
+                                    message: req.flash('viewMessage'),
                                     target_email: target_email,
-                                    distance: dist
+                                    distance: dist,
+                                    current_user_follows: distance == 1
                                 });
                             });
                         }
@@ -171,10 +172,9 @@ router.get('/view/:target_email', (req, res) => {
                                 sex: sex,
                                 follower_data: follower_data,
                                 following_data: following_data,
-                                message: req.flash('limitedViewMessage'),
+                                message: req.flash('viewMessage'),
                                 target_email: target_email,
-                                distance: null,
-                                current_user_follows: distance == 1
+                                distance: null
                             });
                         }
                     });
@@ -227,20 +227,20 @@ router.get('/logout', ensureAuthenticated, (req, res) => {
 router.get('/follow/:target_email', ensureAuthenticated, (req, res) => {
     var target_email = req.params.target_email;
     if (target_email == req.user.email) {
-        req.flash('limitedViewMessage', 'You cannot follow yourself');
+        req.flash('viewMessage', 'You cannot follow yourself');
         return res.redirect('/view/'+target);
     } else if (target_email == null) {
-        req.flash('profileMessage', 'Cannot follow');
-        return res.redirect('/profile');
+        req.flash('viewMessage', 'Cannot follow');
+        return res.redirect('/view/' + target_email);
     } else {
         User.newFollow(req.user.email, target_email, function(err) {
             if (err) {
                 console.error(err);
-                req.flash('profileMessage', 'following failed');
-                return res.redirect('/profile');
+                req.flash('viewMessage', 'following failed');
+                return res.redirect('/view/' + target_email);
             } else {
-                req.flash('profileMessage', 'following success');
-                return res.redirect('/profile');
+                req.flash('viewMessage', 'following success');
+                return res.redirect('/view/' + target_email);
             }
         });
     }
@@ -253,20 +253,20 @@ router.get('/unfollow/:target_email', (req, res) => {
 
     var target_email = req.params.target_email;
     if (target_email == req.user.email) {
-        req.flash('limitedViewMessage', 'You cannot follow yourself');
+        req.flash('viewMessage', 'You cannot follow yourself');
         res.redirect('/view/'+target);
     } else if (target_email == null) {
-        req.flash('profileMessage', 'Cannot follow');
-        res.redirect('/profile');
+        req.flash('viewMessage', 'Cannot follow');
+        res.redirect('/view/' + target_email);
     } else {
         User.unfollow(req.user.email, target_email, function(err) {
             if (err) {
                 console.log(err);
-                req.flash('profileMessage', 'unfollowing failed');
-                res.redirect('/profile');
+                req.flash('viewMessage', 'unfollowing failed');
+                res.redirect('/view/' + target_email);
             } else {
-                req.flash('profileMessage', 'unfollowed successfully');
-                res.redirect('/profile');
+                req.flash('viewMessage', 'unfollowed successfully');
+                res.redirect('/view/' + target_email);
             }
         });
     }

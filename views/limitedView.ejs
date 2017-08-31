@@ -44,7 +44,7 @@
                                             <div class="col s10">
                                                 <li><strong>First Name </strong> <%= fname %></li>
                                             </div>
-                                            <% if (distance != null && distance != {}) { %>
+                                            <% if (distance) { %>
                                             <div class="col s2">
                                                 <% if (distance) { %>
                                                 (<%= distance %>)
@@ -91,7 +91,11 @@
                                         </ul>
                                     </div>
                                     <div class="right">
+                                        <% if (!current_user_follows) { %>
                                         <a class="waves-effect waves-light btn light-blue" href="/follow/<%=target_email%>">FOLLOW</a>
+                                        <% } else { %>
+                                        <a class="waves-effect waves-light btn light-red" href="/unfollow/<%=target_email%>">UNFOLLOW</a>
+                                        <% } %>
                                     </div>
                                 </div>
                                     
