@@ -390,8 +390,10 @@ User.getDistance = function(email1, email2, callback) {
             console.error(err);
             return callback(err);
         }
-        else
+        else if (result[0])
             return callback(null, result[0].dist);
+        else
+            return callback(null, null);
     });
 }
 
