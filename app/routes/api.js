@@ -11,19 +11,11 @@ router.use('*', (req, res, next) => {
 // MARK: AUTHENTICATION
 
 router.post('/login', passport.authenticate('local-login', {
-        failureFlash: true
-    }),
+        failureFlash: true,
+        failureRedirect: '/api/badlogin'
+        }),
         (req, res, next) => {
-            // 1 - Handle unauthorized POSTs
-            if (req.isAuthenticated()) 
-                return next();
-
-            return res.json({
-                error: "Invalid credentials"
-            });
-        },
-        (req, res, next) => {
-            // 2 - Set (or don't set) remember me cookie
+            // 1 - Set (or don't set) remember me cookie
             if (!req.body.remember_me) return next();
 
             Token.issue(req.user, (err, token) => {
@@ -37,12 +29,21 @@ router.post('/login', passport.authenticate('local-login', {
             });
         },
         (req, res) => {
-            // 3 - Redirect to profile
+            // 2 - Redirect to profile
             res.redirect('/api/profile');
         }
 );
 
-router.post('/signup', passport.authenticate('local-signup', { failureFlash: true }),
+router.get('/badlogin', (req, res) => {
+    res.json({
+        error: "Invalid credentials"
+    });
+});
+
+router.post('/signup', passport.authenticate('local-signup', { 
+    failureFlash: true,
+    failureRedirect: '/api/badsignup'    
+    }),
     (req, res) => {
         if (req.isAuthenticated()) {
             res.redirect('/profile');
@@ -54,6 +55,12 @@ router.post('/signup', passport.authenticate('local-signup', { failureFlash: tru
         }
     }
 );
+
+router.get('/badsignup', (req, res) => {
+    res.json({
+        error: "Error during signup"
+    });
+})
 
 /* TODO
 Async function calls make the code unreadable, find
