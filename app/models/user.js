@@ -121,12 +121,12 @@ User.newNotification = function(email, text_id, value_arr, action, callback) {
     });
 }
 
-User.getNotifications = function(email, unread_only, callback) {
+User.getNotifications = function(email, callback) {
     const query = [
         'SELECT NT.notif_text AS notif_text, N.value_arr AS value_arr,',
         'N.issued AS issue_date, N.is_read AS is_read, N.id AS notif_id, N.notif_action AS action',
         'FROM Notifications N, NotificationTexts NT',
-        'WHERE N.user_email=$1' + (unread_only ? 'AND is_read=false' : ''),
+        'WHERE N.user_email=$1',
         'AND NT.id=N.text_id',
         'ORDER BY issue_date'
     ].join('\n');
@@ -160,7 +160,6 @@ User.setNotificationRead = function(notif_id, callback) {
     });
 }
 
-// called only for logins - returned data contains pw hash
 User.getByEmail = function(email, callback) {
     const query = [
         'SELECT *',
@@ -176,6 +175,7 @@ User.getByEmail = function(email, callback) {
             return callback(err, null);
         }
         
+        delete res.rows[0].pwhash; // might cause trouble for logins!
         return callback(null, res.rows[0]);
     });
 }

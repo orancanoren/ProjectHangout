@@ -2,10 +2,13 @@ var router = require('express').Router();
 var passport = require('passport');
 var User = require('../models/user');
 const Token = require('../utils/token');
+var async = require('async');
 
 // 0 - Utilities
 
-const err500 = '<h1>Internal Server Error</h1><br />';
+function internal_err_msg(err) {
+    return '<h1>Internal Server Error</h1><br /><h5>' + err + '</h5>';
+}
 
 // 1 - Authorization free routes
 
@@ -114,107 +117,94 @@ router.get('/view/:target_email', (req, res) => {
     if (req.isAuthenticated() && req.user.email == target_email)
         return res.redirect('/profile');
 
-    User.getByEmail(target_email, function(err, user) {
+    async.parallel({
+        user: function(callback) {
+            User.getByEmail(target_email, (err, user) => {
+                return callback(err, user);
+            })
+        },
+        followers: function (callback) {
+            User.getFollowers(target_email, (err, followers) => {
+                return callback(err, followers);
+            })
+        },
+        following: function(callback) {
+            User.getFollowing(target_email, (err, following) => {
+                return callback(err, following);
+            })
+        },
+        distance: function(callback) {
+            if (req.isAuthenticated()) {
+                User.getDistance(req.user.email, target_email, (err, dist) => {
+                    console.log('returning distance!');
+                    return callback(err, dist);
+                });
+            }
+            else {
+                return callback(null, null);
+            }
+        }
+    }, function (err, results) {
         if (err) {
             console.error(err);
-            res.status(500).send(err500 + '<h4>Error during getByEmail()<h4>');
+            return res.send(internal_err_msg(err));
         }
-        if (!user) {
-            if (!req.isAuthenticated()) {
-                req.flash('loginMessage', 'User doesn\'t exist');
-                res.redirect('/');
-            } else {
-                req.flash('profileMessage', 'User doesn\'t exist');
-                res.redirect('/profile');
-            }
-        } else {
-            User.getFollowers(target_email, function(err, follower_data) {
-                if (err) {
-                    console.error(err);
-                    res.status(500).send(err500 + '<h4>Cannot retrieve follower data</h4>');
-                } else {
-                    User.getFollowing(target_email, function(err, following_data) {
-                        const sex = user.sex ? 'female' : 'male';
-                        if (err) {
-                            console.error(err);
-                            res.status(500).send(err500 + '<h4>Cannot retrieve following data</h4>');
-                        }
-                        if (req.isAuthenticated()) {
-                            User.getDistance(req.user.email, target_email, (err, distance) => {
-                                if (err) {
-                                    console.error(err);
-                                    res.status(500).send(err500 + '<h4>Cannot retrieve the distance of users</h4>');
-                                }
-                                var dist = null;
-                                if (distance) {
-                                    dist = distance;
-                                }
-                                
-                                res.render('limitedView.ejs', {
-                                    fname: user['fname'],
-                                    lname: user['lname'],
-                                    bday: user['dob'],
-                                    sex: sex,
-                                    follower_data: follower_data,
-                                    following_data: following_data,
-                                    message: req.flash('viewMessage'),
-                                    target_email: target_email,
-                                    distance: dist,
-                                    current_user_follows: distance == 1
-                                });
-                            });
-                        }
-                        else {
-                            res.render('limitedView.ejs', {
-                                fname: user['fname'],
-                                lname: user['lname'],
-                                bday: user['dob'],
-                                sex: sex,
-                                follower_data: follower_data,
-                                following_data: following_data,
-                                message: req.flash('viewMessage'),
-                                target_email: target_email,
-                                distance: null
-                            });
-                        }
-                    });
-                }
-            });
-        }
+
+        res.render('limitedView.ejs', {
+            fname: results.user['fname'],
+            lname: results.user['lname'],
+            bday: results.user['dob'],
+            sex: results.user.sex ? 'female' : 'male',
+            follower_data: results.followers,
+            following_data: results.following,
+            message: req.flash('viewMessage'),
+            target_email: target_email,
+            distance: results.distance,
+            current_user_follows: results.dist == 1
+        });
     });
 });
 
 // 2 - Authorization required routes
 
 router.get('/profile', ensureAuthenticated, (req, res) => {
-    // TODO: Manage async clearly w/Streamline.js
-    User.getFollowers(req.user.email, function(err, followers) {
-        if (err) {
-            res.status(500).send(err500 + '<h5>Error in getFollowers()</h5>');
-        } else {
-            User.getFollowing(req.user.email, function(err, following) {
-                if (err) {
-                    res.status(500).send(err500 + '<h5>Error in getFollowing()</h5>');
-                } else {
-                    User.getNotifications(req.user.email, false, (err, notifs) => {
-                        const sex = req.user.sex ? "female" : "male";
-                        const params = {
-                            fname: req.user.fname,
-                            lname: req.user.lname,
-                            school: req.user.school,
-                            bday: req.user.dob,
-                            sex: sex,
-                            email: req.user.email,
-                            following: following,
-                            followers: followers,
-                            notifications: notifs,
-                            message: req.flash('profileMessage')
-                        };
-                        res.render('profile.ejs', params);
-                    });
-                }
+    // Fetch followers, following and notifications from DB in parallel
+    async.parallel({
+        followers: function(callback) {
+            User.getFollowers(req.user.email, (err, result) => {
+                return callback(err, result);
+            }) 
+        },
+        following: function(callback) {
+            User.getFollowing(req.user.email, (err, result) => {
+                return callback(err, result);
+            });
+        },
+        notifications: function (callback) {
+            User.getNotifications(req.user.email, (err, result) => {
+                return callback(err, result);
             });
         }
+    }, function(err, results) {
+        if (err) {
+            console.error(err);
+            return res.send(internal_err_msg(err));
+        }
+        
+        const sex = req.user.sex ? "female" : "male";
+        const params = {
+            fname: req.user.fname,
+            lname: req.user.lname,
+            school: req.user.school,
+            bday: req.user.dob,
+            sex: sex,
+            email: req.user.email,
+            following: results.following,
+            followers: results.followers,
+            notifications: results.notifications,
+            message: req.flash('profileMessage')
+        };
+        res.render('profile.ejs', params);
     });
 });
 
@@ -273,7 +263,7 @@ router.get('/unfollow/:target_email', (req, res) => {
 });
 
 router.get('/notifications', ensureAuthenticated, (req, res) => {
-    User.getNotifications(req.user.email, false, (err, notifs) => {
+    User.getNotifications(req.user.email, (err, notifs) => {
         if (err) {
             res.send(err500 + '<h4>Error in getNotifications()</h4>');
         }
