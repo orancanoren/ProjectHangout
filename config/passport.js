@@ -13,7 +13,7 @@ module.exports = function(passport) {
 	});
 
 	passport.deserializeUser((email, done) => {
-		User.getByEmail(email, function(err, user) {
+		User.getByEmail({email: email, getPw: false }, function(err, user) {
 			done(err, user);
 		});
 	});
@@ -27,7 +27,7 @@ module.exports = function(passport) {
 	(req, email, password, done) => {
 		// asynchronous
 		process.nextTick(() => {
-			User.getByEmail(email, (err, user) => {
+			User.getByEmail({ email: email, getPw: true }, (err, user) => {
 				// if there are any errors, return the error
 				if (err)
 					return done(err);

@@ -61,7 +61,6 @@ router.route('/')
         failureRedirect: '/'
     }), (req, res, next) => {
         if (req.isAuthenticated()) {
-            req.body.rememberMe = true; // for DEBUG
             if (req.body.rememberMe) {
                 Token.issue(req.user.email, (err, token) => {
                     if (err) { 
@@ -119,7 +118,7 @@ router.get('/view/:target_email', (req, res) => {
 
     async.parallel({
         user: function(callback) {
-            User.getByEmail(target_email, (err, user) => {
+            User.getByEmail({ email: target_email, getPw: false }, (err, user) => {
                 return callback(err, user);
             })
         },
@@ -209,6 +208,7 @@ router.get('/profile', ensureAuthenticated, (req, res) => {
 });
 
 router.get('/logout', ensureAuthenticated, (req, res) => {
+    Token.consume(req.cookies['rememberMe'], (err, token) => {});
     res.clearCookie('rememberMe');
     req.logout();
     res.redirect('/');

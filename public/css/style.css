@@ -1,13 +1,56 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: auto;
+}
+
+video { 
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    transform: translateX(-50%) translateY(-50%);
+ background: url('//demosthenes.info/assets/images/polina.jpg') no-repeat;
+  background-size: cover;
+  transition: 1s opacity;
+}
+
+.bg { 
+    /* The image used */
+    background-image: #35CEE1;
+
+    /* Full height */
+    height: calc(100% - 64px); 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .brand-logo {
-    font-weight: 200;
+    font-size: 26px !important;
+    font-weight: 300;
+    color: white;
+}
+
+.centered-content {
+    margin: 0 auto !important;
+}
+
+#sub {
+    font-weight: 300;
     color: white;
 }
 
 #title {
-    margin-top: 10%;
-}
-#auth {
-    font-weight: 300;
+    color: white;
 }
 
 h2 {
@@ -16,34 +59,34 @@ h2 {
 
  /* label focus color */
  .input-field input[type=text]:focus + label {
-    color: #03a9f4;
+    color: #01579b;
 }
 /* label underline focus color */
 .input-field input[type=text]:focus {
-    border-bottom: 1px solid #03a9f4;
-    box-shadow: 0 1px 0 0 #03a9f4;
+    border-bottom: 1px solid #01579b;
+    box-shadow: 0 1px 0 0 #01579b;
 }
 
  /* label focus color */
  .input-field input[type=password]:focus + label {
-    color: #03a9f4;
+    color: #01579b;
 }
 /* label underline focus color */
 .input-field input[type=password]:focus {
-    border-bottom: 1px solid #03a9f4;
-    box-shadow: 0 1px 0 0 #03a9f4;
+    border-bottom: 1px solid #01579b;
+    box-shadow: 0 1px 0 0 #01579b;
 }
 
 .picker__date-display, .picker__weekday-display{
-    background-color: #03a9f4;
+    background-color: #01579b;
 }
 
 div.picker__day.picker__day--infocus.picker__day--selected.picker__day--highlighted {
-    background-color: #03a9f4;
+    background-color: #01579b;
 }
 
 button.picker__today, button.picker__close {
-    color: #03a9f4;
+    color: #01579b;
 }
 
 #signupBut:hover {

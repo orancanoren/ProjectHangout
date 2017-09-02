@@ -289,6 +289,12 @@ router.post('/event', ensureAuthenticated, (req, res) => {
     });
 });
 
+router.get('/mydata/:data', (req, res) => {
+    res.json({
+        data: req.params.data
+    });
+});
+
 // 404
 
 router.all('*', (req, res) => {

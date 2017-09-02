@@ -160,14 +160,16 @@ User.setNotificationRead = function(notif_id, callback) {
     });
 }
 
-User.getByEmail = function(email, callback) {
+User.getByEmail = function(args, callback) {
+    if (!args.email)
+        throw "User.getByEmail requires an email field";
     const query = [
         'SELECT *',
         'FROM Users',
         'WHERE email=$1'
     ].join('\n');
 
-    const values = [ email ];
+    const values = [ args.email ];
 
     pool.query(query, values, (err, res) => {
         if (err) {
@@ -175,7 +177,9 @@ User.getByEmail = function(email, callback) {
             return callback(err, null);
         }
         
-        delete res.rows[0].pwhash; // might cause trouble for logins!
+        if (res.rows[0] && !args.getPw) {
+            delete res.rows[0].pwhash; // might cause trouble for logins!
+        }
         return callback(null, res.rows[0]);
     });
 }
@@ -402,6 +406,7 @@ User.generateHash = function(password, next) {
 }
 
 User.validPassword = function(password, pass, next) {
+    console.log(password, pass, typeof(password), typeof(pass));
     return bcrypt.compareSync(password, pass, next);
 }
 
