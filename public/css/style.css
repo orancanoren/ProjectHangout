@@ -21,6 +21,10 @@ video {
   transition: 1s opacity;
 }
 
+h2 {
+    font-weight: 300;
+}
+
 .bg { 
     /* The image used */
     background-image: #35CEE1;
@@ -53,8 +57,12 @@ video {
     color: white;
 }
 
-h2 {
-    font-weight: 300;
+#signupBut:hover {
+    text-decoration: underline;
+}
+
+.input-field {
+    color: white;
 }
 
  /* label focus color */
@@ -63,6 +71,15 @@ h2 {
 }
 /* label underline focus color */
 .input-field input[type=text]:focus {
+    border-bottom: 1px solid #01579b;
+    box-shadow: 0 1px 0 0 #01579b;
+}
+ /* label focus color */
+ .input-field input[type=email]:focus + label {
+    color: #01579b;
+}
+/* label underline focus color */
+.input-field input[type=email]:focus {
     border-bottom: 1px solid #01579b;
     box-shadow: 0 1px 0 0 #01579b;
 }
@@ -81,16 +98,17 @@ h2 {
     background-color: #01579b;
 }
 
+.checkbox-color[type="checkbox"].filled-in:checked + label:after{
+    border: 2px solid #ff9800;
+    background-color: #ff9800;
+}
+
 div.picker__day.picker__day--infocus.picker__day--selected.picker__day--highlighted {
     background-color: #01579b;
 }
 
 button.picker__today, button.picker__close {
     color: #01579b;
-}
-
-#signupBut:hover {
-    text-decoration: underline;
 }
 
 input[type="search"] {

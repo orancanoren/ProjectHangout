@@ -23282,7 +23282,7 @@ var LoginForm = function (_React$Component) {
                 { className: 'col s12 z-depth-6 card-panel transparent' },
                 _react2.default.createElement(
                     'form',
-                    { className: 'login-form' },
+                    { className: 'login-form', method: 'POST', action: '/' },
                     _react2.default.createElement('div', { className: 'row' }),
                     _react2.default.createElement(
                         'div',
@@ -23309,11 +23309,11 @@ var LoginForm = function (_React$Component) {
                         ),
                         _react2.default.createElement(
                             'div',
-                            { className: 'input-field col s12 m12 l12  login-text left-align' },
+                            { className: 'input-field col s12 m12 l12  login-text left-align checkbox-color' },
                             _react2.default.createElement('input', { type: 'checkbox', id: 'remember-me' }),
                             _react2.default.createElement(
                                 'label',
-                                { htmlFor: 'remember-me white-text' },
+                                { htmlFor: 'remember-me' },
                                 'Remember me'
                             )
                         )
