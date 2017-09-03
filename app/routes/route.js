@@ -3,6 +3,7 @@ var passport = require('passport');
 var User = require('../models/user');
 const Token = require('../utils/token');
 var async = require('async');
+var reactDOM = require('react-dom');
 
 // 0 - Utilities
 
@@ -80,14 +81,14 @@ router.route('/')
     });
 
 
-router.route('/signup')
+router.route('/signup')/*
       .get( (req, res) => {
         if (req.isAuthenticated()) {
             res.redirect('/profile');
         } else {
             res.render('signup.ejs', { message: req.flash('signupMessage') });
         }
-      })
+      })*/
       .post( passport.authenticate('local-signup', {
             successRedirect: '/profile',
             failureRedirect: '/signup',

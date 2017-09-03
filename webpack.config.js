@@ -1,5 +1,5 @@
 var config = {
-    entry: './react/App.js',
+    entry: './react/ReactApp.js',
      
     output: {
        path: __dirname + '/public/js/',

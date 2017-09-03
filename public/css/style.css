@@ -16,13 +16,21 @@ video {
     height: auto;
     z-index: -100;
     transform: translateX(-50%) translateY(-50%);
- background: url('//demosthenes.info/assets/images/polina.jpg') no-repeat;
-  background-size: cover;
-  transition: 1s opacity;
+    background-size: cover;
+    transition: 1s opacity;
 }
 
 h2 {
     font-weight: 300;
+}
+
+.link_p {
+    color: #03a9f4;
+}
+
+.link_p:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .bg { 
@@ -39,7 +47,6 @@ h2 {
 }
 
 .brand-logo {
-    font-size: 26px !important;
     font-weight: 300;
     color: white;
 }
@@ -59,58 +66,4 @@ h2 {
 
 #signupBut:hover {
     text-decoration: underline;
-}
-
-.input-field {
-    color: white;
-}
-
- /* label focus color */
- .input-field input[type=text]:focus + label {
-    color: #01579b;
-}
-/* label underline focus color */
-.input-field input[type=text]:focus {
-    border-bottom: 1px solid #01579b;
-    box-shadow: 0 1px 0 0 #01579b;
-}
- /* label focus color */
- .input-field input[type=email]:focus + label {
-    color: #01579b;
-}
-/* label underline focus color */
-.input-field input[type=email]:focus {
-    border-bottom: 1px solid #01579b;
-    box-shadow: 0 1px 0 0 #01579b;
-}
-
- /* label focus color */
- .input-field input[type=password]:focus + label {
-    color: #01579b;
-}
-/* label underline focus color */
-.input-field input[type=password]:focus {
-    border-bottom: 1px solid #01579b;
-    box-shadow: 0 1px 0 0 #01579b;
-}
-
-.picker__date-display, .picker__weekday-display{
-    background-color: #01579b;
-}
-
-.checkbox-color[type="checkbox"].filled-in:checked + label:after{
-    border: 2px solid #ff9800;
-    background-color: #ff9800;
-}
-
-div.picker__day.picker__day--infocus.picker__day--selected.picker__day--highlighted {
-    background-color: #01579b;
-}
-
-button.picker__today, button.picker__close {
-    color: #01579b;
-}
-
-input[type="search"] {
-    height: 64px !important;
 }

@@ -11,12 +11,11 @@ router.use('*', (req, res, next) => {
 // MARK: AUTHENTICATION
 
 router.post('/login', passport.authenticate('local-login', {
-        failureFlash: true,
         failureRedirect: '/api/badlogin'
         }),
         (req, res, next) => {
             // 1 - Set (or don't set) remember me cookie
-            if (!req.body.remember_me) return next();
+            if (!req.body.rememberMe) return next();
 
             Token.issue(req.user, (err, token) => {
                 if (err) return next(err);
@@ -29,14 +28,15 @@ router.post('/login', passport.authenticate('local-login', {
             });
         },
         (req, res) => {
-            // 2 - Redirect to profile
-            res.redirect('/api/profile');
+            res.json({
+                success: true
+            });
         }
 );
 
 router.get('/badlogin', (req, res) => {
     res.json({
-        error: "Invalid credentials"
+        message: "Invalid credentials"
     });
 });
 
