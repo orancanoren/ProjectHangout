@@ -7,7 +7,14 @@
         <link type="text/css" rel="stylesheet" href="/css/style.css" />
     </head>
     <body>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/materialize.min.js"></script>
         <div id="react-app"></div>
         <script src="js/react-app.js"></script>
+        <%  if (message.length > 0) { %>
+            <script>
+                Materialize.toast('<%= message %>', 4000);
+            </script>
+        <% } %>
     </body>
 </html>
