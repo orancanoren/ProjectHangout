@@ -2,6 +2,7 @@ var router = require('express').Router();
 var passport = require('passport');
 var User = require('../models/user');
 var Token = require('../utils/token');
+var async = require('async');
 
 router.use('*', (req, res, next) => {
     res.setHeader('Content-Type', 'application/json');
@@ -15,7 +16,8 @@ router.post('/login', passport.authenticate('local-login', {
         }),
         (req, res, next) => {
             // 1 - Set (or don't set) remember me cookie
-            if (!req.body.rememberMe) return next();
+            console.log('api post req body:\n', req.body);
+            if (req.body.rememberMe != 'checked') return next();
 
             Token.issue(req.user, (err, token) => {
                 if (err) return next(err);
@@ -62,88 +64,56 @@ router.get('/badsignup', (req, res) => {
     });
 })
 
-/* TODO
-Async function calls make the code unreadable, find
-a better way to deal with these
-*/
-
 router.get('/view/:target_email', (req, res) => {
-    const target_email = req.params.target_email;
+    var target_email = req.params.target_email;
     if (req.isAuthenticated() && req.user.email == target_email)
-        return res.redirect('/api/profile');
+        return res.redirect('/profile');
 
-    User.getByEmail(target_email, (err, user) => {
+    async.parallel({
+        user: function(callback) {
+            User.getByEmail({ email: target_email, getPw: false }, (err, user) => {
+                return callback(err, user);
+            })
+        },
+        followers: function (callback) {
+            User.getFollowers(target_email, (err, followers) => {
+                return callback(err, followers);
+            })
+        },
+        following: function(callback) {
+            User.getFollowing(target_email, (err, following) => {
+                return callback(err, following);
+            })
+        },
+        distance: function(callback) {
+            if (req.isAuthenticated()) {
+                User.getDistance(req.user.email, target_email, (err, dist) => {
+                    console.log('returning distance!');
+                    return callback(err, dist);
+                });
+            }
+            else {
+                return callback(null, null);
+            }
+        }
+    }, function (err, results) {
         if (err) {
             console.error(err);
-            res.status(500).json({
-                error: err500,
-                description: 'Error in getByEmail()'
-            });
+            return res.json({ error: internal_err_msg(err) });
         }
-        if (!user) {
-            if (!req.isAuthenticated()) {
-                req.flash('loginMessage', 'User doesn\'t exist');
-                res.json({
-                    error: 'User not found'
-                });
-            } else {
-                req.flash('profileMessage', 'User doesn\'t exist');
-                res.redirect('/api/profile');
-            }
-        } else {
-            User.getFollowers(target_email, function(err, follower_data) {
-                if (err) {
-                    console.log(err);
-                    res.status(500).json({
-                        error: err500,
-                        description: 'Error in getFollowers()'
-                    });
-                } else {
-                    User.getFollowing(target_email, function(err, following_data) {
-                        if (err) {
-                            console.log(err);
-                            res.status(500).json({
-                                error: err500,
-                                description: 'Error in getFollowing()'
-                            });
-                        }
-                        if (req.isAuthenticated()) {
-                            User.getDistance(req.user.email, target_email, (err, distance) => {
-                                if (err) {
-                                    console.error(err);
-                                    res.status(500).send(err500 + '<h4>Cannot retrieve the distance of users</h4>');
-                                }
-                                res.json({
-                                    fname: user['fname'],
-                                    lname: user['lname'],
-                                    bday: user['dob'],
-                                    sex: user['sex'],
-                                    follower_data: follower_data,
-                                    following_data: following_data,
-                                    message: req.flash('limitedViewMessage'),
-                                    target_email: target_email,
-                                    distance: distance,
-                                    current_user_follows: distance == 1
-                                });
-                            });
-                        }
-                        else {
-                            res.json({
-                                fname: user['fname'],
-                                lname: user['lname'],
-                                bday: user['dob'],
-                                sex: user['sex'],
-                                follower_data: follower_data,
-                                following_data: following_data,
-                                message: req.flash('limitedViewMessage'),
-                                target_email: target_email,
-                                distance: null
-                            });
-                        }
-                    });
-                }
-            });
-        }
+
+        res.json({
+            fname: results.user['fname'],
+            lname: results.user['lname'],
+            bday: results.user['dob'],
+            sex: results.user.sex ? 'female' : 'male',
+            follower_data: results.followers,
+            following_data: results.following,
+            message: req.flash('viewMessage'),
+            target_email: target_email,
+            distance: results.distance,
+            current_user_follows: results.dist == 1
+        });
     });
 });
 
@@ -165,37 +135,41 @@ router.post('/search', (req, res) => {
 
 router.get('/profile', ensureAuthenticated, (req, res) => {
 
-    User.getFollowers(req.user.email, function(err, followers) {
-        if (err) {
-            res.status(500).send(JSON.stringify({error: err}));
-        } else {
-            User.getFollowing(req.user.email, function(err, following) {
-                if (err) {
-                    res.status(500).send(JSON.stringify({error: err}));
-                } else {
-                    User.getNotifications(req.user.email, false, (err, notifs) => {
-                        if (err) {
-                            res.status(500).send(JSON.stringify({error: err}));
-                        }
-                        else {
-                            const sex = req.user.sex ? "female" : "male";
-                            res.send({
-                                fname: req.user.fname,
-                                lname: req.user.lname,
-                                bday: req.user.dob,
-                                sex: sex,
-                                email: req.user.email,
-                                following: following,
-                                followers: followers,
-                                notifications: notifs,
-                                message: req.flash('profileMessage')
-                            });
-                        }
-                    });
-                   
-                }
+    async.parallel({
+        followers: function(callback) {
+            User.getFollowers(req.user.email, (err, result) => {
+                return callback(err, result);
+            }) 
+        },
+        following: function(callback) {
+            User.getFollowing(req.user.email, (err, result) => {
+                return callback(err, result);
+            });
+        },
+        notifications: function (callback) {
+            User.getNotifications(req.user.email, (err, result) => {
+                return callback(err, result);
             });
         }
+    }, function(err, results) {
+        if (err) {
+            console.error(err);
+            return res.send(internal_err_msg(err));
+        }
+        
+        const sex = req.user.sex ? "female" : "male";
+        res.json({
+            fname: req.user.fname,
+            lname: req.user.lname,
+            school: req.user.school,
+            bday: req.user.dob,
+            sex: sex,
+            email: req.user.email,
+            following: results.following,
+            followers: results.followers,
+            notifications: results.notifications,
+            message: req.flash('profileMessage')
+        });
     });
 });
 

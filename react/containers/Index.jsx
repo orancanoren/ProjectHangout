@@ -8,26 +8,14 @@ class Index extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            local_data: null
-        }
-        
-        this.handleFlashback = this.handleFlashback.bind(this);
+        this.performToast = this.performToast.bind(this);
     }
 
-    handleFlashback(toast) {
-        <Toast toast={toast} />
+    performToast(message) {
+        Materialize.toast(message, 4000);
     }
 
     render() {
-        var displayed_item;
-        if (this.state.local_data) {
-            displayed_item = this.state.local_data;
-        }
-        else {
-            displayed_item = <a onClick={this.handleClick}>get data!</a>;
-        }
-
         return (
             <div>
                 <div className='valign-wrapper bg'>
@@ -37,7 +25,7 @@ class Index extends React.Component {
                             <h2 id='title'>Project Hangout</h2>
                             <h5 id="sub">Redefining the Network</h5>
                             <div style={{width: '400px', height: '500px'}}>
-                                <LoginForm handleFlashback={this.handleFlashback}/>
+                                <LoginForm handleToast={this.performToast} />
                             </div>
                         </div>
                     </div>

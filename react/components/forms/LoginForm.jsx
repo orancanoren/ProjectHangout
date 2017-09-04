@@ -18,6 +18,7 @@ class LoginForm extends React.Component {
         this.submitLogin = this.submitLogin.bind(this);
         this.onClickLogin = this.onClickLogin.bind(this);
         this.inputCheck = this.inputCheck.bind(this);
+        this.onClickForgotPass = this.onClickForgotPass.bind(this);
     }
 
     inputCheck(callback) {
@@ -27,7 +28,7 @@ class LoginForm extends React.Component {
         if (email == '' || pw == '')
             return callback(null, null);
         return callback(email, pw);
-    }   
+    }
 
     submitLogin(email, pw, callback) {
         const request = {
@@ -35,7 +36,8 @@ class LoginForm extends React.Component {
             url: '/api/login',
             data: {
                 email_input: email,
-                password_input: pw
+                password_input: pw,
+                rememberMe: document.getElementById('rememberMe-field').value
             }
         }
 
@@ -49,7 +51,7 @@ class LoginForm extends React.Component {
                 this.setState({
                     login_pending: false
                 });
-                return this.props.handleFlashback('Wrong email or password');
+                return this.props.handleToast('Wrong email or password');
             }
         })
         .catch((err) => {
@@ -62,15 +64,16 @@ class LoginForm extends React.Component {
         // 1 - Put the loading indicator
         this.inputCheck((email, pw) => {
             if (!email)
-                return this.props.handleFlashback('Please enter valid credentials');
+                return this.props.handleToast('Please enter valid credentials');
 
             this.setState({
                 login_pending: true
             });
-
+            document.getElementById('email_field').value = '';
+            document.getElementById('pw_field').value = '';
             this.submitLogin(email, pw, (err, auth) => {
                 if (auth)
-                    window.location = '/api/profile';
+                    window.location = '/profile';
                 else {
                     console.error('err in onCLickLogin:', err)
                 }
@@ -79,7 +82,14 @@ class LoginForm extends React.Component {
     }
 
     onClickForgotPass() {
-        alert('This functionality is under development');
+        this.props.handleToast('This functionality is under development');
+    }
+
+    componentWillUpdate() {
+        if (this.state.toast_message != '') {
+            this.props.handleToast(this.state.toast_message);
+            this.state.toast_message = '';
+        }
     }
 
     render() {
@@ -95,7 +105,8 @@ class LoginForm extends React.Component {
                         <Icon>lock_outline</Icon></Input>
                     </Col>
                     <Col s={12}>
-                        <Input label='Remember me' type='checkbox' name='rememberMe'/>
+                        <Input label='Remember me' type='checkbox' name='rememberMe'
+                        id='rememberMe-field' defaultChecked='checked'/>
                     </Col>
                 </Row>
                 <Row>
@@ -122,9 +133,5 @@ class LoginForm extends React.Component {
         );
     }
 }
-
-LoginForm.PropTypes = {
-    handleFlashback: PropTypes.func.isRequired
-};
 
 export default LoginForm;

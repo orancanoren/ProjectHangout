@@ -1,9 +1,12 @@
 var config = {
-    entry: './react/ReactApp.js',
+    entry:  {
+        index: './react/Index.jsx',
+        auth: './react/Authenticated.jsx'
+    },
      
     output: {
        path: __dirname + '/public/js/',
-       filename: 'react-app.js',
+       filename: '[name]-react.js',
     },
      
     module: {

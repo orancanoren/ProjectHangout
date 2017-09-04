@@ -47,13 +47,13 @@ router.route('/')
                             });
                         }
                         else {
-                            res.render('index.ejs', { message: req.flash('loginMessage') });
+                            res.render('index.ejs');
                         }
                     }
                 })
             }
             else {
-                res.render('index.ejs', { message: req.flash('loginMessage') });
+                res.render('index.ejs');
             }
         }
       })
@@ -168,44 +168,7 @@ router.get('/view/:target_email', (req, res) => {
 // 2 - Authorization required routes
 
 router.get('/profile', ensureAuthenticated, (req, res) => {
-    // Fetch followers, following and notifications from DB in parallel
-    async.parallel({
-        followers: function(callback) {
-            User.getFollowers(req.user.email, (err, result) => {
-                return callback(err, result);
-            }) 
-        },
-        following: function(callback) {
-            User.getFollowing(req.user.email, (err, result) => {
-                return callback(err, result);
-            });
-        },
-        notifications: function (callback) {
-            User.getNotifications(req.user.email, (err, result) => {
-                return callback(err, result);
-            });
-        }
-    }, function(err, results) {
-        if (err) {
-            console.error(err);
-            return res.send(internal_err_msg(err));
-        }
-        
-        const sex = req.user.sex ? "female" : "male";
-        const params = {
-            fname: req.user.fname,
-            lname: req.user.lname,
-            school: req.user.school,
-            bday: req.user.dob,
-            sex: sex,
-            email: req.user.email,
-            following: results.following,
-            followers: results.followers,
-            notifications: results.notifications,
-            message: req.flash('profileMessage')
-        };
-        res.render('profile.ejs', params);
-    });
+        res.render('profile.ejs');
 });
 
 router.get('/logout', ensureAuthenticated, (req, res) => {

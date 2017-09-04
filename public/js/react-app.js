@@ -33363,33 +33363,18 @@ var Index = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Index.__proto__ || Object.getPrototypeOf(Index)).call(this, props));
 
-        _this.state = {
-            local_data: null
-        };
-
-        _this.handleFlashback = _this.handleFlashback.bind(_this);
+        _this.performToast = _this.performToast.bind(_this);
         return _this;
     }
 
     _createClass(Index, [{
-        key: 'handleFlashback',
-        value: function handleFlashback(toast) {
-            _react2.default.createElement(_reactMaterialize.Toast, { toast: toast });
+        key: 'performToast',
+        value: function performToast(message) {
+            Materialize.toast(message, 4000);
         }
     }, {
         key: 'render',
         value: function render() {
-            var displayed_item;
-            if (this.state.local_data) {
-                displayed_item = this.state.local_data;
-            } else {
-                displayed_item = _react2.default.createElement(
-                    'a',
-                    { onClick: this.handleClick },
-                    'get data!'
-                );
-            }
-
             return _react2.default.createElement(
                 'div',
                 null,
@@ -33415,7 +33400,7 @@ var Index = function (_React$Component) {
                             _react2.default.createElement(
                                 'div',
                                 { style: { width: '400px', height: '500px' } },
-                                _react2.default.createElement(_LoginForm2.default, { handleFlashback: this.handleFlashback })
+                                _react2.default.createElement(_LoginForm2.default, { handleToast: this.performToast })
                             )
                         )
                     )
@@ -33483,6 +33468,7 @@ var LoginForm = function (_React$Component) {
         _this.submitLogin = _this.submitLogin.bind(_this);
         _this.onClickLogin = _this.onClickLogin.bind(_this);
         _this.inputCheck = _this.inputCheck.bind(_this);
+        _this.onClickForgotPass = _this.onClickForgotPass.bind(_this);
         return _this;
     }
 
@@ -33505,7 +33491,8 @@ var LoginForm = function (_React$Component) {
                 url: '/api/login',
                 data: {
                     email_input: email,
-                    password_input: pw
+                    password_input: pw,
+                    rememberMe: document.getElementById('rememberMe-field').value
                 }
             };
 
@@ -33517,7 +33504,7 @@ var LoginForm = function (_React$Component) {
                     _this2.setState({
                         login_pending: false
                     });
-                    return _this2.props.handleFlashback('Wrong email or password');
+                    return _this2.props.handleToast('Wrong email or password');
                 }
             }).catch(function (err) {
                 console.error(err);
@@ -33531,12 +33518,13 @@ var LoginForm = function (_React$Component) {
 
             // 1 - Put the loading indicator
             this.inputCheck(function (email, pw) {
-                if (!email) return _this3.props.handleFlashback('Please enter valid credentials');
+                if (!email) return _this3.props.handleToast('Please enter valid credentials');
 
                 _this3.setState({
                     login_pending: true
                 });
-
+                document.getElementById('email_field').value = '';
+                document.getElementById('pw_field').value = '';
                 _this3.submitLogin(email, pw, function (err, auth) {
                     if (auth) window.location = '/api/profile';else {
                         console.error('err in onCLickLogin:', err);
@@ -33547,7 +33535,15 @@ var LoginForm = function (_React$Component) {
     }, {
         key: 'onClickForgotPass',
         value: function onClickForgotPass() {
-            alert('This functionality is under development');
+            this.props.handleToast('This functionality is under development');
+        }
+    }, {
+        key: 'componentWillUpdate',
+        value: function componentWillUpdate() {
+            if (this.state.toast_message != '') {
+                this.props.handleToast(this.state.toast_message);
+                this.state.toast_message = '';
+            }
         }
     }, {
         key: 'render',
@@ -33566,7 +33562,7 @@ var LoginForm = function (_React$Component) {
                             { name: 'email_input', type: 'email', label: 'Email', id: 'email_field' },
                             _react2.default.createElement(
                                 _reactMaterialize.Icon,
-                                { className: 'light-blue darken-4' },
+                                null,
                                 'mail_outline'
                             )
                         )
@@ -33579,7 +33575,7 @@ var LoginForm = function (_React$Component) {
                             { name: 'password_input', type: 'password', label: 'Password', id: 'pw_field' },
                             _react2.default.createElement(
                                 _reactMaterialize.Icon,
-                                { className: 'light-blue darken-4' },
+                                null,
                                 'lock_outline'
                             )
                         )
@@ -33587,7 +33583,8 @@ var LoginForm = function (_React$Component) {
                     _react2.default.createElement(
                         _reactMaterialize.Col,
                         { s: 12 },
-                        _react2.default.createElement(_reactMaterialize.Input, { label: 'Remember me', type: 'checkbox', name: 'rememberMe' })
+                        _react2.default.createElement(_reactMaterialize.Input, { label: 'Remember me', type: 'checkbox', name: 'rememberMe',
+                            id: 'rememberMe-field', defaultChecked: 'checked' })
                     )
                 ),
                 _react2.default.createElement(
@@ -33637,10 +33634,6 @@ var LoginForm = function (_React$Component) {
 
     return LoginForm;
 }(_react2.default.Component);
-
-LoginForm.PropTypes = {
-    handleFlashback: _propTypes2.default.func.isRequired
-};
 
 exports.default = LoginForm;
 
