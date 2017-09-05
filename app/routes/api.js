@@ -4,6 +4,10 @@ var User = require('../models/user');
 var Token = require('../utils/token');
 var async = require('async');
 
+function internal_err_msg(err) {
+    return '<h1>Internal Server Error</h1><br /><h5>' + err + '</h5>';
+}
+
 router.use('*', (req, res, next) => {
     res.setHeader('Content-Type', 'application/json');
     next();

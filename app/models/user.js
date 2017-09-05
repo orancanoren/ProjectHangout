@@ -302,7 +302,7 @@ User.unfollow = function(follower_mail, following_mail, callback) {
 
 User.searchByName = function(name, callback) {
     const query = [
-        'SELECT fname, lname, email',
+        'SELECT fname, lname, email, school',
         'FROM Users',
         'WHERE LOWER(fname) LIKE $1 OR LOWER(lname) LIKE $1',
         'ORDER BY fname',

@@ -1,21 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { ProgressBar, Icon, NavItem } from 'react-materialize';
 
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            redirect_target: ''
+        }
+
         this.handleSearch = this.handleSearch.bind(this);
     }
 
-    handleSearch() {
-        const query = document.getElementById('search');
+    handleSearch(event) {
+        event.preventDefault();
+
+        const query = document.getElementById('search').value;
+        console.log('handleSearch got:', query);
+        
         if ( query == '' )
             return;
 
-        console.log(query);
+        this.props.search_handler(query);
+        this.props.history.push('/search');
+    }
+
+    componentDidMount() {
+        document.getElementById('search').value = '';
     }
 
     render() {
@@ -31,6 +44,7 @@ class Navbar extends React.Component {
         
         return (
             <nav className="light-blue darken-4" style={{ height: navbar_height }}>
+                { this.state.redirect_target && <Redirect to={this.state.redirect_target} />}
                 <div className="container">
                     <div className="nav-wrapper" style={{ lineHeight: navbar_height + 'px'}}>
                         <Link to='/profile' className='left'>
@@ -53,8 +67,7 @@ class Navbar extends React.Component {
                                     <div className="input-field">
                                         <input id="search" type="search" placeholder='Search' 
                                         style={{ width: '300px', height: logo_len, lineHeight: navbar_height,
-                                        marginTop: normalizer + "px", marginBottom: normalizer + "px", 
-                                        marginLeft: normalizer + "px", marginRight: normalizer + "px"
+                                        marginTop: normalizer + "px", marginBottom: normalizer + "px"
                                      }} />
                                     </div>
                                 </form>
@@ -73,4 +86,4 @@ Navbar.propTypes = {
     logged_in: PropTypes.bool.isRequired
 };
 
-export default Navbar;
+export default withRouter(Navbar);

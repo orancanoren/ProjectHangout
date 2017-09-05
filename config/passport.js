@@ -62,6 +62,7 @@ module.exports = function(passport) {
 	function(req, email, password, done) {
 		// asynchronous
 		process.nextTick(() => {
+			console.log('local signup got:\n', req.body);
 			var fname = req.body.fname;
 			var lname = req.body.lname;
 			var bday = req.body.bday;

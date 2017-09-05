@@ -10,7 +10,6 @@ class LoginForm extends React.Component {
         super(props);
 
         this.state = {
-            flashback: '',
             login_failed: false,
             login_pending: false
         }
@@ -83,13 +82,6 @@ class LoginForm extends React.Component {
 
     onClickForgotPass() {
         this.props.handleToast('This functionality is under development');
-    }
-
-    componentWillUpdate() {
-        if (this.state.toast_message != '') {
-            this.props.handleToast(this.state.toast_message);
-            this.state.toast_message = '';
-        }
     }
 
     render() {

@@ -61,6 +61,7 @@ router.route('/')
         failureFlash: true,
         failureRedirect: '/'
     }), (req, res, next) => {
+        console.log(req.body);
         if (req.isAuthenticated()) {
             if (req.body.rememberMe) {
                 Token.issue(req.user.email, (err, token) => {
