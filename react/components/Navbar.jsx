@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { ProgressBar } from 'react-materialize';
 
 class Navbar extends React.Component {
     constructor(props) {
@@ -19,9 +20,10 @@ class Navbar extends React.Component {
         
         return (
             <nav className="light-blue darken-4">
+                <ProgressBar progress={this.props.progress} />
                 <div className="container">
                     <div className="nav-wrapper">
-                        <Link to='/' className='left'>
+                        <Link to='/profile' className='left'>
                             <div id='brand-logo'>
                                 <img src="/assets/BrandLogo.png" 
                                 style={{width: String(logo_len) + 'px', height: String(logo_len) + 'px', marginTop: ((navbar_height - logo_len)/2) + "px", 

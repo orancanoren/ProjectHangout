@@ -16,7 +16,6 @@ router.post('/login', passport.authenticate('local-login', {
         }),
         (req, res, next) => {
             // 1 - Set (or don't set) remember me cookie
-            console.log('api post req body:\n', req.body);
             if (req.body.rememberMe != 'checked') return next();
 
             Token.issue(req.user, (err, token) => {

@@ -8,7 +8,7 @@ class Profile extends React.Component {
             <div>
                 <Row>
                     <Col s={6} offset='s3'>
-                        <ProfileCard />
+                        <ProfileCard data = {this.props.data}/>
                     </Col>
                 </Row>
             </div>
