@@ -47,7 +47,7 @@ class Authenticated extends React.Component {
         return (
             <div>
                 <header>
-                    <Navbar title='Project Hangout' logged_in={true} progress={this.state.progress}/>
+                    <Navbar title='Project Hangout' logged_in={true} />
                 </header>
                 <main>
                     <Switch>

@@ -1405,7 +1405,7 @@ module.exports = { debugTool: debugTool };
 "use strict";
 
 
-var bind = __webpack_require__(119);
+var bind = __webpack_require__(118);
 var isBuffer = __webpack_require__(289);
 
 /*global toString:true*/
@@ -8570,10 +8570,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(120);
+    adapter = __webpack_require__(119);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(120);
+    adapter = __webpack_require__(119);
   }
   return adapter;
 }
@@ -13222,12 +13222,6 @@ exports.default = PaginationButton;
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(288);
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 
 
@@ -13243,7 +13237,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 120 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13254,7 +13248,7 @@ var settle = __webpack_require__(292);
 var buildURL = __webpack_require__(294);
 var parseHeaders = __webpack_require__(295);
 var isURLSameOrigin = __webpack_require__(296);
-var createError = __webpack_require__(121);
+var createError = __webpack_require__(120);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(297);
 
 module.exports = function xhrAdapter(config) {
@@ -13431,7 +13425,7 @@ module.exports = function xhrAdapter(config) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 121 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13456,7 +13450,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 122 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13468,7 +13462,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 123 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13492,6 +13486,12 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(288);
 
 /***/ }),
 /* 124 */
@@ -32867,7 +32867,7 @@ exports.default = Toast;
 
 
 var utils = __webpack_require__(14);
-var bind = __webpack_require__(119);
+var bind = __webpack_require__(118);
 var Axios = __webpack_require__(290);
 var defaults = __webpack_require__(73);
 
@@ -32902,9 +32902,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(123);
+axios.Cancel = __webpack_require__(122);
 axios.CancelToken = __webpack_require__(304);
-axios.isCancel = __webpack_require__(122);
+axios.isCancel = __webpack_require__(121);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -33064,7 +33064,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(121);
+var createError = __webpack_require__(120);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -33483,7 +33483,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(14);
 var transformData = __webpack_require__(301);
-var isCancel = __webpack_require__(122);
+var isCancel = __webpack_require__(121);
 var defaults = __webpack_require__(73);
 
 /**
@@ -33636,7 +33636,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(123);
+var Cancel = __webpack_require__(122);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -33767,10 +33767,21 @@ var Navbar = function (_React$Component) {
     function Navbar(props) {
         _classCallCheck(this, Navbar);
 
-        return _possibleConstructorReturn(this, (Navbar.__proto__ || Object.getPrototypeOf(Navbar)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (Navbar.__proto__ || Object.getPrototypeOf(Navbar)).call(this, props));
+
+        _this.handleSearch = _this.handleSearch.bind(_this);
+        return _this;
     }
 
     _createClass(Navbar, [{
+        key: 'handleSearch',
+        value: function handleSearch() {
+            var query = document.getElementById('search');
+            if (query == '') return;
+
+            console.log(query);
+        }
+    }, {
         key: 'render',
         value: function render() {
             var authButton;
@@ -33792,19 +33803,19 @@ var Navbar = function (_React$Component) {
                 )
             );
 
-            var navbar_height = 64;
-            var logo_len = 58;
+            var navbar_height = 44;
+            var logo_len = 35;
+            var normalizer = (navbar_height - logo_len) / 2;
 
             return _react2.default.createElement(
                 'nav',
-                { className: 'light-blue darken-4' },
-                _react2.default.createElement(_reactMaterialize.ProgressBar, { progress: this.props.progress }),
+                { className: 'light-blue darken-4', style: { height: navbar_height } },
                 _react2.default.createElement(
                     'div',
                     { className: 'container' },
                     _react2.default.createElement(
                         'div',
-                        { className: 'nav-wrapper' },
+                        { className: 'nav-wrapper', style: { lineHeight: navbar_height + 'px' } },
                         _react2.default.createElement(
                             _reactRouterDom.Link,
                             { to: '/profile', className: 'left' },
@@ -33812,15 +33823,15 @@ var Navbar = function (_React$Component) {
                                 'div',
                                 { id: 'brand-logo' },
                                 _react2.default.createElement('img', { src: '/assets/BrandLogo.png',
-                                    style: { width: String(logo_len) + 'px', height: String(logo_len) + 'px', marginTop: (navbar_height - logo_len) / 2 + "px",
-                                        marginBottom: (navbar_height - logo_len) / 2 + "px", marginLeft: (navbar_height - logo_len) / 2 + "px", marginRight: (navbar_height - logo_len) / 2 + "px" },
+                                    style: { width: logo_len + 'px', height: logo_len + 'px', marginTop: normalizer + "px",
+                                        marginBottom: normalizer + "px", marginLeft: normalizer + "px", marginRight: normalizer + "px" },
                                     className: 'valign'
                                 }),
                                 _react2.default.createElement(
                                     'div',
-                                    { className: 'brand-logo hide-on-med-and-down valign', style: { fontSize: '17px', height: String(logo_len) + 'px', marginTop: (navbar_height - logo_len) / 2 + "px",
-                                            marginBottom: (navbar_height - logo_len) / 2 + "px", marginLeft: (navbar_height - logo_len) / 2 + "px",
-                                            marginRight: (navbar_height - logo_len) / 2 + "px" } },
+                                    { className: 'brand-logo hide-on-med-and-down', style: { fontSize: '17px', height: logo_len + 'px', marginTop: normalizer + "px",
+                                            marginBottom: normalizer + "px", marginLeft: normalizer + "px",
+                                            marginRight: normalizer + "px", lineHeight: logo_len + 'px' } },
                                     this.props.title
                                 )
                             )
@@ -33828,7 +33839,28 @@ var Navbar = function (_React$Component) {
                         _react2.default.createElement(
                             'ul',
                             { id: 'nav-mobile', className: 'right' },
-                            authButton
+                            _react2.default.createElement(
+                                'li',
+                                null,
+                                _react2.default.createElement(
+                                    'form',
+                                    { onSubmit: this.handleSearch },
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'input-field' },
+                                        _react2.default.createElement('input', { id: 'search', type: 'search', placeholder: 'Search',
+                                            style: { width: '300px', height: logo_len, lineHeight: navbar_height,
+                                                marginTop: normalizer + "px", marginBottom: normalizer + "px",
+                                                marginLeft: normalizer + "px", marginRight: normalizer + "px"
+                                            } })
+                                    )
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'li',
+                                null,
+                                authButton
+                            )
                         )
                     )
                 )
@@ -33878,7 +33910,7 @@ var _reactDom = __webpack_require__(91);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _axios = __webpack_require__(118);
+var _axios = __webpack_require__(123);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -33943,7 +33975,7 @@ var Authenticated = function (_React$Component) {
                 _react2.default.createElement(
                     'header',
                     null,
-                    _react2.default.createElement(_Navbar2.default, { title: 'Project Hangout', logged_in: true, progress: this.state.progress })
+                    _react2.default.createElement(_Navbar2.default, { title: 'Project Hangout', logged_in: true })
                 ),
                 _react2.default.createElement(
                     'main',
@@ -34064,10 +34096,6 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRouterDom = __webpack_require__(48);
 
-var _axios = __webpack_require__(118);
-
-var _axios2 = _interopRequireDefault(_axios);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34088,6 +34116,7 @@ var Profile = function (_React$Component) {
     _createClass(Profile, [{
         key: 'render',
         value: function render() {
+            console.log('Profile Card got data:\n', this.props.data);
             var profile_display;
             var profile_data = this.props.data;
             if (profile_data.fname) {
@@ -34116,12 +34145,12 @@ var Profile = function (_React$Component) {
                         actions: [_react2.default.createElement(
                             _reactRouterDom.Link,
                             { to: '/followers', key: 1 },
-                            this.props.follower_count,
+                            profile_data.followers.length,
                             ' followers'
                         ), _react2.default.createElement(
                             _reactRouterDom.Link,
                             { to: '/following', key: 2 },
-                            this.props.following_count,
+                            profile_data.following.length,
                             ' following'
                         )] },
                     _react2.default.createElement(

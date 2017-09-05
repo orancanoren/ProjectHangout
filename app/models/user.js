@@ -93,7 +93,6 @@ User.addNewUser = function(fname, lname, email, dob, pwhash, sex, school, callba
         }
         
         else {
-            console.log('after signup, postgres returned:\n', res.rows);
             return callback(null, res.rows[0]);
         }
     });
@@ -362,7 +361,7 @@ User.newEvent = function(eventObject, callback) {
 
             db.cypher(qp, (err, result) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     callback(err);
                 }
                 else {
@@ -406,7 +405,6 @@ User.generateHash = function(password, next) {
 }
 
 User.validPassword = function(password, pass, next) {
-    console.log(password, pass, typeof(password), typeof(pass));
     return bcrypt.compareSync(password, pass, next);
 }
 

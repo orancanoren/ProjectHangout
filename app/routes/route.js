@@ -4,6 +4,7 @@ var User = require('../models/user');
 const Token = require('../utils/token');
 var async = require('async');
 var reactDOM = require('react-dom');
+var path = require('path');
 
 // 0 - Utilities
 
@@ -16,11 +17,10 @@ function internal_err_msg(err) {
 router.all('*', (req, res, next) => {
     console.log('[' + req.method + ']', req.url, '-', req.ip);
     next();
-})
+});
 
 router.route('/')
     .get( (req, res) => {
-        console.log('Current tokens:\n', Token.tokens);
         if (req.isAuthenticated()) {
             res.redirect('/profile');
         } else {
@@ -47,13 +47,13 @@ router.route('/')
                             });
                         }
                         else {
-                            res.render('index.ejs');
+                            res.sendFile(path.join(__dirname, '../../views/', 'index.html'));
                         }
                     }
                 })
             }
             else {
-                res.render('index.ejs');
+                res.sendFile(path.join(__dirname, '../../views/', 'index.html'));
             }
         }
       })
@@ -73,102 +73,23 @@ router.route('/')
                         httpOnly: true,
                         maxAge: 604800000 // 7 days
                     });
-                    console.log('token', token, ' issued!');
                 });
             }
             res.redirect('/profile');
         }
-    });
+});
 
-
-router.route('/signup')/*
-      .get( (req, res) => {
-        if (req.isAuthenticated()) {
-            res.redirect('/profile');
-        } else {
-            res.render('signup.ejs', { message: req.flash('signupMessage') });
-        }
-      })*/
-      .post( passport.authenticate('local-signup', {
+router.post('/signup', 
+    (req, res, next) => { ( passport.authenticate('local-signup', {
             successRedirect: '/profile',
             failureRedirect: '/signup',
-            failureFlash: true
-        }));
-
-router.route('/search')
-      .post( (req, res) => {
-        const target = req.body.search_query;
-        User.searchByName(target, (err, results) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send(err500 + '<h5>Error in searchByName()</h5>');
-            }
-            else {
-                res.render('search', {
-                    search_query: target,
-                    search_results: results
-                });
-            }
-        });
-    });
-
-router.get('/view/:target_email', (req, res) => {
-    var target_email = req.params.target_email;
-    if (req.isAuthenticated() && req.user.email == target_email)
-        return res.redirect('/profile');
-
-    async.parallel({
-        user: function(callback) {
-            User.getByEmail({ email: target_email, getPw: false }, (err, user) => {
-                return callback(err, user);
-            })
-        },
-        followers: function (callback) {
-            User.getFollowers(target_email, (err, followers) => {
-                return callback(err, followers);
-            })
-        },
-        following: function(callback) {
-            User.getFollowing(target_email, (err, following) => {
-                return callback(err, following);
-            })
-        },
-        distance: function(callback) {
-            if (req.isAuthenticated()) {
-                User.getDistance(req.user.email, target_email, (err, dist) => {
-                    console.log('returning distance!');
-                    return callback(err, dist);
-                });
-            }
-            else {
-                return callback(null, null);
-            }
-        }
-    }, function (err, results) {
-        if (err) {
-            console.error(err);
-            return res.send(internal_err_msg(err));
-        }
-
-        res.render('limitedView.ejs', {
-            fname: results.user['fname'],
-            lname: results.user['lname'],
-            bday: results.user['dob'],
-            sex: results.user.sex ? 'female' : 'male',
-            follower_data: results.followers,
-            following_data: results.following,
-            message: req.flash('viewMessage'),
-            target_email: target_email,
-            distance: results.distance,
-            current_user_follows: results.dist == 1
-        });
-    });
-});
+            failureFlash: true })) }
+);
 
 // 2 - Authorization required routes
 
 router.get('/profile', ensureAuthenticated, (req, res) => {
-        res.render('profile.ejs');
+    res.sendFile(path.join(__dirname, '../../views/', 'authorized.html'));
 });
 
 router.get('/logout', ensureAuthenticated, (req, res) => {
@@ -176,67 +97,6 @@ router.get('/logout', ensureAuthenticated, (req, res) => {
     res.clearCookie('rememberMe');
     req.logout();
     res.redirect('/');
-});
-
-router.get('/follow/:target_email', ensureAuthenticated, (req, res) => {
-    var target_email = req.params.target_email;
-    if (target_email == req.user.email) {
-        req.flash('viewMessage', 'You cannot follow yourself');
-        return res.redirect('/view/'+target);
-    } else if (target_email == null) {
-        req.flash('viewMessage', 'Cannot follow');
-        return res.redirect('/view/' + target_email);
-    } else {
-        User.newFollow(req.user.email, target_email, function(err) {
-            if (err) {
-                console.error(err);
-                req.flash('viewMessage', 'following failed');
-                return res.redirect('/view/' + target_email);
-            } else {
-                req.flash('viewMessage', 'following success');
-                return res.redirect('/view/' + target_email);
-            }
-        });
-    }
-});
-
-router.get('/unfollow/:target_email', (req, res) => {
-    if (!req.isAuthenticated()) {
-        res.redirect('/');
-    }
-
-    var target_email = req.params.target_email;
-    if (target_email == req.user.email) {
-        req.flash('viewMessage', 'You cannot follow yourself');
-        res.redirect('/view/'+target);
-    } else if (target_email == null) {
-        req.flash('viewMessage', 'Cannot follow');
-        res.redirect('/view/' + target_email);
-    } else {
-        User.unfollow(req.user.email, target_email, function(err) {
-            if (err) {
-                console.log(err);
-                req.flash('viewMessage', 'unfollowing failed');
-                res.redirect('/view/' + target_email);
-            } else {
-                req.flash('viewMessage', 'unfollowed successfully');
-                res.redirect('/view/' + target_email);
-            }
-        });
-    }
-});
-
-router.get('/notifications', ensureAuthenticated, (req, res) => {
-    User.getNotifications(req.user.email, (err, notifs) => {
-        if (err) {
-            res.send(err500 + '<h4>Error in getNotifications()</h4>');
-        }
-        else {
-            res.render('notifications.ejs', {
-                notifications: notifs
-            });
-        }
-    });
 });
 
 function ensureAuthenticated(req, res, next) {

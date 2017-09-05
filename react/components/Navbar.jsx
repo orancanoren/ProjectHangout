@@ -1,11 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { ProgressBar } from 'react-materialize';
+import { ProgressBar, Icon, NavItem } from 'react-materialize';
 
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
+
+        this.handleSearch = this.handleSearch.bind(this);
+    }
+
+    handleSearch() {
+        const query = document.getElementById('search');
+        if ( query == '' )
+            return;
+
+        console.log(query);
     }
 
     render() {
@@ -15,29 +25,41 @@ class Navbar extends React.Component {
         else
             authButton = <li><a href="/">Login</a></li>;
 
-        const navbar_height = 64;
-        const logo_len = 58;
+        const navbar_height = 44;
+        const logo_len = 35;
+        const normalizer = ((navbar_height - logo_len)/2);
         
         return (
-            <nav className="light-blue darken-4">
-                <ProgressBar progress={this.props.progress} />
+            <nav className="light-blue darken-4" style={{ height: navbar_height }}>
                 <div className="container">
-                    <div className="nav-wrapper">
+                    <div className="nav-wrapper" style={{ lineHeight: navbar_height + 'px'}}>
                         <Link to='/profile' className='left'>
                             <div id='brand-logo'>
                                 <img src="/assets/BrandLogo.png" 
-                                style={{width: String(logo_len) + 'px', height: String(logo_len) + 'px', marginTop: ((navbar_height - logo_len)/2) + "px", 
-                                marginBottom: ((navbar_height - logo_len)/2) + "px", marginLeft: ((navbar_height - logo_len)/2) + "px", marginRight: ((navbar_height - logo_len)/2) + "px"}}
+                                style={{width: logo_len + 'px', height: logo_len + 'px', marginTop: normalizer + "px", 
+                                marginBottom: normalizer + "px", marginLeft: normalizer + "px", marginRight: normalizer + "px"}}
                                 className='valign'
                                 />
-                                <div className='brand-logo hide-on-med-and-down valign' style=
-                                {{ fontSize: '17px', height: String(logo_len) + 'px',  marginTop: ((navbar_height - logo_len)/2) + "px", 
-                                marginBottom: ((navbar_height - logo_len)/2) + "px", marginLeft: ((navbar_height - logo_len)/2) + "px",
-                                 marginRight: ((navbar_height - logo_len)/2) + "px" }}>{this.props.title}</div>
+                                <div className='brand-logo hide-on-med-and-down' style=
+                                {{ fontSize: '17px', height: logo_len + 'px',  marginTop: normalizer + "px", 
+                                marginBottom: normalizer + "px", marginLeft: normalizer + "px",
+                                 marginRight: normalizer + "px", lineHeight: logo_len + 'px'}}>
+                                    {this.props.title}</div>
                             </div>
                         </Link>
                         <ul id="nav-mobile" className="right">
-                            {authButton}
+                            <li>
+                                <form onSubmit={this.handleSearch}>
+                                    <div className="input-field">
+                                        <input id="search" type="search" placeholder='Search' 
+                                        style={{ width: '300px', height: logo_len, lineHeight: navbar_height,
+                                        marginTop: normalizer + "px", marginBottom: normalizer + "px", 
+                                        marginLeft: normalizer + "px", marginRight: normalizer + "px"
+                                     }} />
+                                    </div>
+                                </form>
+                            </li>
+                            <li>{authButton}</li>
                         </ul>
                     </div>
                 </div>

@@ -3,10 +3,10 @@ import Navbar from '../components/Navbar.jsx';
 import { Card, CardTitle } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 
 class Profile extends React.Component {
     render() {
+        console.log('Profile Card got data:\n', this.props.data);
         var profile_display;
         const profile_data = this.props.data;
         if (profile_data.fname) {
@@ -18,8 +18,8 @@ class Profile extends React.Component {
                     <span style={{fontSize: '17px', fontWeight: '300'}} 
                     className='grey-text text-lighten-2'>Student at {profile_data.school}</span> </CardTitle>}
 
-                actions={[<Link to='/followers' key={1}>{this.props.follower_count} followers</Link>,
-                    <Link to='/following' key={2}>{this.props.following_count} following</Link>]}>
+                actions={[<Link to='/followers' key={1}>{profile_data.followers.length} followers</Link>,
+                    <Link to='/following' key={2}>{profile_data.following.length} following</Link>]}>
                 <ul>
                     <li key={1}>{new Date(profile_data.bday).toISOString().substring(0, 10)}</li>
                     <li key={2}>{profile_data.sex}</li>
