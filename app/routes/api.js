@@ -104,18 +104,17 @@ router.get('/view/:target_email', (req, res) => {
             console.error(err);
             return res.json({ error: internal_err_msg(err) });
         }
-
         res.json({
             fname: results.user['fname'],
             lname: results.user['lname'],
             bday: results.user['dob'],
             sex: results.user.sex ? 'female' : 'male',
-            follower_data: results.followers,
-            following_data: results.following,
-            message: req.flash('viewMessage'),
-            target_email: target_email,
+            followers: results.followers,
+            following: results.following,
+            school: results.user.school,
             distance: results.distance,
-            current_user_follows: results.dist == 1
+            current_user_follows: results.dist == 1,
+            bio: results.user.bio
         });
     });
 });

@@ -19,7 +19,6 @@ class Index extends React.Component {
         return (
             <div>
                 <div className='valign-wrapper bg'>
-
                     <div className='valign centered-content center'>
                         <div>
                             <h2 id='title'>Project Hangout</h2>

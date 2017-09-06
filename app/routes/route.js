@@ -92,7 +92,7 @@ router.route('/signup')
 
 // 2 - Authorization required routes
 
-router.get(['/profile', '/search'], ensureAuthenticated, (req, res) => {
+router.get(['/profile', '/search', '/view/:mail'], ensureAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/', 'authorized.html'));
 });
 

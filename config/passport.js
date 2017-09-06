@@ -77,16 +77,23 @@ module.exports = function(passport) {
 				}
 
 				// check to see if there's already a user with that email
-				if (existingUser)
+				if (existingUser) {
+					console.log('existing user');
 					return done(null, false, req.flash('signupMessage', 'Email in use.'));
+				}
+					
 
 				//  If the user is logged in, this means that the user is updating info
-				if(req.user)
+				if(req.user) {
+					console.log('user logged in');
 					return done(null, false, req.flash('signupMessage', 'Authenticated user cannot signup!'))
+				}
+					
 				else {
 					//  We're not logged in, so we're creating a brand new user.
 					var pwHash = User.generateHash(password);
 					User.addNewUser(fname, lname, email, bday, pwHash, sex, school, function (err, user) {
+						console.log('adding new user');
 						if (err) {
 							console.error(err);
 							return done(err);

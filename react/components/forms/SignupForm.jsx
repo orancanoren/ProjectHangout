@@ -12,32 +12,18 @@ class SignupForm extends React.Component {
 
     render() {
         return (
-            <CardPanel className='transparent'>
-                <form action='/' method='POST'>
-                    <Row><Col s={12}>
+            <div>
+                <form action='/signup' method='POST'>
                         <Input label='First Name' name='fname' />
-                    </Col></Row>
-                    <Row><Col s={12}>
                     <Input label='Last Name' name='lname' />
-                    </Col></Row>
-                    <Row><Col s={12}>
                     <Input label='School' name='school' />
-                    </Col></Row>
-                    <Row><Col s={12}>
                     <Input className='datepicker' label='Date of Birth' type='date' name='bday' />
-                    </Col></Row>
-                    <Row><Col s={12}>
                     <Input label='Email' validate type='email' name='email_input'/>
-                    </Col></Row>
-                    <Row><Col s={12}>
                     <Input label='Password' validate type='password' name='password_input'/>
-                    </Col></Row>
-                    <Row><Col s={12}>
-                        <Button waves='light' className="btn light-blue" 
-                        type="submit" name="action">Submit</Button>
-                    </Col></Row>
+                    <Button waves='light' className="btn light-blue" 
+                    type="submit" name="action">Submit</Button>
                 </form>    
-            </CardPanel>
+            </div>
         );
     }
 }

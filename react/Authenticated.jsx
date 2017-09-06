@@ -6,13 +6,14 @@ import axios from 'axios';
 import Navbar from './components/Navbar.jsx';
 import Profile from './containers/Profile.jsx';
 import Search from './containers/Search.jsx';
+import View from './containers/View.jsx';
 
 class Authenticated extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            profile_data: {},
+            profile_data: null,
             progress: 0,
             search_query: ''
         }
@@ -66,6 +67,7 @@ class Authenticated extends React.Component {
                         <Route exact path='/search'>
                             <Search query={this.state.search_query} />
                         </Route>
+                        <Route path='/view/:target_email' component={View} />
                     </Switch>
                 </main>
             </div>

@@ -10,9 +10,6 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <video id="bgvid" playsInline autoPlay muted loop>
-                    <source src="/assets/background.mp4" type="video/mp4" />
-                </video>
                 <LoginBar />
                 <Switch>
                     <Route exact path='/'>

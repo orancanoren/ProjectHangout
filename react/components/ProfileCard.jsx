@@ -4,22 +4,25 @@ import { Card, CardTitle } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-class Profile extends React.Component {
+class ProfileCard extends React.Component {
     render() {
-        console.log('Profile Card got data:\n', this.props.data);
         var profile_display;
         const profile_data = this.props.data;
-        if (profile_data.fname) {
+        if (profile_data) {
+            console.log('Profile Card got data:\n', this.props.data);
             profile_display =
             <Card 
                 className='small'
-                header={<CardTitle image='assets/profile_cover.jpg'>
+                header={<CardTitle image='http://localhost:3000/assets/profile_cover.jpg'>
                     {profile_data.fname} {profile_data.lname} <br />
                     <span style={{fontSize: '17px', fontWeight: '300'}} 
                     className='grey-text text-lighten-2'>Student at {profile_data.school}</span> </CardTitle>}
-
+                
                 actions={[<Link to='/followers' key={1}>{profile_data.followers.length} followers</Link>,
-                    <Link to='/following' key={2}>{profile_data.following.length} following</Link>]}>
+                    <Link to='/following' key={2}>{profile_data.following.length} following</Link>]}
+                    
+                style={{ width: '800px', height: '300px', margin: 'auto' }}
+                    >
                 <ul>
                     <li key={1}>{new Date(profile_data.bday).toISOString().substring(0, 10)}</li>
                     <li key={2}>{profile_data.sex}</li>
@@ -39,8 +42,8 @@ class Profile extends React.Component {
     }
 }
 
-Profile.PropTypes = {
+ProfileCard.PropTypes = {
     data: PropTypes.object.isRequired
 }
 
-export default Profile;
+export default ProfileCard;

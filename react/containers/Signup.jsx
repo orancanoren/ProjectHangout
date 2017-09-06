@@ -11,8 +11,8 @@ class Signup extends React.Component {
                         <div>
                             <h2 id='title'>Project Hangout</h2>
                             <h5 id="sub">Redefining the Network</h5>
-                            <div style={{width: '400px', height: '500px'}}>
-                                <SignupForm />
+                            <div className='frosted_card'>
+                                <SignupForm handleToast={this.performToast} />
                             </div>
                         </div>
                     </div>
