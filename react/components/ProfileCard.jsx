@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom';
 
 class ProfileCard extends React.Component {
     render() {
+        const pathArray = window.location.href.split('/');
+        const image_location = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
+
         var profile_display;
         const profile_data = this.props.data;
         if (profile_data) {
@@ -13,7 +16,7 @@ class ProfileCard extends React.Component {
             profile_display =
             <Card 
                 className='small'
-                header={<CardTitle image='http://localhost:3000/assets/profile_cover.jpg'>
+                header={<CardTitle image={image_location}>
                     {profile_data.fname} {profile_data.lname} <br />
                     <span style={{fontSize: '17px', fontWeight: '300'}} 
                     className='grey-text text-lighten-2'>Student at {profile_data.school}</span> </CardTitle>}

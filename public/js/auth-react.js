@@ -33941,6 +33941,9 @@ var ProfileCard = function (_React$Component) {
     _createClass(ProfileCard, [{
         key: 'render',
         value: function render() {
+            var pathArray = window.location.href.split('/');
+            var image_location = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
+
             var profile_display;
             var profile_data = this.props.data;
             if (profile_data) {
@@ -33951,7 +33954,7 @@ var ProfileCard = function (_React$Component) {
                         className: 'small',
                         header: _react2.default.createElement(
                             _reactMaterialize.CardTitle,
-                            { image: 'http://localhost:3000/assets/profile_cover.jpg' },
+                            { image: image_location },
                             profile_data.fname,
                             ' ',
                             profile_data.lname,
