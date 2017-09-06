@@ -5,16 +5,23 @@ const style = { height: '30px', width: '90px' }
 const fontStyle = { lineHeight: '30px', fontSize: '12px', marginRight: '3px', marginLeft: '3px'}
 
 class FollowButton extends React.Component {
-
     render() {
-        return (
+        var button;
+        if (this.props.unfollow) {
+            button =
             <Button style={style} className='red accent-3'>
                 <span style={fontStyle}>UNFOLLOW</span>
-            </Button>
-        );
+            </Button>;
+        }
+        else {
+            button =
+            <Button style={style} className='blue'>
+                <span style={fontStyle}>FOLLOW</span>
+            </Button>;
+        }
+
+        return button;
     }
 }
-
-// { !this.props.unfollow && <Button className='blue'>FOLLOW</Button> }
 
 export default FollowButton;

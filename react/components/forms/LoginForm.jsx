@@ -86,42 +86,33 @@ class LoginForm extends React.Component {
 
     render() {
         return (
-            <CardPanel className='transparent'>
-                <Row>
-                    <Col s={12}>
-                        <Input name='email_input' type='email' label='Email' id='email_field'>
-                        <Icon>mail_outline</Icon></Input>
-                    </Col>
-                    <Col s={12}>
-                        <Input name='password_input' type='password' label='Password' id='pw_field'>
-                        <Icon>lock_outline</Icon></Input>
-                    </Col>
-                    <Col s={12}>
-                        <Input label='Remember me' type='checkbox' name='rememberMe'
+            <div>
+                <Input name='email_input' type='email' label='Email' id='email_field'>
+                <Icon>mail_outline</Icon></Input>
+                <Input name='password_input' type='password' label='Password' id='pw_field'>
+                <Icon>lock_outline</Icon></Input>
+                <br />
+                <div style={{ height: '50px', width: '100%'}}>
+                    <div style={{ float: 'left' }}>
+                    <Input label='Remember me' type='checkbox' name='rememberMe'
                         id='rememberMe-field' defaultChecked='checked'/>
-                    </Col>
-                </Row>
+                    </div>
+                </div>
                 <Row>
-                    <Col s={12}>
-                    {   !this.state.login_pending &&
-                        <Button waves='light' className="btn light-blue" 
+                {   !this.state.login_pending &&
+                    <Button waves='light' className="btn light-blue" 
                         type="submit" name="action" onClick={this.onClickLogin}>Submit</Button>
-                    }
-                    {
-                        this.state.login_pending &&
-                        <Preloader size='small'/>
-                    }
-                    </Col>
+                }
+                {
+                    this.state.login_pending &&
+                    <Preloader size='small'/>
+                }
                 </Row>
                 <Row>
-                    <Col s={6}>
-                    <Link to='/signup'><p className="margin medium-small link_p">Register now</p></Link>
-                    </Col>
-                    <Col s={6}>
-                        <p className="margin right-align medium-small link_p" onClick={this.onClickForgotPass}>Forgot password?</p>
-                    </Col>
+                <Link to='/signup'><span className="link_p left">Register now</span></Link>
+                    <span className="link_p right" onClick={this.onClickForgotPass}>Forgot password?</span>
                 </Row>
-            </CardPanel>
+            </div>
         );
     }
 }

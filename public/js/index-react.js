@@ -33896,6 +33896,10 @@ var App = function (_React$Component) {
     return App;
 }(_react2.default.Component);
 
+/*
+
+*/
+
 _reactDom2.default.render(_react2.default.createElement(
     _reactRouterDom.BrowserRouter,
     null,
@@ -34198,7 +34202,7 @@ var Index = function (_React$Component) {
                             ),
                             _react2.default.createElement(
                                 'div',
-                                { style: { width: '400px', height: '500px' } },
+                                { className: 'frosted_card' },
                                 _react2.default.createElement(_LoginForm2.default, { handleToast: this.performToast })
                             )
                         )
@@ -34339,40 +34343,33 @@ var LoginForm = function (_React$Component) {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
-                _reactMaterialize.CardPanel,
-                { className: 'transparent' },
+                'div',
+                null,
                 _react2.default.createElement(
-                    _reactMaterialize.Row,
-                    null,
+                    _reactMaterialize.Input,
+                    { name: 'email_input', type: 'email', label: 'Email', id: 'email_field' },
                     _react2.default.createElement(
-                        _reactMaterialize.Col,
-                        { s: 12 },
-                        _react2.default.createElement(
-                            _reactMaterialize.Input,
-                            { name: 'email_input', type: 'email', label: 'Email', id: 'email_field' },
-                            _react2.default.createElement(
-                                _reactMaterialize.Icon,
-                                null,
-                                'mail_outline'
-                            )
-                        )
-                    ),
+                        _reactMaterialize.Icon,
+                        null,
+                        'mail_outline'
+                    )
+                ),
+                _react2.default.createElement(
+                    _reactMaterialize.Input,
+                    { name: 'password_input', type: 'password', label: 'Password', id: 'pw_field' },
                     _react2.default.createElement(
-                        _reactMaterialize.Col,
-                        { s: 12 },
-                        _react2.default.createElement(
-                            _reactMaterialize.Input,
-                            { name: 'password_input', type: 'password', label: 'Password', id: 'pw_field' },
-                            _react2.default.createElement(
-                                _reactMaterialize.Icon,
-                                null,
-                                'lock_outline'
-                            )
-                        )
-                    ),
+                        _reactMaterialize.Icon,
+                        null,
+                        'lock_outline'
+                    )
+                ),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'div',
+                    { style: { height: '50px', width: '100%' } },
                     _react2.default.createElement(
-                        _reactMaterialize.Col,
-                        { s: 12 },
+                        'div',
+                        { style: { float: 'left' } },
                         _react2.default.createElement(_reactMaterialize.Input, { label: 'Remember me', type: 'checkbox', name: 'rememberMe',
                             id: 'rememberMe-field', defaultChecked: 'checked' })
                     )
@@ -34380,42 +34377,30 @@ var LoginForm = function (_React$Component) {
                 _react2.default.createElement(
                     _reactMaterialize.Row,
                     null,
-                    _react2.default.createElement(
-                        _reactMaterialize.Col,
-                        { s: 12 },
-                        !this.state.login_pending && _react2.default.createElement(
-                            _reactMaterialize.Button,
-                            { waves: 'light', className: 'btn light-blue',
-                                type: 'submit', name: 'action', onClick: this.onClickLogin },
-                            'Submit'
-                        ),
-                        this.state.login_pending && _react2.default.createElement(_reactMaterialize.Preloader, { size: 'small' })
-                    )
+                    !this.state.login_pending && _react2.default.createElement(
+                        _reactMaterialize.Button,
+                        { waves: 'light', className: 'btn light-blue',
+                            type: 'submit', name: 'action', onClick: this.onClickLogin },
+                        'Submit'
+                    ),
+                    this.state.login_pending && _react2.default.createElement(_reactMaterialize.Preloader, { size: 'small' })
                 ),
                 _react2.default.createElement(
                     _reactMaterialize.Row,
                     null,
                     _react2.default.createElement(
-                        _reactMaterialize.Col,
-                        { s: 6 },
+                        _reactRouterDom.Link,
+                        { to: '/signup' },
                         _react2.default.createElement(
-                            _reactRouterDom.Link,
-                            { to: '/signup' },
-                            _react2.default.createElement(
-                                'p',
-                                { className: 'margin medium-small link_p' },
-                                'Register now'
-                            )
+                            'span',
+                            { className: 'link_p left' },
+                            'Register now'
                         )
                     ),
                     _react2.default.createElement(
-                        _reactMaterialize.Col,
-                        { s: 6 },
-                        _react2.default.createElement(
-                            'p',
-                            { className: 'margin right-align medium-small link_p', onClick: this.onClickForgotPass },
-                            'Forgot password?'
-                        )
+                        'span',
+                        { className: 'link_p right', onClick: this.onClickForgotPass },
+                        'Forgot password?'
                     )
                 )
             );

@@ -34278,13 +34278,12 @@ var Search = function (_React$Component) {
 
     _createClass(Search, [{
         key: 'fetchSearchResults',
-        value: function fetchSearchResults() {
+        value: function fetchSearchResults(query) {
             var _this2 = this;
 
             _axios2.default.post('/api/search', {
-                search_query: this.props.query
+                search_query: query
             }).then(function (response) {
-                console.log('got response\n', response);
                 _this2.setState({
                     search_results: response.data
                 });
@@ -34295,7 +34294,15 @@ var Search = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            this.fetchSearchResults();
+            this.fetchSearchResults(this.props.query);
+        }
+    }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            this.setState({
+                search_results: null
+            });
+            this.fetchSearchResults(nextProps.query);
         }
     }, {
         key: 'render',
@@ -34315,7 +34322,7 @@ var Search = function (_React$Component) {
             } else if (this.state.search_results.length == 0) {
                 render_element = _react2.default.createElement(
                     'p',
-                    null,
+                    { className: 'center' },
                     'No results!'
                 );
             } else {
@@ -34497,22 +34504,35 @@ var FollowButton = function (_React$Component) {
     _createClass(FollowButton, [{
         key: 'render',
         value: function render() {
-            return _react2.default.createElement(
-                _reactMaterialize.Button,
-                { style: style, className: 'red accent-3' },
-                _react2.default.createElement(
-                    'span',
-                    { style: fontStyle },
-                    'UNFOLLOW'
-                )
-            );
+            var button;
+            if (this.props.unfollow) {
+                button = _react2.default.createElement(
+                    _reactMaterialize.Button,
+                    { style: style, className: 'red accent-3' },
+                    _react2.default.createElement(
+                        'span',
+                        { style: fontStyle },
+                        'UNFOLLOW'
+                    )
+                );
+            } else {
+                button = _react2.default.createElement(
+                    _reactMaterialize.Button,
+                    { style: style, className: 'blue' },
+                    _react2.default.createElement(
+                        'span',
+                        { style: fontStyle },
+                        'FOLLOW'
+                    )
+                );
+            }
+
+            return button;
         }
     }]);
 
     return FollowButton;
 }(_react2.default.Component);
-
-// { !this.props.unfollow && <Button className='blue'>FOLLOW</Button> }
 
 exports.default = FollowButton;
 

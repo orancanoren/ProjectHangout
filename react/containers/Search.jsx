@@ -14,12 +14,11 @@ class Search extends React.Component {
         this.fetchSearchResults = this.fetchSearchResults.bind(this);
     }
 
-    fetchSearchResults() {
+    fetchSearchResults(query) {
         axios.post('/api/search', {
-            search_query: this.props.query
+            search_query: query
         })
         .then((response) => {
-            console.log('got response\n', response);
             this.setState({
                 search_results: response.data
             })
@@ -30,7 +29,14 @@ class Search extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchSearchResults();
+        this.fetchSearchResults(this.props.query);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            search_results: null
+        });
+        this.fetchSearchResults(nextProps.query);
     }
 
     render() {
@@ -43,7 +49,7 @@ class Search extends React.Component {
             </div>;
         }
         else if (this.state.search_results.length == 0) {
-            render_element = <p>No results!</p>
+            render_element = <p className='center'>No results!</p>
         }
         else {
             var view_cards = [];

@@ -80,16 +80,19 @@ router.route('/')
         }
 });
 
-router.post('/signup', 
-    (req, res, next) => { ( passport.authenticate('local-signup', {
+router.route('/signup')
+    .post((req, res, next) => { ( passport.authenticate('local-signup', {
             successRedirect: '/profile',
             failureRedirect: '/signup',
-            failureFlash: true })) }
-);
+            failureFlash: true })) 
+    })
+    .get((req, res, next) => {
+        res.redirect('/');
+    })
 
 // 2 - Authorization required routes
 
-router.get('/profile', ensureAuthenticated, (req, res) => {
+router.get(['/profile', '/search'], ensureAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/', 'authorized.html'));
 });
 

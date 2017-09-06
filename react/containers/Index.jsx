@@ -24,7 +24,7 @@ class Index extends React.Component {
                         <div>
                             <h2 id='title'>Project Hangout</h2>
                             <h5 id="sub">Redefining the Network</h5>
-                            <div style={{width: '400px', height: '500px'}}>
+                            <div className='frosted_card'>
                                 <LoginForm handleToast={this.performToast} />
                             </div>
                         </div>
