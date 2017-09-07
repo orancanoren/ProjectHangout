@@ -12,7 +12,6 @@ class ProfileCard extends React.Component {
         var profile_display;
         const profile_data = this.props.data;
         if (profile_data) {
-            console.log('Profile Card got data:\n', this.props.data);
             profile_display =
             <Card 
                 className='small'

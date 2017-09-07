@@ -10,6 +10,7 @@ class ViewCard extends React.Component {
         var view_display;
         const profile_data = this.props.data;
         if (profile_data.fname) {
+            console.log('ViewCard got data:\n', this.props.data);
             view_display =
             <Card style={{ height: '100px', width: '600px', margin: 'auto'}}>
                 <Link to = {'view/' + profile_data.email}>
@@ -18,6 +19,7 @@ class ViewCard extends React.Component {
                     <br />
                 <span style={{fontSize: '17px', fontWeight: '300'}} 
                 className='grey-text'>Student at {profile_data.school}</span>
+                [{profile_data.distance}]
             </Card>;
         }
         else {

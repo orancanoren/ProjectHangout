@@ -7,6 +7,7 @@ import Navbar from './components/Navbar.jsx';
 import Profile from './containers/Profile.jsx';
 import Search from './containers/Search.jsx';
 import View from './containers/View.jsx';
+import FollowView from './containers/FollowView.jsx';
 
 class Authenticated extends React.Component {
     constructor(props) {
@@ -54,6 +55,17 @@ class Authenticated extends React.Component {
     }
 
     render() {
+        var FollowerView;
+        var FollowingView;
+        if (this.state.profile_data) {
+            FollowerView = <FollowView data={this.state.profile_data.followers} />;
+            FollowingView = <FollowView data={this.state.profile_data.following} />;
+        }
+        else {
+            FollowerView = <FollowView data={null} />;
+            FollowingView = <FollowView data={null} />;
+        }
+
         return (
             <div>
                 <header>
@@ -68,6 +80,12 @@ class Authenticated extends React.Component {
                             <Search query={this.state.search_query} />
                         </Route>
                         <Route path='/view/:target_email' component={View} />
+                        <Route path='/followers'>
+                            { FollowerView }
+                        </Route>
+                        <Route path='/following'>
+                            { FollowingView }
+                        </Route>
                     </Switch>
                 </main>
             </div>

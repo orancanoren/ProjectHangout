@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 314);
+/******/ 	return __webpack_require__(__webpack_require__.s = 315);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -3840,6 +3840,241 @@ var createPath = function createPath(location) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Toast = exports.Tag = exports.Tabs = exports.Table = exports.Tab = exports.Slider = exports.Slide = exports.SideNavItem = exports.SideNav = exports.Section = exports.SearchForm = exports.Row = exports.ProgressBar = exports.Preloader = exports.Parallax = exports.PaginationButton = exports.Pagination = exports.OverlayTrigger = exports.Overlay = exports.Navbar = exports.NavItem = exports.Modal = exports.MenuItem = exports.MediaBox = exports.Input = exports.Icon = exports.Footer = exports.Dropdown = exports.Divider = exports.Container = exports.CollectionItem = exports.Collection = exports.CollapsibleItem = exports.Collapsible = exports.Col = exports.Chip = exports.CardTitle = exports.CardPanel = exports.Card = exports.Carousel = exports.Button = exports.Breadcrumb = exports.Badge = exports.Autocomplete = undefined;
+
+var _Autocomplete = __webpack_require__(165);
+
+var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
+
+var _Badge = __webpack_require__(166);
+
+var _Badge2 = _interopRequireDefault(_Badge);
+
+var _Breadcrumb = __webpack_require__(167);
+
+var _Breadcrumb2 = _interopRequireDefault(_Breadcrumb);
+
+var _Button = __webpack_require__(56);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Carousel = __webpack_require__(168);
+
+var _Carousel2 = _interopRequireDefault(_Carousel);
+
+var _Card = __webpack_require__(169);
+
+var _Card2 = _interopRequireDefault(_Card);
+
+var _CardPanel = __webpack_require__(170);
+
+var _CardPanel2 = _interopRequireDefault(_CardPanel);
+
+var _CardTitle = __webpack_require__(171);
+
+var _CardTitle2 = _interopRequireDefault(_CardTitle);
+
+var _Chip = __webpack_require__(89);
+
+var _Chip2 = _interopRequireDefault(_Chip);
+
+var _Col = __webpack_require__(27);
+
+var _Col2 = _interopRequireDefault(_Col);
+
+var _Collapsible = __webpack_require__(172);
+
+var _Collapsible2 = _interopRequireDefault(_Collapsible);
+
+var _CollapsibleItem = __webpack_require__(173);
+
+var _CollapsibleItem2 = _interopRequireDefault(_CollapsibleItem);
+
+var _Collection = __webpack_require__(174);
+
+var _Collection2 = _interopRequireDefault(_Collection);
+
+var _CollectionItem = __webpack_require__(175);
+
+var _CollectionItem2 = _interopRequireDefault(_CollectionItem);
+
+var _Container = __webpack_require__(176);
+
+var _Container2 = _interopRequireDefault(_Container);
+
+var _Divider = __webpack_require__(177);
+
+var _Divider2 = _interopRequireDefault(_Divider);
+
+var _Dropdown = __webpack_require__(178);
+
+var _Dropdown2 = _interopRequireDefault(_Dropdown);
+
+var _Footer = __webpack_require__(179);
+
+var _Footer2 = _interopRequireDefault(_Footer);
+
+var _Icon = __webpack_require__(18);
+
+var _Icon2 = _interopRequireDefault(_Icon);
+
+var _Input = __webpack_require__(180);
+
+var _Input2 = _interopRequireDefault(_Input);
+
+var _MediaBox = __webpack_require__(181);
+
+var _MediaBox2 = _interopRequireDefault(_MediaBox);
+
+var _MenuItem = __webpack_require__(182);
+
+var _MenuItem2 = _interopRequireDefault(_MenuItem);
+
+var _Modal = __webpack_require__(183);
+
+var _Modal2 = _interopRequireDefault(_Modal);
+
+var _NavItem = __webpack_require__(269);
+
+var _NavItem2 = _interopRequireDefault(_NavItem);
+
+var _Navbar = __webpack_require__(270);
+
+var _Navbar2 = _interopRequireDefault(_Navbar);
+
+var _Overlay = __webpack_require__(91);
+
+var _Overlay2 = _interopRequireDefault(_Overlay);
+
+var _OverlayTrigger = __webpack_require__(90);
+
+var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
+
+var _Pagination = __webpack_require__(271);
+
+var _Pagination2 = _interopRequireDefault(_Pagination);
+
+var _PaginationButton = __webpack_require__(118);
+
+var _PaginationButton2 = _interopRequireDefault(_PaginationButton);
+
+var _Parallax = __webpack_require__(272);
+
+var _Parallax2 = _interopRequireDefault(_Parallax);
+
+var _Preloader = __webpack_require__(273);
+
+var _Preloader2 = _interopRequireDefault(_Preloader);
+
+var _ProgressBar = __webpack_require__(275);
+
+var _ProgressBar2 = _interopRequireDefault(_ProgressBar);
+
+var _Row = __webpack_require__(40);
+
+var _Row2 = _interopRequireDefault(_Row);
+
+var _SearchForm = __webpack_require__(276);
+
+var _SearchForm2 = _interopRequireDefault(_SearchForm);
+
+var _Section = __webpack_require__(277);
+
+var _Section2 = _interopRequireDefault(_Section);
+
+var _SideNav = __webpack_require__(278);
+
+var _SideNav2 = _interopRequireDefault(_SideNav);
+
+var _SideNavItem = __webpack_require__(279);
+
+var _SideNavItem2 = _interopRequireDefault(_SideNavItem);
+
+var _Slide = __webpack_require__(281);
+
+var _Slide2 = _interopRequireDefault(_Slide);
+
+var _Slider = __webpack_require__(282);
+
+var _Slider2 = _interopRequireDefault(_Slider);
+
+var _Tab = __webpack_require__(283);
+
+var _Tab2 = _interopRequireDefault(_Tab);
+
+var _Table = __webpack_require__(284);
+
+var _Table2 = _interopRequireDefault(_Table);
+
+var _Tabs = __webpack_require__(285);
+
+var _Tabs2 = _interopRequireDefault(_Tabs);
+
+var _Tag = __webpack_require__(286);
+
+var _Tag2 = _interopRequireDefault(_Tag);
+
+var _Toast = __webpack_require__(287);
+
+var _Toast2 = _interopRequireDefault(_Toast);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.Autocomplete = _Autocomplete2.default;
+exports.Badge = _Badge2.default;
+exports.Breadcrumb = _Breadcrumb2.default;
+exports.Button = _Button2.default;
+exports.Carousel = _Carousel2.default;
+exports.Card = _Card2.default;
+exports.CardPanel = _CardPanel2.default;
+exports.CardTitle = _CardTitle2.default;
+exports.Chip = _Chip2.default;
+exports.Col = _Col2.default;
+exports.Collapsible = _Collapsible2.default;
+exports.CollapsibleItem = _CollapsibleItem2.default;
+exports.Collection = _Collection2.default;
+exports.CollectionItem = _CollectionItem2.default;
+exports.Container = _Container2.default;
+exports.Divider = _Divider2.default;
+exports.Dropdown = _Dropdown2.default;
+exports.Footer = _Footer2.default;
+exports.Icon = _Icon2.default;
+exports.Input = _Input2.default;
+exports.MediaBox = _MediaBox2.default;
+exports.MenuItem = _MenuItem2.default;
+exports.Modal = _Modal2.default;
+exports.NavItem = _NavItem2.default;
+exports.Navbar = _Navbar2.default;
+exports.Overlay = _Overlay2.default;
+exports.OverlayTrigger = _OverlayTrigger2.default;
+exports.Pagination = _Pagination2.default;
+exports.PaginationButton = _PaginationButton2.default;
+exports.Parallax = _Parallax2.default;
+exports.Preloader = _Preloader2.default;
+exports.ProgressBar = _ProgressBar2.default;
+exports.Row = _Row2.default;
+exports.SearchForm = _SearchForm2.default;
+exports.Section = _Section2.default;
+exports.SideNav = _SideNav2.default;
+exports.SideNavItem = _SideNavItem2.default;
+exports.Slide = _Slide2.default;
+exports.Slider = _Slider2.default;
+exports.Tab = _Tab2.default;
+exports.Table = _Table2.default;
+exports.Tabs = _Tabs2.default;
+exports.Tag = _Tag2.default;
+exports.Toast = _Toast2.default;
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -3852,7 +4087,7 @@ var createPath = function createPath(location) {
 
 
 
-var EventPluginHub = __webpack_require__(33);
+var EventPluginHub = __webpack_require__(34);
 var EventPluginUtils = __webpack_require__(57);
 
 var accumulateInto = __webpack_require__(94);
@@ -3976,7 +4211,7 @@ module.exports = EventPropagators;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4256,7 +4491,7 @@ module.exports = EventPluginHub;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4320,7 +4555,7 @@ SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 module.exports = SyntheticUIEvent;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4369,241 +4604,6 @@ var ReactInstanceMap = {
 };
 
 module.exports = ReactInstanceMap;
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Toast = exports.Tag = exports.Tabs = exports.Table = exports.Tab = exports.Slider = exports.Slide = exports.SideNavItem = exports.SideNav = exports.Section = exports.SearchForm = exports.Row = exports.ProgressBar = exports.Preloader = exports.Parallax = exports.PaginationButton = exports.Pagination = exports.OverlayTrigger = exports.Overlay = exports.Navbar = exports.NavItem = exports.Modal = exports.MenuItem = exports.MediaBox = exports.Input = exports.Icon = exports.Footer = exports.Dropdown = exports.Divider = exports.Container = exports.CollectionItem = exports.Collection = exports.CollapsibleItem = exports.Collapsible = exports.Col = exports.Chip = exports.CardTitle = exports.CardPanel = exports.Card = exports.Carousel = exports.Button = exports.Breadcrumb = exports.Badge = exports.Autocomplete = undefined;
-
-var _Autocomplete = __webpack_require__(165);
-
-var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
-
-var _Badge = __webpack_require__(166);
-
-var _Badge2 = _interopRequireDefault(_Badge);
-
-var _Breadcrumb = __webpack_require__(167);
-
-var _Breadcrumb2 = _interopRequireDefault(_Breadcrumb);
-
-var _Button = __webpack_require__(56);
-
-var _Button2 = _interopRequireDefault(_Button);
-
-var _Carousel = __webpack_require__(168);
-
-var _Carousel2 = _interopRequireDefault(_Carousel);
-
-var _Card = __webpack_require__(169);
-
-var _Card2 = _interopRequireDefault(_Card);
-
-var _CardPanel = __webpack_require__(170);
-
-var _CardPanel2 = _interopRequireDefault(_CardPanel);
-
-var _CardTitle = __webpack_require__(171);
-
-var _CardTitle2 = _interopRequireDefault(_CardTitle);
-
-var _Chip = __webpack_require__(89);
-
-var _Chip2 = _interopRequireDefault(_Chip);
-
-var _Col = __webpack_require__(27);
-
-var _Col2 = _interopRequireDefault(_Col);
-
-var _Collapsible = __webpack_require__(172);
-
-var _Collapsible2 = _interopRequireDefault(_Collapsible);
-
-var _CollapsibleItem = __webpack_require__(173);
-
-var _CollapsibleItem2 = _interopRequireDefault(_CollapsibleItem);
-
-var _Collection = __webpack_require__(174);
-
-var _Collection2 = _interopRequireDefault(_Collection);
-
-var _CollectionItem = __webpack_require__(175);
-
-var _CollectionItem2 = _interopRequireDefault(_CollectionItem);
-
-var _Container = __webpack_require__(176);
-
-var _Container2 = _interopRequireDefault(_Container);
-
-var _Divider = __webpack_require__(177);
-
-var _Divider2 = _interopRequireDefault(_Divider);
-
-var _Dropdown = __webpack_require__(178);
-
-var _Dropdown2 = _interopRequireDefault(_Dropdown);
-
-var _Footer = __webpack_require__(179);
-
-var _Footer2 = _interopRequireDefault(_Footer);
-
-var _Icon = __webpack_require__(18);
-
-var _Icon2 = _interopRequireDefault(_Icon);
-
-var _Input = __webpack_require__(180);
-
-var _Input2 = _interopRequireDefault(_Input);
-
-var _MediaBox = __webpack_require__(181);
-
-var _MediaBox2 = _interopRequireDefault(_MediaBox);
-
-var _MenuItem = __webpack_require__(182);
-
-var _MenuItem2 = _interopRequireDefault(_MenuItem);
-
-var _Modal = __webpack_require__(183);
-
-var _Modal2 = _interopRequireDefault(_Modal);
-
-var _NavItem = __webpack_require__(269);
-
-var _NavItem2 = _interopRequireDefault(_NavItem);
-
-var _Navbar = __webpack_require__(270);
-
-var _Navbar2 = _interopRequireDefault(_Navbar);
-
-var _Overlay = __webpack_require__(91);
-
-var _Overlay2 = _interopRequireDefault(_Overlay);
-
-var _OverlayTrigger = __webpack_require__(90);
-
-var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
-
-var _Pagination = __webpack_require__(271);
-
-var _Pagination2 = _interopRequireDefault(_Pagination);
-
-var _PaginationButton = __webpack_require__(118);
-
-var _PaginationButton2 = _interopRequireDefault(_PaginationButton);
-
-var _Parallax = __webpack_require__(272);
-
-var _Parallax2 = _interopRequireDefault(_Parallax);
-
-var _Preloader = __webpack_require__(273);
-
-var _Preloader2 = _interopRequireDefault(_Preloader);
-
-var _ProgressBar = __webpack_require__(275);
-
-var _ProgressBar2 = _interopRequireDefault(_ProgressBar);
-
-var _Row = __webpack_require__(40);
-
-var _Row2 = _interopRequireDefault(_Row);
-
-var _SearchForm = __webpack_require__(276);
-
-var _SearchForm2 = _interopRequireDefault(_SearchForm);
-
-var _Section = __webpack_require__(277);
-
-var _Section2 = _interopRequireDefault(_Section);
-
-var _SideNav = __webpack_require__(278);
-
-var _SideNav2 = _interopRequireDefault(_SideNav);
-
-var _SideNavItem = __webpack_require__(279);
-
-var _SideNavItem2 = _interopRequireDefault(_SideNavItem);
-
-var _Slide = __webpack_require__(281);
-
-var _Slide2 = _interopRequireDefault(_Slide);
-
-var _Slider = __webpack_require__(282);
-
-var _Slider2 = _interopRequireDefault(_Slider);
-
-var _Tab = __webpack_require__(283);
-
-var _Tab2 = _interopRequireDefault(_Tab);
-
-var _Table = __webpack_require__(284);
-
-var _Table2 = _interopRequireDefault(_Table);
-
-var _Tabs = __webpack_require__(285);
-
-var _Tabs2 = _interopRequireDefault(_Tabs);
-
-var _Tag = __webpack_require__(286);
-
-var _Tag2 = _interopRequireDefault(_Tag);
-
-var _Toast = __webpack_require__(287);
-
-var _Toast2 = _interopRequireDefault(_Toast);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.Autocomplete = _Autocomplete2.default;
-exports.Badge = _Badge2.default;
-exports.Breadcrumb = _Breadcrumb2.default;
-exports.Button = _Button2.default;
-exports.Carousel = _Carousel2.default;
-exports.Card = _Card2.default;
-exports.CardPanel = _CardPanel2.default;
-exports.CardTitle = _CardTitle2.default;
-exports.Chip = _Chip2.default;
-exports.Col = _Col2.default;
-exports.Collapsible = _Collapsible2.default;
-exports.CollapsibleItem = _CollapsibleItem2.default;
-exports.Collection = _Collection2.default;
-exports.CollectionItem = _CollectionItem2.default;
-exports.Container = _Container2.default;
-exports.Divider = _Divider2.default;
-exports.Dropdown = _Dropdown2.default;
-exports.Footer = _Footer2.default;
-exports.Icon = _Icon2.default;
-exports.Input = _Input2.default;
-exports.MediaBox = _MediaBox2.default;
-exports.MenuItem = _MenuItem2.default;
-exports.Modal = _Modal2.default;
-exports.NavItem = _NavItem2.default;
-exports.Navbar = _Navbar2.default;
-exports.Overlay = _Overlay2.default;
-exports.OverlayTrigger = _OverlayTrigger2.default;
-exports.Pagination = _Pagination2.default;
-exports.PaginationButton = _PaginationButton2.default;
-exports.Parallax = _Parallax2.default;
-exports.Preloader = _Preloader2.default;
-exports.ProgressBar = _ProgressBar2.default;
-exports.Row = _Row2.default;
-exports.SearchForm = _SearchForm2.default;
-exports.Section = _Section2.default;
-exports.SideNav = _SideNav2.default;
-exports.SideNavItem = _SideNavItem2.default;
-exports.Slide = _Slide2.default;
-exports.Slider = _Slider2.default;
-exports.Tab = _Tab2.default;
-exports.Table = _Table2.default;
-exports.Tabs = _Tabs2.default;
-exports.Tag = _Tag2.default;
-exports.Toast = _Toast2.default;
 
 /***/ }),
 /* 37 */
@@ -5300,7 +5300,7 @@ module.exports = TransactionImpl;
 
 
 
-var SyntheticUIEvent = __webpack_require__(34);
+var SyntheticUIEvent = __webpack_require__(35);
 var ViewportMetrics = __webpack_require__(101);
 
 var getEventModifierState = __webpack_require__(61);
@@ -7894,7 +7894,7 @@ module.exports = KeyEscapeUtils;
 var _prodInvariant = __webpack_require__(6);
 
 var ReactCurrentOwner = __webpack_require__(16);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(13);
 var ReactUpdates = __webpack_require__(17);
 
@@ -8550,6 +8550,12 @@ module.exports = getEventCharCode;
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(288);
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
@@ -8645,12 +8651,6 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(288);
 
 /***/ }),
 /* 75 */
@@ -12608,7 +12608,7 @@ var ReactDOMComponentTree = __webpack_require__(8);
 var ReactDOMContainerInfo = __webpack_require__(259);
 var ReactDOMFeatureFlags = __webpack_require__(260);
 var ReactFeatureFlags = __webpack_require__(98);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(13);
 var ReactMarkupChecksum = __webpack_require__(261);
 var ReactReconciler = __webpack_require__(28);
@@ -21138,7 +21138,7 @@ module.exports = ARIADOMPropertyConfig;
 
 
 
-var EventPropagators = __webpack_require__(32);
+var EventPropagators = __webpack_require__(33);
 var ExecutionEnvironment = __webpack_require__(9);
 var FallbackCompositionState = __webpack_require__(188);
 var SyntheticCompositionEvent = __webpack_require__(189);
@@ -21710,8 +21710,8 @@ module.exports = SyntheticInputEvent;
 
 
 
-var EventPluginHub = __webpack_require__(33);
-var EventPropagators = __webpack_require__(32);
+var EventPluginHub = __webpack_require__(34);
+var EventPropagators = __webpack_require__(33);
 var ExecutionEnvironment = __webpack_require__(9);
 var ReactDOMComponentTree = __webpack_require__(8);
 var ReactUpdates = __webpack_require__(17);
@@ -22767,7 +22767,7 @@ module.exports = DefaultEventPluginOrder;
 
 
 
-var EventPropagators = __webpack_require__(32);
+var EventPropagators = __webpack_require__(33);
 var ReactDOMComponentTree = __webpack_require__(8);
 var SyntheticMouseEvent = __webpack_require__(43);
 
@@ -23569,7 +23569,7 @@ var DOMLazyTree = __webpack_require__(29);
 var DOMNamespaces = __webpack_require__(63);
 var DOMProperty = __webpack_require__(20);
 var DOMPropertyOperations = __webpack_require__(105);
-var EventPluginHub = __webpack_require__(33);
+var EventPluginHub = __webpack_require__(34);
 var EventPluginRegistry = __webpack_require__(41);
 var ReactBrowserEventEmitter = __webpack_require__(46);
 var ReactDOMComponentFlags = __webpack_require__(93);
@@ -25139,7 +25139,7 @@ module.exports = quoteAttributeValueForBrowser;
 
 
 
-var EventPluginHub = __webpack_require__(33);
+var EventPluginHub = __webpack_require__(34);
 
 function runEventQueueInBatch(events) {
   EventPluginHub.enqueueEvents(events);
@@ -25872,7 +25872,7 @@ module.exports = ReactDOMTextarea;
 var _prodInvariant = __webpack_require__(6);
 
 var ReactComponentEnvironment = __webpack_require__(66);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(13);
 
 var ReactCurrentOwner = __webpack_require__(16);
@@ -26487,7 +26487,7 @@ var React = __webpack_require__(25);
 var ReactComponentEnvironment = __webpack_require__(66);
 var ReactCurrentOwner = __webpack_require__(16);
 var ReactErrorUtils = __webpack_require__(58);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(13);
 var ReactNodeTypes = __webpack_require__(109);
 var ReactReconciler = __webpack_require__(28);
@@ -28583,7 +28583,7 @@ module.exports = getUnboundedScrollPosition;
 
 
 var DOMProperty = __webpack_require__(20);
-var EventPluginHub = __webpack_require__(33);
+var EventPluginHub = __webpack_require__(34);
 var EventPluginUtils = __webpack_require__(57);
 var ReactComponentEnvironment = __webpack_require__(66);
 var ReactEmptyComponent = __webpack_require__(110);
@@ -29513,7 +29513,7 @@ module.exports = SVGDOMPropertyConfig;
 
 
 
-var EventPropagators = __webpack_require__(32);
+var EventPropagators = __webpack_require__(33);
 var ExecutionEnvironment = __webpack_require__(9);
 var ReactDOMComponentTree = __webpack_require__(8);
 var ReactInputSelection = __webpack_require__(114);
@@ -29710,7 +29710,7 @@ module.exports = SelectEventPlugin;
 var _prodInvariant = __webpack_require__(6);
 
 var EventListener = __webpack_require__(113);
-var EventPropagators = __webpack_require__(32);
+var EventPropagators = __webpack_require__(33);
 var ReactDOMComponentTree = __webpack_require__(8);
 var SyntheticAnimationEvent = __webpack_require__(250);
 var SyntheticClipboardEvent = __webpack_require__(251);
@@ -29721,7 +29721,7 @@ var SyntheticMouseEvent = __webpack_require__(43);
 var SyntheticDragEvent = __webpack_require__(255);
 var SyntheticTouchEvent = __webpack_require__(256);
 var SyntheticTransitionEvent = __webpack_require__(257);
-var SyntheticUIEvent = __webpack_require__(34);
+var SyntheticUIEvent = __webpack_require__(35);
 var SyntheticWheelEvent = __webpack_require__(258);
 
 var emptyFunction = __webpack_require__(12);
@@ -30025,7 +30025,7 @@ module.exports = SyntheticClipboardEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(34);
+var SyntheticUIEvent = __webpack_require__(35);
 
 /**
  * @interface FocusEvent
@@ -30066,7 +30066,7 @@ module.exports = SyntheticFocusEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(34);
+var SyntheticUIEvent = __webpack_require__(35);
 
 var getEventCharCode = __webpack_require__(72);
 var getEventKey = __webpack_require__(254);
@@ -30313,7 +30313,7 @@ module.exports = SyntheticDragEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(34);
+var SyntheticUIEvent = __webpack_require__(35);
 
 var getEventModifierState = __webpack_require__(61);
 
@@ -30653,7 +30653,7 @@ var _prodInvariant = __webpack_require__(6);
 
 var ReactCurrentOwner = __webpack_require__(16);
 var ReactDOMComponentTree = __webpack_require__(8);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 
 var getHostComponentFromComposite = __webpack_require__(117);
 var invariant = __webpack_require__(3);
@@ -32869,7 +32869,7 @@ exports.default = Toast;
 var utils = __webpack_require__(14);
 var bind = __webpack_require__(119);
 var Axios = __webpack_require__(290);
-var defaults = __webpack_require__(73);
+var defaults = __webpack_require__(74);
 
 /**
  * Create an instance of Axios
@@ -32952,7 +32952,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(73);
+var defaults = __webpack_require__(74);
 var utils = __webpack_require__(14);
 var InterceptorManager = __webpack_require__(299);
 var dispatchRequest = __webpack_require__(300);
@@ -33484,7 +33484,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(14);
 var transformData = __webpack_require__(301);
 var isCancel = __webpack_require__(122);
-var defaults = __webpack_require__(73);
+var defaults = __webpack_require__(74);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -33750,7 +33750,7 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactRouterDom = __webpack_require__(47);
 
-var _reactMaterialize = __webpack_require__(36);
+var _reactMaterialize = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33913,7 +33913,7 @@ var _Navbar = __webpack_require__(306);
 
 var _Navbar2 = _interopRequireDefault(_Navbar);
 
-var _reactMaterialize = __webpack_require__(36);
+var _reactMaterialize = __webpack_require__(32);
 
 var _propTypes = __webpack_require__(2);
 
@@ -33947,7 +33947,6 @@ var ProfileCard = function (_React$Component) {
             var profile_display;
             var profile_data = this.props.data;
             if (profile_data) {
-                console.log('Profile Card got data:\n', this.props.data);
                 profile_display = _react2.default.createElement(
                     _reactMaterialize.Card,
                     {
@@ -34025,12 +34024,125 @@ ProfileCard.PropTypes = {
 exports.default = ProfileCard;
 
 /***/ }),
-/* 309 */,
+/* 309 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Navbar = __webpack_require__(306);
+
+var _Navbar2 = _interopRequireDefault(_Navbar);
+
+var _reactMaterialize = __webpack_require__(32);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRouterDom = __webpack_require__(47);
+
+var _FollowButton = __webpack_require__(318);
+
+var _FollowButton2 = _interopRequireDefault(_FollowButton);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ViewCard = function (_React$Component) {
+    _inherits(ViewCard, _React$Component);
+
+    function ViewCard() {
+        _classCallCheck(this, ViewCard);
+
+        return _possibleConstructorReturn(this, (ViewCard.__proto__ || Object.getPrototypeOf(ViewCard)).apply(this, arguments));
+    }
+
+    _createClass(ViewCard, [{
+        key: 'render',
+        value: function render() {
+            var view_display;
+            var profile_data = this.props.data;
+            if (profile_data.fname) {
+                console.log('ViewCard got data:\n', this.props.data);
+                view_display = _react2.default.createElement(
+                    _reactMaterialize.Card,
+                    { style: { height: '100px', width: '600px', margin: 'auto' } },
+                    _react2.default.createElement(
+                        _reactRouterDom.Link,
+                        { to: 'view/' + profile_data.email },
+                        _react2.default.createElement(
+                            'span',
+                            { style: { float: 'left', fontWeight: 400 } },
+                            profile_data.fname,
+                            ' ',
+                            profile_data.lname
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        { style: { float: 'right' } },
+                        _react2.default.createElement(_FollowButton2.default, null)
+                    ),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'span',
+                        { style: { fontSize: '17px', fontWeight: '300' },
+                            className: 'grey-text' },
+                        'Student at ',
+                        profile_data.school
+                    ),
+                    '[',
+                    profile_data.distance,
+                    ']'
+                );
+            } else {
+                view_display = _react2.default.createElement(
+                    _reactMaterialize.Card,
+                    { className: 'small' },
+                    'Loading'
+                );
+            }
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                view_display
+            );
+        }
+    }]);
+
+    return ViewCard;
+}(_react2.default.Component);
+
+ViewCard.PropTypes = {
+    data: _propTypes2.default.object.isRequired
+};
+
+exports.default = ViewCard;
+
+/***/ }),
 /* 310 */,
 /* 311 */,
 /* 312 */,
 /* 313 */,
-/* 314 */
+/* 314 */,
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34048,7 +34160,7 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _reactRouterDom = __webpack_require__(47);
 
-var _axios = __webpack_require__(74);
+var _axios = __webpack_require__(73);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -34056,17 +34168,21 @@ var _Navbar = __webpack_require__(306);
 
 var _Navbar2 = _interopRequireDefault(_Navbar);
 
-var _Profile = __webpack_require__(315);
+var _Profile = __webpack_require__(316);
 
 var _Profile2 = _interopRequireDefault(_Profile);
 
-var _Search = __webpack_require__(316);
+var _Search = __webpack_require__(317);
 
 var _Search2 = _interopRequireDefault(_Search);
 
 var _View = __webpack_require__(319);
 
 var _View2 = _interopRequireDefault(_View);
+
+var _FollowView = __webpack_require__(320);
+
+var _FollowView2 = _interopRequireDefault(_FollowView);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34132,6 +34248,16 @@ var Authenticated = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var FollowerView;
+            var FollowingView;
+            if (this.state.profile_data) {
+                FollowerView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.followers });
+                FollowingView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.following });
+            } else {
+                FollowerView = _react2.default.createElement(_FollowView2.default, { data: null });
+                FollowingView = _react2.default.createElement(_FollowView2.default, { data: null });
+            }
+
             return _react2.default.createElement(
                 'div',
                 null,
@@ -34156,7 +34282,17 @@ var Authenticated = function (_React$Component) {
                             { exact: true, path: '/search' },
                             _react2.default.createElement(_Search2.default, { query: this.state.search_query })
                         ),
-                        _react2.default.createElement(_reactRouterDom.Route, { path: '/view/:target_email', component: _View2.default })
+                        _react2.default.createElement(_reactRouterDom.Route, { path: '/view/:target_email', component: _View2.default }),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { path: '/followers' },
+                            FollowerView
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { path: '/following' },
+                            FollowingView
+                        )
                     )
                 )
             );
@@ -34173,7 +34309,7 @@ _reactDom2.default.render(_react2.default.createElement(
 ), document.getElementById('react-app'));
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34193,7 +34329,7 @@ var _ProfileCard = __webpack_require__(308);
 
 var _ProfileCard2 = _interopRequireDefault(_ProfileCard);
 
-var _reactMaterialize = __webpack_require__(36);
+var _reactMaterialize = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34229,7 +34365,7 @@ var Profile = function (_React$Component) {
 exports.default = Profile;
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34245,13 +34381,13 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _axios = __webpack_require__(74);
+var _axios = __webpack_require__(73);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _reactMaterialize = __webpack_require__(36);
+var _reactMaterialize = __webpack_require__(32);
 
-var _ViewCard = __webpack_require__(317);
+var _ViewCard = __webpack_require__(309);
 
 var _ViewCard2 = _interopRequireDefault(_ViewCard);
 
@@ -34357,115 +34493,6 @@ var Search = function (_React$Component) {
 exports.default = Search;
 
 /***/ }),
-/* 317 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Navbar = __webpack_require__(306);
-
-var _Navbar2 = _interopRequireDefault(_Navbar);
-
-var _reactMaterialize = __webpack_require__(36);
-
-var _propTypes = __webpack_require__(2);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _reactRouterDom = __webpack_require__(47);
-
-var _FollowButton = __webpack_require__(318);
-
-var _FollowButton2 = _interopRequireDefault(_FollowButton);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ViewCard = function (_React$Component) {
-    _inherits(ViewCard, _React$Component);
-
-    function ViewCard() {
-        _classCallCheck(this, ViewCard);
-
-        return _possibleConstructorReturn(this, (ViewCard.__proto__ || Object.getPrototypeOf(ViewCard)).apply(this, arguments));
-    }
-
-    _createClass(ViewCard, [{
-        key: 'render',
-        value: function render() {
-            var view_display;
-            var profile_data = this.props.data;
-            if (profile_data.fname) {
-                view_display = _react2.default.createElement(
-                    _reactMaterialize.Card,
-                    { style: { height: '100px', width: '600px', margin: 'auto' } },
-                    _react2.default.createElement(
-                        _reactRouterDom.Link,
-                        { to: 'view/' + profile_data.email },
-                        _react2.default.createElement(
-                            'span',
-                            { style: { float: 'left', fontWeight: 400 } },
-                            profile_data.fname,
-                            ' ',
-                            profile_data.lname
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'span',
-                        { style: { float: 'right' } },
-                        _react2.default.createElement(_FollowButton2.default, null)
-                    ),
-                    _react2.default.createElement('br', null),
-                    _react2.default.createElement(
-                        'span',
-                        { style: { fontSize: '17px', fontWeight: '300' },
-                            className: 'grey-text' },
-                        'Student at ',
-                        profile_data.school
-                    )
-                );
-            } else {
-                view_display = _react2.default.createElement(
-                    _reactMaterialize.Card,
-                    { className: 'small' },
-                    'Loading'
-                );
-            }
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                view_display
-            );
-        }
-    }]);
-
-    return ViewCard;
-}(_react2.default.Component);
-
-ViewCard.PropTypes = {
-    data: _propTypes2.default.object.isRequired
-};
-
-exports.default = ViewCard;
-
-/***/ }),
 /* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -34482,7 +34509,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactMaterialize = __webpack_require__(36);
+var _reactMaterialize = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34560,7 +34587,7 @@ var _ProfileCard = __webpack_require__(308);
 
 var _ProfileCard2 = _interopRequireDefault(_ProfileCard);
 
-var _axios = __webpack_require__(74);
+var _axios = __webpack_require__(73);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -34626,6 +34653,89 @@ var View = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = View;
+
+/***/ }),
+/* 320 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _axios = __webpack_require__(73);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactMaterialize = __webpack_require__(32);
+
+var _ViewCard = __webpack_require__(309);
+
+var _ViewCard2 = _interopRequireDefault(_ViewCard);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FollowView = function (_React$Component) {
+    _inherits(FollowView, _React$Component);
+
+    function FollowView() {
+        _classCallCheck(this, FollowView);
+
+        return _possibleConstructorReturn(this, (FollowView.__proto__ || Object.getPrototypeOf(FollowView)).apply(this, arguments));
+    }
+
+    _createClass(FollowView, [{
+        key: 'render',
+        value: function render() {
+            var render_element;
+            if (this.props.data.length == 0) {
+                render_element = _react2.default.createElement(
+                    'p',
+                    { className: 'center' },
+                    'No data'
+                );
+            } else {
+                var view_cards = [];
+                for (var i = 0; i < this.props.data.length; i++) {
+                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { key: i + 1, data: this.props.data[i] }));
+                }
+                render_element = view_cards;
+            }
+
+            return _react2.default.createElement(
+                'div',
+                { style: { marginTop: '50px' } },
+                render_element
+            );
+        }
+    }]);
+
+    return FollowView;
+}(_react2.default.Component);
+
+FollowView.PropTypes = {
+    data: _propTypes2.default.array.isRequired
+};
+
+exports.default = FollowView;
 
 /***/ })
 /******/ ]);

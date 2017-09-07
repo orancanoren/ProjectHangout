@@ -120,18 +120,47 @@ router.get('/view/:target_email', (req, res) => {
 });
 
 router.post('/search', (req, res) => {
-    const search_query = req.body.search_query;
-    User.searchByName(search_query, (err, result) => {
+    async.waterfall([
+        function(callback) {
+            User.searchByName(req.body.search_query, (err, result) => {
+                return callback(err, result);
+            });
+        },
+        function (search_results, callback) {
+            if (req.isAuthenticated()) {
+                async.each(search_results, function(search_result, callback) {
+                    User.getDistance(req.user.email, search_result.email, (err, result) => {
+                        if (err)
+                            return callback(err);
+                        search_result.distance = result;
+                        callback();
+                    });
+                }, function(err) {
+                    if (err) {
+                        console.error(err);
+                    }
+                    else {
+                        return callback(null, search_results);
+                    }
+                })
+            }
+            else {
+                return callback(null, null);
+            }
+        }
+    ], function(err, results) {
         if (err) {
             console.error(err);
             res.json({
-                error: 'Error in searchByName()',
+                error: 'Error in route api/search',
                 description: err
             });
         }
         else {
-            res.json(result);
+            console.log('results:\n', results);
+            res.json(results);
         }
+            
     });
 });
 
