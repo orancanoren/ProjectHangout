@@ -27,7 +27,8 @@ class FollowView extends React.Component {
 }
 
 FollowView.PropTypes = {
-    data: PropTypes.array.isRequired
+    data: PropTypes.array.isRequired,
+    is_followers: PropTypes.bool
 }
 
 export default FollowView;

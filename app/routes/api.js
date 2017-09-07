@@ -157,7 +157,6 @@ router.post('/search', (req, res) => {
             });
         }
         else {
-            console.log('results:\n', results);
             res.json(results);
         }
             
@@ -234,7 +233,7 @@ router.post('/follow', ensureAuthenticated, (req, res) => {
                 });
             } else {
                 res.json({
-                    succes: true
+                    success: true
                 });
             }
         });
@@ -263,7 +262,7 @@ router.post('/unfollow/', ensureAuthenticated, (req, res) => {
                 });
             } else {
                 res.json({
-                    succes: true
+                    success: true
                 });
             }
         });

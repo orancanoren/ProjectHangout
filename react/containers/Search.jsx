@@ -8,7 +8,8 @@ class Search extends React.Component {
         super(props);
 
         this.state = {
-            search_results: null
+            search_results: null,
+            redirect_target: null
         }
 
         this.fetchSearchResults = this.fetchSearchResults.bind(this);
@@ -54,7 +55,8 @@ class Search extends React.Component {
         else {
             var view_cards = [];
             for (var i = 0; i < this.state.search_results.length; i++) {
-                view_cards.push(<ViewCard key={i + 1} data={this.state.search_results[i]} />);
+                view_cards.push(<ViewCard follow_enabled distance key={i + 1} 
+                    data={this.state.search_results[i]} />);
             }
             render_element = view_cards;
         }

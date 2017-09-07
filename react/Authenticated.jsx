@@ -74,7 +74,8 @@ class Authenticated extends React.Component {
                 <main>
                     <Switch>
                         <Route exact path='/profile'>
-                            <Profile data={this.state.profile_data}/>
+                            <Profile data={this.state.profile_data}
+                            updateProfileData={this.getProfileData}/>
                         </Route>
                         <Route exact path='/search'>
                             <Search query={this.state.search_query} />

@@ -10,7 +10,6 @@ class LoginForm extends React.Component {
         super(props);
 
         this.state = {
-            login_failed: false,
             login_pending: false
         }
 
@@ -75,6 +74,9 @@ class LoginForm extends React.Component {
                     window.location = '/profile';
                 else {
                     console.error('err in onCLickLogin:', err)
+                    this.setState({
+                        login_pending: false
+                    });
                 }
             });
         });
