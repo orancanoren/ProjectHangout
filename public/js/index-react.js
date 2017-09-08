@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 311);
+/******/ 	return __webpack_require__(__webpack_require__.s = 312);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -33819,7 +33819,8 @@ exports.default = LoginBar;
 /* 308 */,
 /* 309 */,
 /* 310 */,
-/* 311 */
+/* 311 */,
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33835,11 +33836,11 @@ var _LoginBar = __webpack_require__(306);
 
 var _LoginBar2 = _interopRequireDefault(_LoginBar);
 
-var _Signup = __webpack_require__(312);
+var _Signup = __webpack_require__(313);
 
 var _Signup2 = _interopRequireDefault(_Signup);
 
-var _Index = __webpack_require__(314);
+var _Index = __webpack_require__(315);
 
 var _Index2 = _interopRequireDefault(_Index);
 
@@ -33905,7 +33906,7 @@ _reactDom2.default.render(_react2.default.createElement(
 ), document.getElementById('react-app'));
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33921,7 +33922,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _SignupForm = __webpack_require__(313);
+var _SignupForm = __webpack_require__(314);
 
 var _SignupForm2 = _interopRequireDefault(_SignupForm);
 
@@ -33986,7 +33987,7 @@ var Signup = function (_React$Component) {
 exports.default = Signup;
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34062,7 +34063,7 @@ var SignupForm = function (_React$Component) {
 exports.default = SignupForm;
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34078,7 +34079,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _LoginForm = __webpack_require__(315);
+var _LoginForm = __webpack_require__(316);
 
 var _LoginForm2 = _interopRequireDefault(_LoginForm);
 
@@ -34160,7 +34161,7 @@ var Index = function (_React$Component) {
 exports.default = Index;
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

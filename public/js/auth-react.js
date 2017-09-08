@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 316);
+/******/ 	return __webpack_require__(__webpack_require__.s = 317);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -34152,6 +34152,10 @@ var _axios = __webpack_require__(48);
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _immutabilityHelper = __webpack_require__(311);
+
+var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34159,6 +34163,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+The ViewCard is supplied a `targetEmail` prop for which it is aimed to render the data of
+the user with the email provided. If the card is rendered for an authorized user, then
+an extra prop, namely `selfData`, is passed to the component so that additional info and
+subcomponents such as the FollowButton can be rendered with respect to this data.
+*/
 
 var ViewCard = function (_React$Component) {
     _inherits(ViewCard, _React$Component);
@@ -34169,8 +34180,9 @@ var ViewCard = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (ViewCard.__proto__ || Object.getPrototypeOf(ViewCard)).call(this, props));
 
         _this.state = {
-            follow_status: _this.props.data.distance == 1 ? true : false,
-            follow_status_pending: false
+            data_pending: true,
+            follow_status_pending: false,
+            data: null
         };
 
         _this.handleFollowAction = _this.handleFollowAction.bind(_this);
@@ -34178,9 +34190,23 @@ var ViewCard = function (_React$Component) {
     }
 
     _createClass(ViewCard, [{
-        key: 'handleFollowAction',
-        value: function handleFollowAction(unfollow, target_email) {
+        key: 'fetchTargetData',
+        value: function fetchTargetData() {
             var _this2 = this;
+
+            _axios2.default.get('/api/card/' + this.props.targetEmail).then(function (response) {
+                _this2.setState({
+                    data_pending: false,
+                    data: response.data
+                });
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }, {
+        key: 'handleFollowAction',
+        value: function handleFollowAction(unfollow, target_email, target_name) {
+            var _this3 = this;
 
             this.setState({
                 follow_status_pending: true
@@ -34193,42 +34219,45 @@ var ViewCard = function (_React$Component) {
             }).then(function (response) {
                 if (!response.data.success) {
                     console.error('Error with successful response:\n', response.data.error);
-                    _this2.props.handleToast('Cannot perform this action!');
+                    _this3.props.handleToast('Cannot perform this action!');
                 } else {
                     // SUCCESS!
-                    _this2.setState({
-                        follow_status: url == '/api/follow' ? true : false
-                    });
+                    console.log('SUCCESS!');
+                    _this3.fetchTargetData();
+                    console.log('distance after follow action:', _this3.state.data.authData.distance);
+                    _this3.props.handleToast(unfollow ? 'Unfollowed ' + target_name : 'Following ' + target_name);
                 }
-                _this2.setState({
+                _this3.setState({
                     follow_status_pending: false
                 });
             }).catch(function (err) {
-                console.error('Error for response:', response.data.error);
-                _this2.props.handleToast('Something has gone wrong!');
-                _this2.setState({
+                console.error('Error for response:', err);
+                _this3.props.handleToast('Something has gone wrong!');
+                _this3.setState({
                     follow_status_pending: false
                 });
             });
         }
     }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.fetchTargetData();
+        }
+    }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this4 = this;
 
-            var view_display;
-            var profile_data = this.props.data;
-            var distance = profile_data.distance && profile_data.distance > 0 ? profile_data.distance : null;
-
+            // 1 - Prepare the FollowButton
             var follow_button;
-            if (this.props.follow_enabled && !this.state.follow_status_pending) {
-                if (this.state.follow_status) {
+            if (this.state.data && this.state.data.authData && !this.state.follow_status_pending) {
+                if (this.state.data.authData.distance == 1) {
                     follow_button = _react2.default.createElement(_FollowButton2.default, { unfollow: true, onClick: function onClick() {
-                            _this3.handleFollowAction(true, profile_data.email);
+                            _this4.handleFollowAction(true, _this4.props.targetEmail, _this4.state.data.fname);
                         } });
                 } else {
                     follow_button = _react2.default.createElement(_FollowButton2.default, { onClick: function onClick() {
-                            _this3.handleFollowAction(false, profile_data.email);
+                            _this4.handleFollowAction(false, _this4.props.targetEmail, _this4.state.data.fname);
                         } });
                 }
             } else if (this.state.follow_status_pending) {
@@ -34239,8 +34268,11 @@ var ViewCard = function (_React$Component) {
                 );
             }
 
-            if (profile_data.fname) {
-                view_display = _react2.default.createElement(
+            // 2 - Prepare the ViewCard
+            var renderedContent;
+            var distance = this.state.data ? this.state.data.authData.distance : null;
+            if (!this.state.data_pending) {
+                renderedContent = _react2.default.createElement(
                     _reactMaterialize.Card,
                     { style: { height: '100px', width: '600px', margin: 'auto' } },
                     _react2.default.createElement(
@@ -34251,20 +34283,20 @@ var ViewCard = function (_React$Component) {
                             { s: 9 },
                             _react2.default.createElement(
                                 _reactRouterDom.Link,
-                                { to: 'view/' + profile_data.email },
+                                { to: 'view/' + this.state.data.email },
                                 _react2.default.createElement(
                                     'span',
                                     { style: { float: 'left', fontWeight: 400 } },
-                                    profile_data.fname,
+                                    this.state.data.fname,
                                     ' ',
-                                    profile_data.lname
+                                    this.state.data.lname
                                 )
                             )
                         ),
                         _react2.default.createElement(
                             _reactMaterialize.Col,
                             { s: 3 },
-                            this.props.follow_enabled && _react2.default.createElement(
+                            this.state.data.authData && _react2.default.createElement(
                                 'span',
                                 { style: { float: 'right' } },
                                 follow_button
@@ -34278,7 +34310,7 @@ var ViewCard = function (_React$Component) {
                                 { style: { fontSize: '17px', fontWeight: '300' },
                                     className: 'grey-text' },
                                 'Student at ',
-                                profile_data.school
+                                this.state.data.school
                             )
                         ),
                         _react2.default.createElement(
@@ -34288,13 +34320,13 @@ var ViewCard = function (_React$Component) {
                                 'div',
                                 { style: { float: 'right' } },
                                 'distance: ',
-                                profile_data.distance
+                                distance
                             )
                         )
                     )
                 );
             } else {
-                view_display = _react2.default.createElement(
+                renderedContent = _react2.default.createElement(
                     _reactMaterialize.Card,
                     { style: { width: '800px', height: '300px', margin: 'auto' }, className: 'small' },
                     'Loading'
@@ -34304,7 +34336,7 @@ var ViewCard = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 null,
-                view_display
+                renderedContent
             );
         }
     }]);
@@ -34313,419 +34345,16 @@ var ViewCard = function (_React$Component) {
 }(_react2.default.Component);
 
 ViewCard.PropTypes = {
-    data: _propTypes2.default.object.isRequired,
+    target_email: _propTypes2.default.object.isRequired,
+    self_data: _propTypes2.default.object,
     handleFollowStatusChange: _propTypes2.default.func,
-    follow_enabled: _propTypes2.default.bool.isRequired,
-    distance: _propTypes2.default.bool,
-    handleToast: _propTypes2.default.func,
-    updateProfileData: _propTypes2.default.func
+    handleToast: _propTypes2.default.func
 };
 
 exports.default = ViewCard;
 
 /***/ }),
-/* 311 */,
-/* 312 */,
-/* 313 */,
-/* 314 */,
-/* 315 */,
-/* 316 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = __webpack_require__(92);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _reactRouterDom = __webpack_require__(47);
-
-var _axios = __webpack_require__(48);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _Navbar = __webpack_require__(307);
-
-var _Navbar2 = _interopRequireDefault(_Navbar);
-
-var _Profile = __webpack_require__(317);
-
-var _Profile2 = _interopRequireDefault(_Profile);
-
-var _Search = __webpack_require__(318);
-
-var _Search2 = _interopRequireDefault(_Search);
-
-var _View = __webpack_require__(320);
-
-var _View2 = _interopRequireDefault(_View);
-
-var _FollowView = __webpack_require__(321);
-
-var _FollowView2 = _interopRequireDefault(_FollowView);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Authenticated = function (_React$Component) {
-    _inherits(Authenticated, _React$Component);
-
-    function Authenticated(props) {
-        _classCallCheck(this, Authenticated);
-
-        var _this = _possibleConstructorReturn(this, (Authenticated.__proto__ || Object.getPrototypeOf(Authenticated)).call(this, props));
-
-        _this.state = {
-            profile_data: null,
-            progress: 0,
-            search_query: ''
-        };
-        _this.getProfileData = _this.getProfileData.bind(_this);
-        _this.handleSearch = _this.handleSearch.bind(_this);
-        _this.performToast = _this.performToast.bind(_this);
-        return _this;
-    }
-
-    _createClass(Authenticated, [{
-        key: 'performToast',
-        value: function performToast(message) {
-            Materialize.toast(message, 4000);
-        }
-    }, {
-        key: 'getProfileData',
-        value: function getProfileData() {
-            var _this2 = this;
-
-            var request = {
-                method: 'get',
-                url: '/api/profile',
-                onDownloadProgress: function onDownloadProgress(progressEvent) {
-                    _this2.setState({
-                        progress: progressEvent.loaded / progressEvent.total
-                    });
-                }
-            };
-
-            (0, _axios2.default)(request).then(function (response) {
-                _this2.setState({
-                    profile_data: response.data
-                });
-            }).catch(function (err) {
-                console.error(err);
-            });
-        }
-    }, {
-        key: 'handleSearch',
-        value: function handleSearch(search_query) {
-            this.setState({
-                search_query: search_query
-            });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.getProfileData();
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var FollowerView;
-            var FollowingView;
-            if (this.state.profile_data) {
-                FollowerView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.followers,
-                    handleToast: this.performToast });
-                FollowingView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.following,
-                    handleToast: this.performToast });
-            } else {
-                FollowerView = _react2.default.createElement(_FollowView2.default, { data: null,
-                    handleToast: this.performToast });
-                FollowingView = _react2.default.createElement(_FollowView2.default, { data: null,
-                    handleToast: this.performToast });
-            }
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                    'header',
-                    null,
-                    _react2.default.createElement(_Navbar2.default, { title: 'Project Hangout', logged_in: true, search_handler: this.handleSearch })
-                ),
-                _react2.default.createElement(
-                    'main',
-                    null,
-                    _react2.default.createElement(
-                        _reactRouterDom.Switch,
-                        null,
-                        _react2.default.createElement(
-                            _reactRouterDom.Route,
-                            { exact: true, path: '/profile' },
-                            _react2.default.createElement(_Profile2.default, { data: this.state.profile_data,
-                                updateProfileData: this.getProfileData })
-                        ),
-                        _react2.default.createElement(
-                            _reactRouterDom.Route,
-                            { exact: true, path: '/search' },
-                            _react2.default.createElement(_Search2.default, { query: this.state.search_query,
-                                handleToast: this.performToast })
-                        ),
-                        _react2.default.createElement(
-                            _reactRouterDom.Route,
-                            { path: '/view/:target_email' },
-                            _react2.default.createElement(_View2.default, { handleToast: this.performToast })
-                        ),
-                        _react2.default.createElement(
-                            _reactRouterDom.Route,
-                            { path: '/followers' },
-                            FollowerView
-                        ),
-                        _react2.default.createElement(
-                            _reactRouterDom.Route,
-                            { path: '/following' },
-                            FollowingView
-                        )
-                    )
-                )
-            );
-        }
-    }]);
-
-    return Authenticated;
-}(_react2.default.Component);
-
-_reactDom2.default.render(_react2.default.createElement(
-    _reactRouterDom.BrowserRouter,
-    null,
-    _react2.default.createElement(Authenticated, null)
-), document.getElementById('react-app'));
-
-/***/ }),
-/* 317 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _ProfileCard = __webpack_require__(308);
-
-var _ProfileCard2 = _interopRequireDefault(_ProfileCard);
-
-var _reactMaterialize = __webpack_require__(32);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Profile = function (_React$Component) {
-    _inherits(Profile, _React$Component);
-
-    function Profile() {
-        _classCallCheck(this, Profile);
-
-        return _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).apply(this, arguments));
-    }
-
-    _createClass(Profile, [{
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                { style: { marginTop: '50px' } },
-                _react2.default.createElement(_ProfileCard2.default, { data: this.props.data,
-                    updateProfileData: this.props.updateProfileData })
-            );
-        }
-    }]);
-
-    return Profile;
-}(_react2.default.Component);
-
-exports.default = Profile;
-
-/***/ }),
-/* 318 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _axios = __webpack_require__(48);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _reactMaterialize = __webpack_require__(32);
-
-var _ViewCard = __webpack_require__(310);
-
-var _ViewCard2 = _interopRequireDefault(_ViewCard);
-
-var _immutabilityHelper = __webpack_require__(319);
-
-var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Search = function (_React$Component) {
-    _inherits(Search, _React$Component);
-
-    function Search(props) {
-        _classCallCheck(this, Search);
-
-        var _this = _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).call(this, props));
-
-        _this.state = {
-            search_results: null,
-            redirect_target: null
-        };
-
-        _this.fetchSearchResults = _this.fetchSearchResults.bind(_this);
-        _this.updateProfileData = _this.updateProfileData.bind(_this);
-        return _this;
-    }
-
-    _createClass(Search, [{
-        key: 'fetchSearchResults',
-        value: function fetchSearchResults(query) {
-            var _this2 = this;
-
-            _axios2.default.post('/api/search', {
-                search_query: query
-            }).then(function (response) {
-                _this2.setState({
-                    search_results: response.data
-                });
-            }).catch(function (err) {
-                console.error(err);
-            });
-        }
-    }, {
-        key: 'updateProfileData',
-        value: function updateProfileData(email) {
-            var _this3 = this;
-
-            _axios2.default.get('/view/' + email).then(function (response) {
-                var target_index = null;
-                for (var i = 0; i < _this3.state.search_results.length && target_index == null; i++) {
-                    if (_this3.state.search_results[i].email == email) target_index = i;
-                }
-                if (target_index == null) {
-                    console.error('impossible happened!');
-                }
-                _this3.setState({
-                    search_results: (0, _immutabilityHelper2.default)(_this3.state.search_results)
-                });
-            }).catch(function (err) {
-                console.error(err);
-            });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.fetchSearchResults(this.props.query);
-        }
-    }, {
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            this.setState({
-                search_results: null
-            });
-            this.fetchSearchResults(nextProps.query);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var render_element;
-            if (this.state.search_results == null) {
-                render_element = _react2.default.createElement(
-                    'div',
-                    { className: 'center' },
-                    _react2.default.createElement(_reactMaterialize.Preloader, { size: 'medium', flashing: true }),
-                    _react2.default.createElement(
-                        'p',
-                        null,
-                        'Fetching Search Results'
-                    )
-                );
-            } else if (this.state.search_results.length == 0) {
-                render_element = _react2.default.createElement(
-                    'p',
-                    { className: 'center' },
-                    'No results!'
-                );
-            } else {
-                var view_cards = [];
-                for (var i = 0; i < this.state.search_results.length; i++) {
-                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { follow_enabled: true, distance: true, key: i + 1,
-                        data: this.state.search_results[i], handleToast: this.handleToast,
-                        updateProfileData: this.updateProfileData }));
-                }
-                render_element = view_cards;
-            }
-
-            return _react2.default.createElement(
-                'div',
-                { style: { marginTop: '50px' } },
-                _react2.default.createElement(
-                    'h5',
-                    { className: 'center' },
-                    'Search results for "',
-                    this.props.query,
-                    '"'
-                ),
-                render_element
-            );
-        }
-    }]);
-
-    return Search;
-}(_react2.default.Component);
-
-exports.default = Search;
-
-/***/ }),
-/* 319 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var invariant = __webpack_require__(15);
@@ -34932,6 +34561,418 @@ function invariantMerge(target, specValue) {
 
 
 /***/ }),
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */,
+/* 317 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(92);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactRouterDom = __webpack_require__(47);
+
+var _axios = __webpack_require__(48);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _Navbar = __webpack_require__(307);
+
+var _Navbar2 = _interopRequireDefault(_Navbar);
+
+var _Profile = __webpack_require__(318);
+
+var _Profile2 = _interopRequireDefault(_Profile);
+
+var _Search = __webpack_require__(319);
+
+var _Search2 = _interopRequireDefault(_Search);
+
+var _View = __webpack_require__(320);
+
+var _View2 = _interopRequireDefault(_View);
+
+var _FollowView = __webpack_require__(321);
+
+var _FollowView2 = _interopRequireDefault(_FollowView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Authenticated = function (_React$Component) {
+    _inherits(Authenticated, _React$Component);
+
+    function Authenticated(props) {
+        _classCallCheck(this, Authenticated);
+
+        var _this = _possibleConstructorReturn(this, (Authenticated.__proto__ || Object.getPrototypeOf(Authenticated)).call(this, props));
+
+        _this.state = {
+            profile_data: null,
+            progress: 0,
+            search_query: ''
+        };
+        _this.getProfileData = _this.getProfileData.bind(_this);
+        _this.handleSearch = _this.handleSearch.bind(_this);
+        _this.performToast = _this.performToast.bind(_this);
+        return _this;
+    }
+
+    _createClass(Authenticated, [{
+        key: 'performToast',
+        value: function performToast(message) {
+            Materialize.toast(message, 4000);
+        }
+    }, {
+        key: 'getProfileData',
+        value: function getProfileData() {
+            var _this2 = this;
+
+            var request = {
+                method: 'get',
+                url: '/api/profile',
+                onDownloadProgress: function onDownloadProgress(progressEvent) {
+                    _this2.setState({
+                        progress: progressEvent.loaded / progressEvent.total
+                    });
+                }
+            };
+
+            (0, _axios2.default)(request).then(function (response) {
+                _this2.setState({
+                    profile_data: response.data
+                });
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }, {
+        key: 'handleSearch',
+        value: function handleSearch(search_query) {
+            this.setState({
+                search_query: search_query
+            });
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.getProfileData();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var FollowerView;
+            var FollowingView;
+            if (this.state.profile_data) {
+                FollowerView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.followers,
+                    handleToast: this.performToast });
+                FollowingView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.following,
+                    handleToast: this.performToast });
+            } else {
+                FollowerView = _react2.default.createElement(_FollowView2.default, { data: null,
+                    handleToast: this.performToast });
+                FollowingView = _react2.default.createElement(_FollowView2.default, { data: null,
+                    handleToast: this.performToast });
+            }
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'header',
+                    null,
+                    _react2.default.createElement(_Navbar2.default, { title: 'Project Hangout', logged_in: true, search_handler: this.handleSearch })
+                ),
+                _react2.default.createElement(
+                    'main',
+                    null,
+                    _react2.default.createElement(
+                        _reactRouterDom.Switch,
+                        null,
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { exact: true, path: '/profile' },
+                            _react2.default.createElement(_Profile2.default, { data: this.state.profile_data,
+                                updateProfileData: this.getProfileData })
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { exact: true, path: '/search' },
+                            _react2.default.createElement(_Search2.default, { query: this.state.search_query,
+                                handleToast: this.performToast })
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { path: '/view/:target_email' },
+                            _react2.default.createElement(_View2.default, { handleToast: this.performToast })
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { path: '/followers' },
+                            FollowerView
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { path: '/following' },
+                            FollowingView
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Authenticated;
+}(_react2.default.Component);
+
+_reactDom2.default.render(_react2.default.createElement(
+    _reactRouterDom.BrowserRouter,
+    null,
+    _react2.default.createElement(Authenticated, null)
+), document.getElementById('react-app'));
+
+/***/ }),
+/* 318 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _ProfileCard = __webpack_require__(308);
+
+var _ProfileCard2 = _interopRequireDefault(_ProfileCard);
+
+var _reactMaterialize = __webpack_require__(32);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Profile = function (_React$Component) {
+    _inherits(Profile, _React$Component);
+
+    function Profile() {
+        _classCallCheck(this, Profile);
+
+        return _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).apply(this, arguments));
+    }
+
+    _createClass(Profile, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { style: { marginTop: '50px' } },
+                _react2.default.createElement(_ProfileCard2.default, { data: this.props.data,
+                    updateProfileData: this.props.updateProfileData })
+            );
+        }
+    }]);
+
+    return Profile;
+}(_react2.default.Component);
+
+exports.default = Profile;
+
+/***/ }),
+/* 319 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _axios = __webpack_require__(48);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _reactMaterialize = __webpack_require__(32);
+
+var _ViewCard = __webpack_require__(310);
+
+var _ViewCard2 = _interopRequireDefault(_ViewCard);
+
+var _immutabilityHelper = __webpack_require__(311);
+
+var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Search = function (_React$Component) {
+    _inherits(Search, _React$Component);
+
+    function Search(props) {
+        _classCallCheck(this, Search);
+
+        var _this = _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).call(this, props));
+
+        _this.state = {
+            search_results: null,
+            redirect_target: null
+        };
+
+        _this.fetchSearchResults = _this.fetchSearchResults.bind(_this);
+        _this.updateProfileData = _this.updateProfileData.bind(_this);
+        return _this;
+    }
+
+    _createClass(Search, [{
+        key: 'fetchSearchResults',
+        value: function fetchSearchResults(query) {
+            var _this2 = this;
+
+            _axios2.default.post('/api/search', {
+                search_query: query
+            }).then(function (response) {
+                _this2.setState({
+                    search_results: response.data
+                });
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }, {
+        key: 'updateProfileData',
+        value: function updateProfileData(email) {
+            var _this3 = this;
+
+            _axios2.default.get('/view/' + email).then(function (response) {
+                var target_index = null;
+                for (var i = 0; i < _this3.state.search_results.length && target_index == null; i++) {
+                    if (_this3.state.search_results[i].email == email) target_index = i;
+                }
+                if (target_index == null) {
+                    console.error('impossible happened!');
+                }
+                _this3.setState({
+                    search_results: (0, _immutabilityHelper2.default)(_this3.state.search_results)
+                });
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.fetchSearchResults(this.props.query);
+        }
+    }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            this.setState({
+                search_results: null
+            });
+            this.fetchSearchResults(nextProps.query);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var render_element;
+            if (this.state.search_results == null) {
+                // FETCHING RESULTS - CONTENT PRELOADER ACTIVE
+                render_element = _react2.default.createElement(
+                    'div',
+                    { className: 'center' },
+                    _react2.default.createElement(_reactMaterialize.Preloader, { size: 'medium', flashing: true }),
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        'Fetching Search Results'
+                    )
+                );
+            } else if (this.state.search_results.length == 0) {
+                // NO RESULTS!
+                render_element = _react2.default.createElement(
+                    'p',
+                    { className: 'center' },
+                    'No results!'
+                );
+            } else {
+                // RESULTS FETCHED!
+                var view_cards = [];
+                for (var i = 0; i < this.state.search_results.length; i++) {
+                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { key: i + 1,
+                        targetEmail: this.state.search_results[i].email,
+                        handleToast: this.props.handleToast }));
+                }
+                render_element = view_cards;
+            }
+
+            return _react2.default.createElement(
+                'div',
+                { style: { marginTop: '50px' } },
+                _react2.default.createElement(
+                    'h5',
+                    { className: 'center' },
+                    'Search results for "',
+                    this.props.query,
+                    '"'
+                ),
+                render_element
+            );
+        }
+    }]);
+
+    return Search;
+}(_react2.default.Component);
+
+Search.PropTypes = {
+    handleToast: _propTypes2.default.func.isRequired
+};
+
+exports.default = Search;
+
+/***/ }),
 /* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -35082,7 +35123,7 @@ var FollowView = function (_React$Component) {
                 var view_cards = [];
                 for (var i = 0; i < this.props.data.length; i++) {
                     this.props.data[i].distance = 1;
-                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { follow_enabled: true, unfollow: true,
+                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { follow_enabled: true,
                         handleToast: this.handleToast, key: i + 1, data: this.props.data[i] }));
                 }
                 render_element = view_cards;

@@ -79,7 +79,7 @@ class Search extends React.Component {
             var view_cards = [];
             for (var i = 0; i < this.state.search_results.length; i++) {
                 view_cards.push(<ViewCard key={i + 1} 
-                    targetEmail={this.state.search_results[i]} 
+                    targetEmail={this.state.search_results[i].email} 
                     handleToast={this.props.handleToast} />);
             }
             render_element = view_cards;

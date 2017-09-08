@@ -1,6 +1,7 @@
 var neo4j = require('neo4j');
 var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
+var async = require('async');
 
 const ENV = process.env.NODE_ENV || 'development';
 
@@ -320,6 +321,52 @@ User.searchByName = function(name, callback) {
     });
 }
 
+User.getCardData = function(email, self_email, callback) {
+    // Returns name, school and distance for <email>
+    async.parallel([
+        function(callback) {
+            // PostgreSQL query
+            const query = [
+                'SELECT fname, lname, school',
+                'FROM Users',
+                'WHERE email=$1'
+            ].join('\n');
+
+            const values = [ email ];
+
+            pool.query(query, values, (err, result) => {
+                if (err) {
+                    return callback(err, null);
+                }
+                return callback(null, result.rows[0]);
+            });
+        },
+        function(callback) {
+            // Neo4j query - get distance
+            if (self_email) {
+                var authData = {};
+                User.getDistance(self_email, email, (err, distance) => {
+                    if (err) {
+                        return callback(err, null);
+                    }
+                    authData.distance = distance;
+                    return callback(null, authData);
+                });
+            }
+            else {
+                return callback(null, null);
+            }
+        }
+    ], function(err, results) {
+        results[0].authData = results[1];
+        results = results[0];
+        if (err) {
+            return callback(err);
+        }
+        return callback(null, results);
+    });
+}
+
 User.newEvent = function(eventObject, callback) {
     if (eventObject.title == null || eventObject.place == null || eventObject.host_email == null
             || eventObject.start_time == null || eventObject.end_time == null) {
@@ -396,7 +443,7 @@ User.getDistance = function(email1, email2, callback) {
         else if (result[0])
             return callback(null, result[0].dist);
         else
-            return callback(null, null);
+            return callback(null, -1);
     });
 }
 

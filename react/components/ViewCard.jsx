@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import FollowButton from './FollowButton.jsx';
 import axios from 'axios';
+import update from 'immutability-helper';
 
 /*
 The ViewCard is supplied a `targetEmail` prop for which it is aimed to render the data of
@@ -18,21 +19,25 @@ class ViewCard extends React.Component {
         super(props);
 
         this.state = {
-            follow_status: this.props.data.distance == 1 ? true : false,
-            follow_status_pending: false
+            data_pending: true,
+            follow_status_pending: false,
+            data: null
         }
 
         this.handleFollowAction = this.handleFollowAction.bind(this);
     }
 
     fetchTargetData() {
-        var request;
-        if (this.props.self_data) {
-
-        }
-        else {
-
-        }
+        axios.get('/api/card/'  + this.props.targetEmail)
+            .then((response) => {
+                this.setState({
+                    data_pending: false,
+                    data: response.data
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     }
 
     handleFollowAction(unfollow, target_email, target_name) {
@@ -52,9 +57,9 @@ class ViewCard extends React.Component {
             }
             else {
                 // SUCCESS!
-                this.setState({
-                    follow_status: url == '/api/follow' ? true : false,
-                });
+                console.log('SUCCESS!');
+                this.fetchTargetData();
+                console.log('distance after follow action:', this.state.data.authData.distance);
                 this.props.handleToast(unfollow ? 'Unfollowed ' + target_name : 'Following ' + target_name);
             }
             this.setState({
@@ -62,7 +67,7 @@ class ViewCard extends React.Component {
             });
         })
         .catch((err) => {
-            console.error('Error for response:', response.data.error);
+            console.error('Error for response:', err);
             this.props.handleToast('Something has gone wrong!');
             this.setState({
                 follow_status_pending: false
@@ -71,17 +76,18 @@ class ViewCard extends React.Component {
     }
 
     componentDidMount() {
-        fetchTargetData();
+        this.fetchTargetData();
     }
 
     render() {
+        // 1 - Prepare the FollowButton
         var follow_button;
-        if (this.props.follow_enabled && !this.state.follow_status_pending) {
-            if (this.state.follow_status) {
-                follow_button = <FollowButton unfollow onClick={ () => {this.handleFollowAction(true, this.props.data.email)} } />
+        if (this.state.data && this.state.data.authData && !this.state.follow_status_pending) {
+            if (this.state.data.authData.distance == 1) {
+                follow_button = <FollowButton unfollow onClick={ () => {this.handleFollowAction(true, this.props.targetEmail, this.state.data.fname)} } />
             }
             else {
-                follow_button = <FollowButton onClick={ () => {this.handleFollowAction(false, profile_data.email)} } />
+                follow_button = <FollowButton onClick={ () => {this.handleFollowAction(false, this.props.targetEmail, this.state.data.fname)} } />
             }
         }
         else if (this.state.follow_status_pending) {
@@ -89,21 +95,21 @@ class ViewCard extends React.Component {
                 <Preloader size='small' /></div>;
         }
 
+        // 2 - Prepare the ViewCard
         var renderedContent;
-        const distance = this.props.data.distance && this.props.data.distance > 0 ? 
-            this.props.data.distance : null;
-        if (profile_data.fname) {
+        const distance = this.state.data ? this.state.data.authData.distance : null;
+        if (!this.state.data_pending) {
             renderedContent =
             <Card style={{ height: '100px', width: '600px', margin: 'auto'}}>
                 <Row>
                     <Col s={9}>
-                        <Link to = {'view/' + profile_data.email}>
-                            <span  style={{ float: 'left', fontWeight: 400 }}>{profile_data.fname} {profile_data.lname}</span>
+                        <Link to = {'view/' + this.state.data.email}>
+                            <span  style={{ float: 'left', fontWeight: 400 }}>{this.state.data.fname} {this.state.data.lname}</span>
                         </Link>
                     </Col>
                     <Col s={3}>
                     {
-                        this.props.follow_enabled &&
+                        this.state.data.authData &&
                         <span style={{ float: 'right' }}>
                             { follow_button }
                         </span>
@@ -111,13 +117,13 @@ class ViewCard extends React.Component {
                     </Col>
                     <Col s={9}>
                         <span style={{fontSize: '17px', fontWeight: '300'}} 
-                            className='grey-text'>Student at {profile_data.school}
+                            className='grey-text'>Student at {this.state.data.school}
                         </span>
                     </Col>
                     <Col s={3}>
                     { distance > 1 &&
                         <div style={{ float: 'right' }}>
-                            distance: {profile_data.distance}
+                            distance: {distance}
                         </div>
                     }
                     </Col>
@@ -125,19 +131,19 @@ class ViewCard extends React.Component {
             </Card>;
         }
         else {
-            view_display = <Card style={{ width: '800px', height: '300px', margin: 'auto' }} className='small'>Loading</Card>;
+            renderedContent = <Card style={{ width: '800px', height: '300px', margin: 'auto' }} className='small'>Loading</Card>;
         }
 
         return (
             <div>
-                {view_display}
+                {renderedContent}
             </div>
         );
     }
 }
 
 ViewCard.PropTypes = {
-    target_data: PropTypes.object.isRequired,
+    target_email: PropTypes.object.isRequired,
     self_data: PropTypes.object,
     handleFollowStatusChange: PropTypes.func,
     handleToast: PropTypes.func

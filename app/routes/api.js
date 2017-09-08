@@ -121,57 +121,31 @@ router.get('/view/:target_email', (req, res) => {
     });
 });
 
-router.post('/search', (req, res) => {
-    async.waterfall([
-        function(callback) {
-            User.searchByName(req.body.search_query, (err, result) => {
-                return callback(err, result);
-            });
-        },
-        function (search_results, callback) {
-            
-            if (req.isAuthenticated()) {
-                var user_index = null;
-                async.each(search_results, function(search_result, callback) {
-                    if (search_result.fname == req.user.fname) {
-                        user_index = search_results.indexOf(search_result);
-                        return callback();
-                    }
-
-                    User.getDistance(req.user.email, search_result.email, (err, result) => {
-                        if (err)
-                            return callback(err);
-                        search_result.distance = result;
-                        callback();
-                    });
-                }, function(err) {
-                    if (err) {
-                        console.error(err);
-                    }
-                    else {
-                        if (user_index) {
-                            search_results.splice(user_index, 1); // exclude the user from search results
-                        }
-                        return callback(null, search_results);
-                    }
-                });
-            }
-            else {
-                return callback(null, null);
-            }
-        }
-    ], function(err, results) {
+router.get('/card/:target_email', (req, res) => {
+    const self_email = req.user ? req.user.email : null;
+    User.getCardData(req.params.target_email, self_email, (err, results) => {
         if (err) {
-            console.error(err);
             res.json({
-                error: 'Error in route api/search',
-                description: err
+                error: err
             });
         }
         else {
             res.json(results);
         }
-            
+    });
+});
+
+router.post('/search', (req, res) => {
+    User.searchByName(req.body.search_query, (err, result) => {
+        if (err) {
+            console.error(err);
+            res.json({
+                error: err
+            });
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
@@ -267,7 +241,7 @@ router.post('/unfollow/', ensureAuthenticated, (req, res) => {
     } else {
         User.unfollow(req.user.email, target_email, function(err) {
             if (err) {
-                console.log(err);
+                console.error(err);
                 res.json({
                     error: err,
                     success: false
