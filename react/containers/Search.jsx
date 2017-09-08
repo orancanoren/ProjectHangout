@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { Preloader, Card } from 'react-materialize';
 import ViewCard from '../components/ViewCard.jsx';
+import update from 'immutability-helper';
+import PropTypes from 'prop-types';
 
 class Search extends React.Component {
     constructor(props) {
@@ -13,6 +15,7 @@ class Search extends React.Component {
         }
 
         this.fetchSearchResults = this.fetchSearchResults.bind(this);
+        this.updateProfileData = this.updateProfileData.bind(this);
     }
 
     fetchSearchResults(query) {
@@ -29,6 +32,26 @@ class Search extends React.Component {
         });
     }
 
+    updateProfileData(email) {
+        axios.get('/view/' + email)
+            .then((response) => {
+                var target_index = null;
+                for (var i = 0; i < this.state.search_results.length && target_index == null; i++) {
+                    if (this.state.search_results[i].email == email)
+                        target_index = i;
+                }
+                if (target_index == null) {
+                    console.error('impossible happened!');
+                }
+                this.setState({
+                    search_results: update(this.state.search_results, )
+                })
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+    }
+
     componentDidMount() {
         this.fetchSearchResults(this.props.query);
     }
@@ -42,21 +65,22 @@ class Search extends React.Component {
 
     render() {
         var render_element;
-        if (this.state.search_results == null) {
+        if (this.state.search_results == null) { // FETCHING RESULTS - CONTENT PRELOADER ACTIVE
             render_element = 
             <div className='center' >
                 <Preloader size='medium' flashing />
                 <p>Fetching Search Results</p>
             </div>;
         }
-        else if (this.state.search_results.length == 0) {
+        else if (this.state.search_results.length == 0) { // NO RESULTS!
             render_element = <p className='center'>No results!</p>
         }
-        else {
+        else { // RESULTS FETCHED!
             var view_cards = [];
             for (var i = 0; i < this.state.search_results.length; i++) {
-                view_cards.push(<ViewCard follow_enabled distance key={i + 1} 
-                    data={this.state.search_results[i]} />);
+                view_cards.push(<ViewCard key={i + 1} 
+                    targetEmail={this.state.search_results[i]} 
+                    handleToast={this.props.handleToast} />);
             }
             render_element = view_cards;
         }
@@ -68,6 +92,10 @@ class Search extends React.Component {
             </div>
         );
     }
+}
+
+Search.PropTypes = {
+    handleToast: PropTypes.func.isRequired
 }
 
 export default Search;

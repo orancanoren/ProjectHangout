@@ -20,11 +20,13 @@ router.post('/login', passport.authenticate('local-login', {
         }),
         (req, res, next) => {
             // 1 - Set (or don't set) remember me cookie
-            if (req.body.rememberMe != 'checked') return next();
+            console.log('/api login got req.body:\n', req.body);
+            if (req.body.rememberMe != 'yes') return next();
 
             Token.issue(req.user, (err, token) => {
                 if (err) return next(err);
-                res.cookie('remember_me', token, {
+                console.log('rememberMe cookie set!');
+                res.cookie('rememberMe', token, {
                     path: '/',
                     httpOnly: true,
                     maxAge: 604800000
@@ -127,8 +129,15 @@ router.post('/search', (req, res) => {
             });
         },
         function (search_results, callback) {
+            
             if (req.isAuthenticated()) {
+                var user_index = null;
                 async.each(search_results, function(search_result, callback) {
+                    if (search_result.fname == req.user.fname) {
+                        user_index = search_results.indexOf(search_result);
+                        return callback();
+                    }
+
                     User.getDistance(req.user.email, search_result.email, (err, result) => {
                         if (err)
                             return callback(err);
@@ -140,9 +149,12 @@ router.post('/search', (req, res) => {
                         console.error(err);
                     }
                     else {
+                        if (user_index) {
+                            search_results.splice(user_index, 1); // exclude the user from search results
+                        }
                         return callback(null, search_results);
                     }
-                })
+                });
             }
             else {
                 return callback(null, null);

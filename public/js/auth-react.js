@@ -34169,7 +34169,8 @@ var ViewCard = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (ViewCard.__proto__ || Object.getPrototypeOf(ViewCard)).call(this, props));
 
         _this.state = {
-            follow_status: _this.props.data.distance == 1 ? true : false
+            follow_status: _this.props.data.distance == 1 ? true : false,
+            follow_status_pending: false
         };
 
         _this.handleFollowAction = _this.handleFollowAction.bind(_this);
@@ -34181,21 +34182,33 @@ var ViewCard = function (_React$Component) {
         value: function handleFollowAction(unfollow, target_email) {
             var _this2 = this;
 
+            this.setState({
+                follow_status_pending: true
+            });
+
             var url = unfollow ? '/api/unfollow' : '/api/follow';
 
             _axios2.default.post(url, {
                 target_email: target_email
             }).then(function (response) {
-                console.log('response:\n', response);
                 if (!response.data.success) {
                     console.error('Error with successful response:\n', response.data.error);
+                    _this2.props.handleToast('Cannot perform this action!');
                 } else {
+                    // SUCCESS!
                     _this2.setState({
                         follow_status: url == '/api/follow' ? true : false
                     });
                 }
+                _this2.setState({
+                    follow_status_pending: false
+                });
             }).catch(function (err) {
                 console.error('Error for response:', response.data.error);
+                _this2.props.handleToast('Something has gone wrong!');
+                _this2.setState({
+                    follow_status_pending: false
+                });
             });
         }
     }, {
@@ -34208,7 +34221,7 @@ var ViewCard = function (_React$Component) {
             var distance = profile_data.distance && profile_data.distance > 0 ? profile_data.distance : null;
 
             var follow_button;
-            if (this.props.follow_enabled) {
+            if (this.props.follow_enabled && !this.state.follow_status_pending) {
                 if (this.state.follow_status) {
                     follow_button = _react2.default.createElement(_FollowButton2.default, { unfollow: true, onClick: function onClick() {
                             _this3.handleFollowAction(true, profile_data.email);
@@ -34218,6 +34231,12 @@ var ViewCard = function (_React$Component) {
                             _this3.handleFollowAction(false, profile_data.email);
                         } });
                 }
+            } else if (this.state.follow_status_pending) {
+                follow_button = _react2.default.createElement(
+                    'div',
+                    { className: 'center' },
+                    _react2.default.createElement(_reactMaterialize.Preloader, { size: 'small' })
+                );
             }
 
             if (profile_data.fname) {
@@ -34297,7 +34316,9 @@ ViewCard.PropTypes = {
     data: _propTypes2.default.object.isRequired,
     handleFollowStatusChange: _propTypes2.default.func,
     follow_enabled: _propTypes2.default.bool.isRequired,
-    distance: _propTypes2.default.bool
+    distance: _propTypes2.default.bool,
+    handleToast: _propTypes2.default.func,
+    updateProfileData: _propTypes2.default.func
 };
 
 exports.default = ViewCard;
@@ -34342,11 +34363,11 @@ var _Search = __webpack_require__(318);
 
 var _Search2 = _interopRequireDefault(_Search);
 
-var _View = __webpack_require__(319);
+var _View = __webpack_require__(320);
 
 var _View2 = _interopRequireDefault(_View);
 
-var _FollowView = __webpack_require__(320);
+var _FollowView = __webpack_require__(321);
 
 var _FollowView2 = _interopRequireDefault(_FollowView);
 
@@ -34373,10 +34394,16 @@ var Authenticated = function (_React$Component) {
         };
         _this.getProfileData = _this.getProfileData.bind(_this);
         _this.handleSearch = _this.handleSearch.bind(_this);
+        _this.performToast = _this.performToast.bind(_this);
         return _this;
     }
 
     _createClass(Authenticated, [{
+        key: 'performToast',
+        value: function performToast(message) {
+            Materialize.toast(message, 4000);
+        }
+    }, {
         key: 'getProfileData',
         value: function getProfileData() {
             var _this2 = this;
@@ -34417,11 +34444,15 @@ var Authenticated = function (_React$Component) {
             var FollowerView;
             var FollowingView;
             if (this.state.profile_data) {
-                FollowerView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.followers });
-                FollowingView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.following });
+                FollowerView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.followers,
+                    handleToast: this.performToast });
+                FollowingView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.following,
+                    handleToast: this.performToast });
             } else {
-                FollowerView = _react2.default.createElement(_FollowView2.default, { data: null });
-                FollowingView = _react2.default.createElement(_FollowView2.default, { data: null });
+                FollowerView = _react2.default.createElement(_FollowView2.default, { data: null,
+                    handleToast: this.performToast });
+                FollowingView = _react2.default.createElement(_FollowView2.default, { data: null,
+                    handleToast: this.performToast });
             }
 
             return _react2.default.createElement(
@@ -34447,9 +34478,14 @@ var Authenticated = function (_React$Component) {
                         _react2.default.createElement(
                             _reactRouterDom.Route,
                             { exact: true, path: '/search' },
-                            _react2.default.createElement(_Search2.default, { query: this.state.search_query })
+                            _react2.default.createElement(_Search2.default, { query: this.state.search_query,
+                                handleToast: this.performToast })
                         ),
-                        _react2.default.createElement(_reactRouterDom.Route, { path: '/view/:target_email', component: _View2.default }),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { path: '/view/:target_email' },
+                            _react2.default.createElement(_View2.default, { handleToast: this.performToast })
+                        ),
                         _react2.default.createElement(
                             _reactRouterDom.Route,
                             { path: '/followers' },
@@ -34559,6 +34595,10 @@ var _ViewCard = __webpack_require__(310);
 
 var _ViewCard2 = _interopRequireDefault(_ViewCard);
 
+var _immutabilityHelper = __webpack_require__(319);
+
+var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34581,6 +34621,7 @@ var Search = function (_React$Component) {
         };
 
         _this.fetchSearchResults = _this.fetchSearchResults.bind(_this);
+        _this.updateProfileData = _this.updateProfileData.bind(_this);
         return _this;
     }
 
@@ -34594,6 +34635,26 @@ var Search = function (_React$Component) {
             }).then(function (response) {
                 _this2.setState({
                     search_results: response.data
+                });
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }, {
+        key: 'updateProfileData',
+        value: function updateProfileData(email) {
+            var _this3 = this;
+
+            _axios2.default.get('/view/' + email).then(function (response) {
+                var target_index = null;
+                for (var i = 0; i < _this3.state.search_results.length && target_index == null; i++) {
+                    if (_this3.state.search_results[i].email == email) target_index = i;
+                }
+                if (target_index == null) {
+                    console.error('impossible happened!');
+                }
+                _this3.setState({
+                    search_results: (0, _immutabilityHelper2.default)(_this3.state.search_results)
                 });
             }).catch(function (err) {
                 console.error(err);
@@ -34637,7 +34698,8 @@ var Search = function (_React$Component) {
                 var view_cards = [];
                 for (var i = 0; i < this.state.search_results.length; i++) {
                     view_cards.push(_react2.default.createElement(_ViewCard2.default, { follow_enabled: true, distance: true, key: i + 1,
-                        data: this.state.search_results[i] }));
+                        data: this.state.search_results[i], handleToast: this.handleToast,
+                        updateProfileData: this.updateProfileData }));
                 }
                 render_element = view_cards;
             }
@@ -34664,6 +34726,213 @@ exports.default = Search;
 
 /***/ }),
 /* 319 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var invariant = __webpack_require__(15);
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var splice = Array.prototype.splice;
+
+var assign = Object.assign || /* istanbul ignore next */ function assign(target, source) {
+  getAllKeys(source).forEach(function(key) {
+    if (hasOwnProperty.call(source, key)) {
+      target[key] = source[key];
+    }
+  });
+  return target;
+};
+
+var getAllKeys = typeof Object.getOwnPropertySymbols === 'function' ?
+  function(obj) { return Object.keys(obj).concat(Object.getOwnPropertySymbols(obj)) } :
+  /* istanbul ignore next */ function(obj) { return Object.keys(obj) };
+
+/* istanbul ignore next */
+function copy(object) {
+  if (object instanceof Array) {
+    return assign(object.constructor(object.length), object)
+  } else if (object && typeof object === 'object') {
+    var prototype = object.constructor && object.constructor.prototype
+    return assign(Object.create(prototype || null), object);
+  } else {
+    return object;
+  }
+}
+
+function newContext() {
+  var commands = assign({}, defaultCommands);
+  update.extend = function(directive, fn) {
+    commands[directive] = fn;
+  };
+  update.isEquals = function(a, b) { return a === b; };
+
+  return update;
+
+  function update(object, spec) {
+    if (!(Array.isArray(object) && Array.isArray(spec))) {
+      invariant(
+        !Array.isArray(spec),
+        'update(): You provided an invalid spec to update(). The spec may ' +
+        'not contain an array except as the value of $set, $push, $unshift, ' +
+        '$splice or any custom command allowing an array value.'
+      );
+    }
+
+    invariant(
+      typeof spec === 'object' && spec !== null,
+      'update(): You provided an invalid spec to update(). The spec and ' +
+      'every included key path must be plain objects containing one of the ' +
+      'following commands: %s.',
+      Object.keys(commands).join(', ')
+    );
+
+    var nextObject = object;
+    var index, key;
+    getAllKeys(spec).forEach(function(key) {
+      if (hasOwnProperty.call(commands, key)) {
+        var objectWasNextObject = object === nextObject;
+        nextObject = commands[key](spec[key], nextObject, spec, object);
+        if (objectWasNextObject && update.isEquals(nextObject, object)) {
+          nextObject = object;
+        }
+      } else {
+        var nextValueForKey = update(object[key], spec[key]);
+        if (!update.isEquals(nextValueForKey, nextObject[key]) || typeof nextValueForKey === 'undefined' && !hasOwnProperty.call(object, key)) {
+          if (nextObject === object) {
+            nextObject = copy(object);
+          }
+          nextObject[key] = nextValueForKey;
+        }
+      }
+    })
+    return nextObject;
+  }
+
+}
+
+var defaultCommands = {
+  $push: function(value, nextObject, spec) {
+    invariantPushAndUnshift(nextObject, spec, '$push');
+    return value.length ? nextObject.concat(value) : nextObject;
+  },
+  $unshift: function(value, nextObject, spec) {
+    invariantPushAndUnshift(nextObject, spec, '$unshift');
+    return value.length ? value.concat(nextObject) : nextObject;
+  },
+  $splice: function(value, nextObject, spec, originalObject) {
+    invariantSplices(nextObject, spec);
+    value.forEach(function(args) {
+      invariantSplice(args);
+      if (nextObject === originalObject && args.length) nextObject = copy(originalObject);
+      splice.apply(nextObject, args);
+    });
+    return nextObject;
+  },
+  $set: function(value, nextObject, spec) {
+    invariantSet(spec);
+    return value;
+  },
+  $unset: function(value, nextObject, spec, originalObject) {
+    invariant(
+      Array.isArray(value),
+      'update(): expected spec of $unset to be an array; got %s. ' +
+      'Did you forget to wrap the key(s) in an array?',
+      value
+    );
+    value.forEach(function(key) {
+      if (Object.hasOwnProperty.call(nextObject, key)) {
+        if (nextObject === originalObject) nextObject = copy(originalObject);
+        delete nextObject[key];
+      }
+    });
+    return nextObject;
+  },
+  $merge: function(value, nextObject, spec, originalObject) {
+    invariantMerge(nextObject, value);
+    getAllKeys(value).forEach(function(key) {
+      if (value[key] !== nextObject[key]) {
+        if (nextObject === originalObject) nextObject = copy(originalObject);
+        nextObject[key] = value[key];
+      }
+    });
+    return nextObject;
+  },
+  $apply: function(value, original) {
+    invariantApply(value);
+    return value(original);
+  }
+};
+
+module.exports = newContext();
+module.exports.newContext = newContext;
+
+// invariants
+
+function invariantPushAndUnshift(value, spec, command) {
+  invariant(
+    Array.isArray(value),
+    'update(): expected target of %s to be an array; got %s.',
+    command,
+    value
+  );
+  var specValue = spec[command];
+  invariant(
+    Array.isArray(specValue),
+    'update(): expected spec of %s to be an array; got %s. ' +
+    'Did you forget to wrap your parameter in an array?',
+    command,
+    specValue
+  );
+}
+
+function invariantSplices(value, spec) {
+  invariant(
+    Array.isArray(value),
+    'Expected $splice target to be an array; got %s',
+    value
+  );
+  invariantSplice(spec['$splice']);
+}
+
+function invariantSplice(value) {
+  invariant(
+    Array.isArray(value),
+    'update(): expected spec of $splice to be an array of arrays; got %s. ' +
+    'Did you forget to wrap your parameters in an array?',
+    value
+  );
+}
+
+function invariantApply(fn) {
+  invariant(
+    typeof fn === 'function',
+    'update(): expected spec of $apply to be a function; got %s.',
+    fn
+  );
+}
+
+function invariantSet(spec) {
+  invariant(
+    Object.keys(spec).length === 1,
+    'Cannot have more than one key in an object with $set'
+  );
+}
+
+function invariantMerge(target, specValue) {
+  invariant(
+    specValue && typeof specValue === 'object',
+    'update(): $merge expects a spec of type \'object\'; got %s',
+    specValue
+  );
+  invariant(
+    target && typeof target === 'object',
+    'update(): $merge expects a target of type \'object\'; got %s',
+    target
+  );
+}
+
+
+/***/ }),
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34740,7 +35009,8 @@ var View = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { style: { marginTop: '50px' } },
-                _react2.default.createElement(_ProfileCard2.default, { follow_status: true, data: this.state.profile_data })
+                _react2.default.createElement(_ProfileCard2.default, { handleToast: this.handleToast,
+                    follow_status: true, data: this.state.profile_data })
             );
         }
     }]);
@@ -34751,7 +35021,7 @@ var View = function (_React$Component) {
 exports.default = View;
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34811,7 +35081,9 @@ var FollowView = function (_React$Component) {
             } else {
                 var view_cards = [];
                 for (var i = 0; i < this.props.data.length; i++) {
-                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { key: i + 1, data: this.props.data[i] }));
+                    this.props.data[i].distance = 1;
+                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { follow_enabled: true, unfollow: true,
+                        handleToast: this.handleToast, key: i + 1, data: this.props.data[i] }));
                 }
                 render_element = view_cards;
             }

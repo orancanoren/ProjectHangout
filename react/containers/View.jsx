@@ -37,7 +37,8 @@ class View extends React.Component {
     render() {
         return (
             <div style={{ marginTop: '50px' }}>
-                <ProfileCard follow_status data={this.state.profile_data} />
+                <ProfileCard handleToast={this.handleToast}
+                follow_status data={this.state.profile_data} />
             </div>
         );
     }

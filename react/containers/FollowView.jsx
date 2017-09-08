@@ -13,7 +13,9 @@ class FollowView extends React.Component {
         else {
             var view_cards = [];
             for (var i = 0; i < this.props.data.length; i++) {
-                view_cards.push(<ViewCard key={i + 1} data={this.props.data[i]} />);
+                this.props.data[i].distance = 1;
+                view_cards.push(<ViewCard follow_enabled
+                            handleToast={this.handleToast} key={i + 1} data={this.props.data[i]} />);
             }
             render_element = view_cards;
         }

@@ -20,6 +20,11 @@ class Authenticated extends React.Component {
         }
         this.getProfileData = this.getProfileData.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.performToast = this.performToast.bind(this);
+    }
+
+    performToast(message) {
+        Materialize.toast(message, 4000);
     }
 
     getProfileData() {
@@ -58,12 +63,16 @@ class Authenticated extends React.Component {
         var FollowerView;
         var FollowingView;
         if (this.state.profile_data) {
-            FollowerView = <FollowView data={this.state.profile_data.followers} />;
-            FollowingView = <FollowView data={this.state.profile_data.following} />;
+            FollowerView = <FollowView data={this.state.profile_data.followers} 
+                            handleToast={this.performToast}/>;
+            FollowingView = <FollowView data={this.state.profile_data.following}
+                            handleToast={this.performToast} />;
         }
         else {
-            FollowerView = <FollowView data={null} />;
-            FollowingView = <FollowView data={null} />;
+            FollowerView = <FollowView data={null} 
+                            handleToast={this.performToast} />;
+            FollowingView = <FollowView data={null} 
+                            handleToast={this.performToast} />;
         }
 
         return (
@@ -75,12 +84,15 @@ class Authenticated extends React.Component {
                     <Switch>
                         <Route exact path='/profile'>
                             <Profile data={this.state.profile_data}
-                            updateProfileData={this.getProfileData}/>
+                            updateProfileData={this.getProfileData} />
                         </Route>
                         <Route exact path='/search'>
-                            <Search query={this.state.search_query} />
+                            <Search query={this.state.search_query} 
+                            handleToast={this.performToast} />
                         </Route>
-                        <Route path='/view/:target_email' component={View} />
+                        <Route path='/view/:target_email'>
+                            <View handleToast={this.performToast} />
+                        </Route>
                         <Route path='/followers'>
                             { FollowerView }
                         </Route>

@@ -97,7 +97,7 @@ class LoginForm extends React.Component {
                 <div style={{ height: '50px', width: '100%'}}>
                     <div style={{ float: 'left' }}>
                     <Input label='Remember me' type='checkbox' name='rememberMe'
-                        id='rememberMe-field' defaultChecked='checked'/>
+                        id='rememberMe-field' value='yes'/>
                     </div>
                 </div>
                 <Row>

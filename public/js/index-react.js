@@ -34315,7 +34315,7 @@ var LoginForm = function (_React$Component) {
                         'div',
                         { style: { float: 'left' } },
                         _react2.default.createElement(_reactMaterialize.Input, { label: 'Remember me', type: 'checkbox', name: 'rememberMe',
-                            id: 'rememberMe-field', defaultChecked: 'checked' })
+                            id: 'rememberMe-field', value: 'yes' })
                     )
                 ),
                 _react2.default.createElement(

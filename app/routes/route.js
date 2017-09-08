@@ -27,6 +27,7 @@ router.route('/')
             // 1 - Check if there exists a remember-me cookie
             const token = req.cookies.rememberMe;
 			if (token) {
+                console.log('request contains rememberMe cookie');
 				Token.consume(token, (err, user_email) => {
                     if (err) {
                         console.error(err);
@@ -42,6 +43,7 @@ router.route('/')
                                     res.status(500).send(err500 + '<h4>Error during req.login()</h4>');
                                 }
                                 else {
+                                    console.log('Authenticated by cookie');
                                     res.redirect('/profile');
                                 }
                             });
@@ -69,6 +71,7 @@ router.route('/')
                         console.error(err);
                         return done(err);
                     }
+                    console.log('rememberMe cookie set!');
                     res.cookie('rememberMe', token, {
                         path: '/',
                         httpOnly: true,
