@@ -2,27 +2,23 @@ import React from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import  { Preloader } from 'react-materialize';
-import ViewCard from '../components/ViewCard.jsx';
+import CardList from './CardList.jsx';
 
 class FollowView extends React.Component {
     render() {
-        var render_element;
+        console.log('FollowView got data:', this.props.data);
+        var renderedContent;
         if (this.props.data.length == 0) {
-            render_element = <p className='center'>No data</p>
+            renderedContent = <p className='center'>No data</p>
         }
         else {
-            var view_cards = [];
-            for (var i = 0; i < this.props.data.length; i++) {
-                this.props.data[i].distance = 1;
-                view_cards.push(<ViewCard follow_enabled
-                            handleToast={this.handleToast} key={i + 1} data={this.props.data[i]} />);
-            }
-            render_element = view_cards;
+            renderedContent = <CardList emails={this.props.data}
+                                handleToast={this.props.handleToast} />;
         }
 
         return (
             <div style={{ marginTop: '50px' }}>
-                {render_element}
+                {renderedContent}
             </div>
         );
     }
@@ -30,7 +26,8 @@ class FollowView extends React.Component {
 
 FollowView.PropTypes = {
     data: PropTypes.array.isRequired,
-    is_followers: PropTypes.bool
+    is_followers: PropTypes.bool,
+    handleToast: PropTypes.func.isRequired
 }
 
 export default FollowView;

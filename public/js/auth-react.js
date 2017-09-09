@@ -34119,244 +34119,6 @@ exports.default = FollowButton;
 /* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Navbar = __webpack_require__(307);
-
-var _Navbar2 = _interopRequireDefault(_Navbar);
-
-var _reactMaterialize = __webpack_require__(32);
-
-var _propTypes = __webpack_require__(2);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _reactRouterDom = __webpack_require__(47);
-
-var _FollowButton = __webpack_require__(309);
-
-var _FollowButton2 = _interopRequireDefault(_FollowButton);
-
-var _axios = __webpack_require__(48);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _immutabilityHelper = __webpack_require__(311);
-
-var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/*
-The ViewCard is supplied a `targetEmail` prop for which it is aimed to render the data of
-the user with the email provided. If the card is rendered for an authorized user, then
-an extra prop, namely `selfData`, is passed to the component so that additional info and
-subcomponents such as the FollowButton can be rendered with respect to this data.
-*/
-
-var ViewCard = function (_React$Component) {
-    _inherits(ViewCard, _React$Component);
-
-    function ViewCard(props) {
-        _classCallCheck(this, ViewCard);
-
-        var _this = _possibleConstructorReturn(this, (ViewCard.__proto__ || Object.getPrototypeOf(ViewCard)).call(this, props));
-
-        _this.state = {
-            data_pending: true,
-            follow_status_pending: false,
-            data: null
-        };
-
-        _this.handleFollowAction = _this.handleFollowAction.bind(_this);
-        return _this;
-    }
-
-    _createClass(ViewCard, [{
-        key: 'fetchTargetData',
-        value: function fetchTargetData() {
-            var _this2 = this;
-
-            _axios2.default.get('/api/card/' + this.props.targetEmail).then(function (response) {
-                _this2.setState({
-                    data_pending: false,
-                    data: response.data
-                });
-            }).catch(function (err) {
-                console.error(err);
-            });
-        }
-    }, {
-        key: 'handleFollowAction',
-        value: function handleFollowAction(unfollow, target_email, target_name) {
-            var _this3 = this;
-
-            this.setState({
-                follow_status_pending: true
-            });
-
-            var url = unfollow ? '/api/unfollow' : '/api/follow';
-
-            _axios2.default.post(url, {
-                target_email: target_email
-            }).then(function (response) {
-                if (!response.data.success) {
-                    console.error('Error with successful response:\n', response.data.error);
-                    _this3.props.handleToast('Cannot perform this action!');
-                } else {
-                    // SUCCESS!
-                    console.log('SUCCESS!');
-                    _this3.fetchTargetData();
-                    console.log('distance after follow action:', _this3.state.data.authData.distance);
-                    _this3.props.handleToast(unfollow ? 'Unfollowed ' + target_name : 'Following ' + target_name);
-                }
-                _this3.setState({
-                    follow_status_pending: false
-                });
-            }).catch(function (err) {
-                console.error('Error for response:', err);
-                _this3.props.handleToast('Something has gone wrong!');
-                _this3.setState({
-                    follow_status_pending: false
-                });
-            });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.fetchTargetData();
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this4 = this;
-
-            // 1 - Prepare the FollowButton
-            var follow_button;
-            if (this.state.data && this.state.data.authData && !this.state.follow_status_pending) {
-                if (this.state.data.authData.distance == 1) {
-                    follow_button = _react2.default.createElement(_FollowButton2.default, { unfollow: true, onClick: function onClick() {
-                            _this4.handleFollowAction(true, _this4.props.targetEmail, _this4.state.data.fname);
-                        } });
-                } else {
-                    follow_button = _react2.default.createElement(_FollowButton2.default, { onClick: function onClick() {
-                            _this4.handleFollowAction(false, _this4.props.targetEmail, _this4.state.data.fname);
-                        } });
-                }
-            } else if (this.state.follow_status_pending) {
-                follow_button = _react2.default.createElement(
-                    'div',
-                    { className: 'center' },
-                    _react2.default.createElement(_reactMaterialize.Preloader, { size: 'small' })
-                );
-            }
-
-            // 2 - Prepare the ViewCard
-            var renderedContent;
-            var distance = this.state.data ? this.state.data.authData.distance : null;
-            if (!this.state.data_pending) {
-                renderedContent = _react2.default.createElement(
-                    _reactMaterialize.Card,
-                    { style: { height: '100px', width: '600px', margin: 'auto' } },
-                    _react2.default.createElement(
-                        _reactMaterialize.Row,
-                        null,
-                        _react2.default.createElement(
-                            _reactMaterialize.Col,
-                            { s: 9 },
-                            _react2.default.createElement(
-                                _reactRouterDom.Link,
-                                { to: 'view/' + this.state.data.email },
-                                _react2.default.createElement(
-                                    'span',
-                                    { style: { float: 'left', fontWeight: 400 } },
-                                    this.state.data.fname,
-                                    ' ',
-                                    this.state.data.lname
-                                )
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactMaterialize.Col,
-                            { s: 3 },
-                            this.state.data.authData && _react2.default.createElement(
-                                'span',
-                                { style: { float: 'right' } },
-                                follow_button
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactMaterialize.Col,
-                            { s: 9 },
-                            _react2.default.createElement(
-                                'span',
-                                { style: { fontSize: '17px', fontWeight: '300' },
-                                    className: 'grey-text' },
-                                'Student at ',
-                                this.state.data.school
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactMaterialize.Col,
-                            { s: 3 },
-                            distance > 1 && _react2.default.createElement(
-                                'div',
-                                { style: { float: 'right' } },
-                                'distance: ',
-                                distance
-                            )
-                        )
-                    )
-                );
-            } else {
-                renderedContent = _react2.default.createElement(
-                    _reactMaterialize.Card,
-                    { style: { width: '800px', height: '300px', margin: 'auto' }, className: 'small' },
-                    'Loading'
-                );
-            }
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                renderedContent
-            );
-        }
-    }]);
-
-    return ViewCard;
-}(_react2.default.Component);
-
-ViewCard.PropTypes = {
-    target_email: _propTypes2.default.object.isRequired,
-    self_data: _propTypes2.default.object,
-    handleFollowStatusChange: _propTypes2.default.func,
-    handleToast: _propTypes2.default.func
-};
-
-exports.default = ViewCard;
-
-/***/ }),
-/* 311 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var invariant = __webpack_require__(15);
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -34561,6 +34323,86 @@ function invariantMerge(target, specValue) {
 
 
 /***/ }),
+/* 311 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _ViewCard = __webpack_require__(320);
+
+var _ViewCard2 = _interopRequireDefault(_ViewCard);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+To be used in Search and FollowView
+-----------------------------------
+CardList is provided a prop, an array of objects with `email` key for
+which a ViewCard will be rendered. The cards are rendered in the array order.
+*/
+
+var CardList = function (_React$Component) {
+    _inherits(CardList, _React$Component);
+
+    function CardList() {
+        _classCallCheck(this, CardList);
+
+        return _possibleConstructorReturn(this, (CardList.__proto__ || Object.getPrototypeOf(CardList)).apply(this, arguments));
+    }
+
+    _createClass(CardList, [{
+        key: 'render',
+        value: function render() {
+            var renderedContent;
+
+            var view_cards = []; // USING A LINKED LIST IS BETTER HERE
+            for (var i = 0; i < this.props.emails.length; i++) {
+                view_cards.push(_react2.default.createElement(_ViewCard2.default, { key: i + 1,
+                    targetEmail: this.props.emails[i].email,
+                    handleToast: this.props.handleToast }));
+            }
+            renderedContent = view_cards;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                renderedContent
+            );
+        }
+    }]);
+
+    return CardList;
+}(_react2.default.Component);
+
+CardList.PropTypes = {
+    emails: _propTypes2.default.array.isRequired,
+    handleToast: _propTypes2.default.func.isRequired
+};
+
+exports.default = CardList;
+
+/***/ }),
 /* 312 */,
 /* 313 */,
 /* 314 */,
@@ -34600,11 +34442,11 @@ var _Search = __webpack_require__(319);
 
 var _Search2 = _interopRequireDefault(_Search);
 
-var _View = __webpack_require__(320);
+var _View = __webpack_require__(321);
 
 var _View2 = _interopRequireDefault(_View);
 
-var _FollowView = __webpack_require__(321);
+var _FollowView = __webpack_require__(322);
 
 var _FollowView2 = _interopRequireDefault(_FollowView);
 
@@ -34828,17 +34670,17 @@ var _axios2 = _interopRequireDefault(_axios);
 
 var _reactMaterialize = __webpack_require__(32);
 
-var _ViewCard = __webpack_require__(310);
-
-var _ViewCard2 = _interopRequireDefault(_ViewCard);
-
-var _immutabilityHelper = __webpack_require__(311);
+var _immutabilityHelper = __webpack_require__(310);
 
 var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
 
 var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _CardList = __webpack_require__(311);
+
+var _CardList2 = _interopRequireDefault(_CardList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34862,7 +34704,6 @@ var Search = function (_React$Component) {
         };
 
         _this.fetchSearchResults = _this.fetchSearchResults.bind(_this);
-        _this.updateProfileData = _this.updateProfileData.bind(_this);
         return _this;
     }
 
@@ -34876,26 +34717,6 @@ var Search = function (_React$Component) {
             }).then(function (response) {
                 _this2.setState({
                     search_results: response.data
-                });
-            }).catch(function (err) {
-                console.error(err);
-            });
-        }
-    }, {
-        key: 'updateProfileData',
-        value: function updateProfileData(email) {
-            var _this3 = this;
-
-            _axios2.default.get('/view/' + email).then(function (response) {
-                var target_index = null;
-                for (var i = 0; i < _this3.state.search_results.length && target_index == null; i++) {
-                    if (_this3.state.search_results[i].email == email) target_index = i;
-                }
-                if (target_index == null) {
-                    console.error('impossible happened!');
-                }
-                _this3.setState({
-                    search_results: (0, _immutabilityHelper2.default)(_this3.state.search_results)
                 });
             }).catch(function (err) {
                 console.error(err);
@@ -34917,10 +34738,10 @@ var Search = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var render_element;
+            var renderedContent;
             if (this.state.search_results == null) {
                 // FETCHING RESULTS - CONTENT PRELOADER ACTIVE
-                render_element = _react2.default.createElement(
+                renderedContent = _react2.default.createElement(
                     'div',
                     { className: 'center' },
                     _react2.default.createElement(_reactMaterialize.Preloader, { size: 'medium', flashing: true }),
@@ -34932,20 +34753,16 @@ var Search = function (_React$Component) {
                 );
             } else if (this.state.search_results.length == 0) {
                 // NO RESULTS!
-                render_element = _react2.default.createElement(
+                renderedContent = _react2.default.createElement(
                     'p',
                     { className: 'center' },
                     'No results!'
                 );
             } else {
                 // RESULTS FETCHED!
-                var view_cards = [];
-                for (var i = 0; i < this.state.search_results.length; i++) {
-                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { key: i + 1,
-                        targetEmail: this.state.search_results[i].email,
-                        handleToast: this.props.handleToast }));
-                }
-                render_element = view_cards;
+                renderedContent = _react2.default.createElement(_CardList2.default, {
+                    emails: this.state.search_results,
+                    handleToast: this.props.handleToast });
             }
 
             return _react2.default.createElement(
@@ -34958,7 +34775,7 @@ var Search = function (_React$Component) {
                     this.props.query,
                     '"'
                 ),
-                render_element
+                renderedContent
             );
         }
     }]);
@@ -34974,6 +34791,243 @@ exports.default = Search;
 
 /***/ }),
 /* 320 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Navbar = __webpack_require__(307);
+
+var _Navbar2 = _interopRequireDefault(_Navbar);
+
+var _reactMaterialize = __webpack_require__(32);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRouterDom = __webpack_require__(47);
+
+var _FollowButton = __webpack_require__(309);
+
+var _FollowButton2 = _interopRequireDefault(_FollowButton);
+
+var _axios = __webpack_require__(48);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _immutabilityHelper = __webpack_require__(310);
+
+var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+The ViewCard is supplied a `targetEmail` prop for which it is aimed to render the data of
+the user with the email provided. If the card is rendered for an authorized user, then
+an extra prop, namely `selfData`, is passed to the component so that additional info and
+subcomponents such as the FollowButton can be rendered with respect to this data.
+*/
+
+var ViewCard = function (_React$Component) {
+    _inherits(ViewCard, _React$Component);
+
+    function ViewCard(props) {
+        _classCallCheck(this, ViewCard);
+
+        var _this = _possibleConstructorReturn(this, (ViewCard.__proto__ || Object.getPrototypeOf(ViewCard)).call(this, props));
+
+        _this.state = {
+            data_pending: true,
+            follow_status_pending: false,
+            data: null
+        };
+
+        _this.handleFollowAction = _this.handleFollowAction.bind(_this);
+        return _this;
+    }
+
+    _createClass(ViewCard, [{
+        key: 'fetchTargetData',
+        value: function fetchTargetData() {
+            var _this2 = this;
+
+            _axios2.default.get('/api/card/' + this.props.targetEmail).then(function (response) {
+                _this2.setState({
+                    data_pending: false,
+                    data: response.data
+                });
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }, {
+        key: 'handleFollowAction',
+        value: function handleFollowAction(unfollow, targetEmail, target_name) {
+            var _this3 = this;
+
+            this.setState({
+                follow_status_pending: true
+            });
+
+            var url = unfollow ? '/api/unfollow' : '/api/follow';
+
+            _axios2.default.post(url, {
+                target_email: targetEmail
+            }).then(function (response) {
+                if (!response.data.success) {
+                    console.error('Error with successful response:\n', response.data.error);
+                    _this3.props.handleToast('Cannot perform this action!');
+                } else {
+                    // SUCCESS!
+                    console.log('SUCCESS!');
+                    _this3.fetchTargetData();
+                    console.log('distance after follow action:', _this3.state.data.authData.distance);
+                    _this3.props.handleToast(unfollow ? 'Unfollowed ' + target_name : 'Following ' + target_name);
+                }
+                _this3.setState({
+                    follow_status_pending: false
+                });
+            }).catch(function (err) {
+                console.error('Error for response:', err);
+                _this3.props.handleToast('Something has gone wrong!');
+                _this3.setState({
+                    follow_status_pending: false
+                });
+            });
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            console.log('ViewCard got targetEmail:', this.props.targetEmail);
+            this.fetchTargetData();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this4 = this;
+
+            // 1 - Prepare the FollowButton
+            var follow_button;
+            if (this.state.data && this.state.data.authData && !this.state.follow_status_pending) {
+                if (this.state.data.authData.distance == 1) {
+                    follow_button = _react2.default.createElement(_FollowButton2.default, { unfollow: true, onClick: function onClick() {
+                            _this4.handleFollowAction(true, _this4.props.targetEmail, _this4.state.data.fname);
+                        } });
+                } else {
+                    follow_button = _react2.default.createElement(_FollowButton2.default, { onClick: function onClick() {
+                            _this4.handleFollowAction(false, _this4.props.targetEmail, _this4.state.data.fname);
+                        } });
+                }
+            } else if (this.state.follow_status_pending) {
+                follow_button = _react2.default.createElement(
+                    'div',
+                    { className: 'center' },
+                    _react2.default.createElement(_reactMaterialize.Preloader, { size: 'small' })
+                );
+            }
+
+            // 2 - Prepare the ViewCard
+            var renderedContent;
+            var distance = this.state.data ? this.state.data.authData.distance : null;
+            if (!this.state.data_pending) {
+                renderedContent = _react2.default.createElement(
+                    _reactMaterialize.Card,
+                    { style: { height: '100px', width: '600px', margin: 'auto' } },
+                    _react2.default.createElement(
+                        _reactMaterialize.Row,
+                        null,
+                        _react2.default.createElement(
+                            _reactMaterialize.Col,
+                            { s: 9 },
+                            _react2.default.createElement(
+                                _reactRouterDom.Link,
+                                { to: 'view/' + this.state.data.email },
+                                _react2.default.createElement(
+                                    'span',
+                                    { style: { float: 'left', fontWeight: 400 } },
+                                    this.state.data.fname,
+                                    ' ',
+                                    this.state.data.lname
+                                )
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactMaterialize.Col,
+                            { s: 3 },
+                            this.state.data.authData && _react2.default.createElement(
+                                'span',
+                                { style: { float: 'right' } },
+                                follow_button
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactMaterialize.Col,
+                            { s: 9 },
+                            _react2.default.createElement(
+                                'span',
+                                { style: { fontSize: '17px', fontWeight: '300' },
+                                    className: 'grey-text' },
+                                'Student at ',
+                                this.state.data.school
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactMaterialize.Col,
+                            { s: 3 },
+                            distance > 1 && _react2.default.createElement(
+                                'div',
+                                { style: { float: 'right' } },
+                                'distance: ',
+                                distance
+                            )
+                        )
+                    )
+                );
+            } else {
+                renderedContent = _react2.default.createElement(
+                    _reactMaterialize.Card,
+                    { style: { width: '800px', height: '300px', margin: 'auto' }, className: 'small' },
+                    'Loading'
+                );
+            }
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                renderedContent
+            );
+        }
+    }]);
+
+    return ViewCard;
+}(_react2.default.Component);
+
+ViewCard.PropTypes = {
+    targetEmail: _propTypes2.default.object.isRequired,
+    handleToast: _propTypes2.default.func.isRequired
+};
+
+exports.default = ViewCard;
+
+/***/ }),
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35062,7 +35116,7 @@ var View = function (_React$Component) {
 exports.default = View;
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35088,9 +35142,9 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactMaterialize = __webpack_require__(32);
 
-var _ViewCard = __webpack_require__(310);
+var _CardList = __webpack_require__(311);
 
-var _ViewCard2 = _interopRequireDefault(_ViewCard);
+var _CardList2 = _interopRequireDefault(_CardList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35112,27 +35166,23 @@ var FollowView = function (_React$Component) {
     _createClass(FollowView, [{
         key: 'render',
         value: function render() {
-            var render_element;
+            console.log('FollowView got data:', this.props.data);
+            var renderedContent;
             if (this.props.data.length == 0) {
-                render_element = _react2.default.createElement(
+                renderedContent = _react2.default.createElement(
                     'p',
                     { className: 'center' },
                     'No data'
                 );
             } else {
-                var view_cards = [];
-                for (var i = 0; i < this.props.data.length; i++) {
-                    this.props.data[i].distance = 1;
-                    view_cards.push(_react2.default.createElement(_ViewCard2.default, { follow_enabled: true,
-                        handleToast: this.handleToast, key: i + 1, data: this.props.data[i] }));
-                }
-                render_element = view_cards;
+                renderedContent = _react2.default.createElement(_CardList2.default, { emails: this.props.data,
+                    handleToast: this.props.handleToast });
             }
 
             return _react2.default.createElement(
                 'div',
                 { style: { marginTop: '50px' } },
-                render_element
+                renderedContent
             );
         }
     }]);
@@ -35142,7 +35192,8 @@ var FollowView = function (_React$Component) {
 
 FollowView.PropTypes = {
     data: _propTypes2.default.array.isRequired,
-    is_followers: _propTypes2.default.bool
+    is_followers: _propTypes2.default.bool,
+    handleToast: _propTypes2.default.func.isRequired
 };
 
 exports.default = FollowView;

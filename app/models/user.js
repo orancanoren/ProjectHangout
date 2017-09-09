@@ -457,7 +457,7 @@ User.validPassword = function(password, pass, next) {
 
 var getNameByEmails = function(emails, callback) {
     var pg_query = [
-        'SELECT fname, lname, school',
+        'SELECT fname, lname, school, email',
         'FROM Users',
         'WHERE email=$1'
     ];

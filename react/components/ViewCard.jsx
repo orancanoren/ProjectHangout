@@ -40,7 +40,7 @@ class ViewCard extends React.Component {
             });
     }
 
-    handleFollowAction(unfollow, target_email, target_name) {
+    handleFollowAction(unfollow, targetEmail, target_name) {
         this.setState({
             follow_status_pending: true
         });
@@ -48,7 +48,7 @@ class ViewCard extends React.Component {
         const url = unfollow ? '/api/unfollow' : '/api/follow';
 
         axios.post(url, {
-            target_email: target_email
+            target_email: targetEmail
         })
         .then((response) => {
             if (!response.data.success) {
@@ -76,6 +76,7 @@ class ViewCard extends React.Component {
     }
 
     componentDidMount() {
+        console.log('ViewCard got targetEmail:', this.props.targetEmail);
         this.fetchTargetData();
     }
 
@@ -143,10 +144,8 @@ class ViewCard extends React.Component {
 }
 
 ViewCard.PropTypes = {
-    target_email: PropTypes.object.isRequired,
-    self_data: PropTypes.object,
-    handleFollowStatusChange: PropTypes.func,
-    handleToast: PropTypes.func
+    targetEmail: PropTypes.object.isRequired,
+    handleToast: PropTypes.func.isRequired
 }
 
 export default ViewCard;
