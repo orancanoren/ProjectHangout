@@ -80,7 +80,6 @@ class ViewCard extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('nextProps.targetEmail:', nextProps.targetEmail);
         this.fetchTargetData(nextProps.targetEmail);
     }
 

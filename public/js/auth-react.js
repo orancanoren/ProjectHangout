@@ -34512,9 +34512,7 @@ var Authenticated = function (_React$Component) {
     }, {
         key: 'updateInfo',
         value: function updateInfo() {
-            console.log('before updateInfo:\n', this.state.profile_data);
             this.getProfileData();
-            console.log('after updateInfo:\n', this.state.profile_data);
         }
     }, {
         key: 'componentDidMount',
@@ -34809,7 +34807,6 @@ var ViewCard = function (_React$Component) {
     }, {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(nextProps) {
-            console.log('nextProps.targetEmail:', nextProps.targetEmail);
             this.fetchTargetData(nextProps.targetEmail);
         }
     }, {
@@ -34963,6 +34960,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/*
+state.search_results is an array
+*/
+
 var Search = function (_React$Component) {
     _inherits(Search, _React$Component);
 
@@ -34977,6 +34978,7 @@ var Search = function (_React$Component) {
         };
 
         _this.fetchSearchResults = _this.fetchSearchResults.bind(_this);
+        _this.handleFollowAction = _this.handleFollowAction.bind(_this);
         return _this;
     }
 
@@ -34988,6 +34990,7 @@ var Search = function (_React$Component) {
             _axios2.default.post('/api/search', {
                 search_query: query
             }).then(function (response) {
+                console.log('search_results:\n', response.data);
                 _this2.setState({
                     search_results: response.data
                 });
@@ -35007,6 +35010,11 @@ var Search = function (_React$Component) {
                 search_results: null
             });
             this.fetchSearchResults(nextProps.query);
+        }
+    }, {
+        key: 'handleFollowAction',
+        value: function handleFollowAction() {
+            this.forceUpdate();
         }
     }, {
         key: 'render',
@@ -35035,7 +35043,8 @@ var Search = function (_React$Component) {
                 // RESULTS FETCHED!
                 renderedContent = _react2.default.createElement(_CardList2.default, {
                     emails: this.state.search_results,
-                    handleToast: this.props.handleToast });
+                    handleToast: this.props.handleToast,
+                    updateInfo: this.handleFollowAction });
             }
 
             return _react2.default.createElement(

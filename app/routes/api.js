@@ -185,7 +185,6 @@ router.get('/profile/:email?', (req, res) => {
         }
         
         const sex = req.user.sex ? "female" : "male";
-        console.log('api/profile returns following:\n', results.following);
         res.json({
             fname: results.cardData.fname,
             lname: results.cardData.lname,

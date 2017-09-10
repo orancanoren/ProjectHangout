@@ -52,9 +52,7 @@ class Authenticated extends React.Component {
     }
 
     updateInfo() {
-        console.log('before updateInfo:\n', this.state.profile_data);
         this.getProfileData();
-        console.log('after updateInfo:\n', this.state.profile_data);
     }
 
     componentDidMount()  {
