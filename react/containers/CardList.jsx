@@ -10,6 +10,16 @@ which a ViewCard will be rendered. The cards are rendered in the array order.
 */
 
 class CardList extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.updateAllCards = this.updateAllCards.bind(this);
+    }
+
+    updateAllCards() {
+        this.props.updateInfo();
+    }
+
     render() {
         var renderedContent;
 
@@ -17,7 +27,8 @@ class CardList extends React.Component {
         for (var i = 0; i < this.props.emails.length; i++) {
             view_cards.push(<ViewCard key={i + 1} 
                 targetEmail={this.props.emails[i].email} 
-                handleToast={this.props.handleToast} />);
+                handleToast={this.props.handleToast} 
+                updateInfo={this.updateAllCards}/>);
         }
         renderedContent = view_cards;
 
@@ -31,7 +42,8 @@ class CardList extends React.Component {
 
 CardList.PropTypes = {
     emails: PropTypes.array.isRequired,
-    handleToast: PropTypes.func.isRequired
+    handleToast: PropTypes.func.isRequired,
+    updateInfo: PropTypes.func.isRequired
 }
 
 export default CardList;    

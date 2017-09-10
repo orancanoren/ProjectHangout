@@ -1825,7 +1825,7 @@ var CallbackQueue = __webpack_require__(97);
 var PooledClass = __webpack_require__(24);
 var ReactFeatureFlags = __webpack_require__(98);
 var ReactReconciler = __webpack_require__(28);
-var Transaction = __webpack_require__(42);
+var Transaction = __webpack_require__(43);
 
 var invariant = __webpack_require__(3);
 
@@ -3592,7 +3592,7 @@ module.exports = ReactReconciler;
 
 
 var DOMNamespaces = __webpack_require__(64);
-var setInnerHTML = __webpack_require__(44);
+var setInnerHTML = __webpack_require__(45);
 
 var createMicrosoftUnsafeLocalFunction = __webpack_require__(65);
 var setTextContent = __webpack_require__(102);
@@ -3975,7 +3975,7 @@ var _ProgressBar = __webpack_require__(275);
 
 var _ProgressBar2 = _interopRequireDefault(_ProgressBar);
 
-var _Row = __webpack_require__(40);
+var _Row = __webpack_require__(41);
 
 var _Row2 = _interopRequireDefault(_Row);
 
@@ -4229,7 +4229,7 @@ module.exports = EventPropagators;
 
 var _prodInvariant = __webpack_require__(6);
 
-var EventPluginRegistry = __webpack_require__(41);
+var EventPluginRegistry = __webpack_require__(42);
 var EventPluginUtils = __webpack_require__(58);
 var ReactErrorUtils = __webpack_require__(59);
 
@@ -4668,6 +4668,65 @@ module.exports = emptyObject;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__ = __webpack_require__(138);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserRouter", function() { return __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(141);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashRouter", function() { return __WEBPACK_IMPORTED_MODULE_1__HashRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(85);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_2__Link__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(143);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MemoryRouter", function() { return __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__NavLink__ = __webpack_require__(146);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NavLink", function() { return __WEBPACK_IMPORTED_MODULE_4__NavLink__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(149);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Prompt", function() { return __WEBPACK_IMPORTED_MODULE_5__Prompt__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(151);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(86);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(53);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return __WEBPACK_IMPORTED_MODULE_8__Router__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(157);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "StaticRouter", function() { return __WEBPACK_IMPORTED_MODULE_9__StaticRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(159);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Switch", function() { return __WEBPACK_IMPORTED_MODULE_10__Switch__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__matchPath__ = __webpack_require__(161);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "matchPath", function() { return __WEBPACK_IMPORTED_MODULE_11__matchPath__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__withRouter__ = __webpack_require__(162);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "withRouter", function() { return __WEBPACK_IMPORTED_MODULE_12__withRouter__["a"]; });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createLocation; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return locationsAreEqual; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_resolve_pathname__ = __webpack_require__(82);
@@ -4740,7 +4799,7 @@ var locationsAreEqual = function locationsAreEqual(a, b) {
 };
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4791,7 +4850,7 @@ Row.propTypes = {
 exports.default = Row;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5050,7 +5109,7 @@ module.exports = EventPluginRegistry;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5284,7 +5343,7 @@ module.exports = TransactionImpl;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5361,7 +5420,7 @@ SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 module.exports = SyntheticMouseEvent;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5464,7 +5523,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = setInnerHTML;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5591,7 +5650,7 @@ function escapeTextContentForBrowser(text) {
 module.exports = escapeTextContentForBrowser;
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5609,7 +5668,7 @@ module.exports = escapeTextContentForBrowser;
 
 var _assign = __webpack_require__(7);
 
-var EventPluginRegistry = __webpack_require__(41);
+var EventPluginRegistry = __webpack_require__(42);
 var ReactEventEmitterMixin = __webpack_require__(218);
 var ViewportMetrics = __webpack_require__(101);
 
@@ -5918,65 +5977,6 @@ var ReactBrowserEventEmitter = _assign({}, ReactEventEmitterMixin, {
 });
 
 module.exports = ReactBrowserEventEmitter;
-
-/***/ }),
-/* 47 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__ = __webpack_require__(138);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserRouter", function() { return __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(141);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashRouter", function() { return __WEBPACK_IMPORTED_MODULE_1__HashRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(85);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_2__Link__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(143);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MemoryRouter", function() { return __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__NavLink__ = __webpack_require__(146);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NavLink", function() { return __WEBPACK_IMPORTED_MODULE_4__NavLink__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(149);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Prompt", function() { return __WEBPACK_IMPORTED_MODULE_5__Prompt__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(151);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(86);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(53);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return __WEBPACK_IMPORTED_MODULE_8__Router__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(157);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "StaticRouter", function() { return __WEBPACK_IMPORTED_MODULE_9__StaticRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(159);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Switch", function() { return __WEBPACK_IMPORTED_MODULE_10__Switch__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__matchPath__ = __webpack_require__(161);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "matchPath", function() { return __WEBPACK_IMPORTED_MODULE_11__matchPath__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__withRouter__ = __webpack_require__(162);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "withRouter", function() { return __WEBPACK_IMPORTED_MODULE_12__withRouter__["a"]; });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /***/ }),
 /* 48 */
@@ -7231,7 +7231,7 @@ var ReactDOMComponentTree = __webpack_require__(8);
 var ReactInstrumentation = __webpack_require__(13);
 
 var createMicrosoftUnsafeLocalFunction = __webpack_require__(65);
-var setInnerHTML = __webpack_require__(44);
+var setInnerHTML = __webpack_require__(45);
 var setTextContent = __webpack_require__(102);
 
 function getNodeAfter(parentNode, node) {
@@ -11154,8 +11154,8 @@ module.exports = ViewportMetrics;
 
 
 var ExecutionEnvironment = __webpack_require__(9);
-var escapeTextContentForBrowser = __webpack_require__(45);
-var setInnerHTML = __webpack_require__(44);
+var escapeTextContentForBrowser = __webpack_require__(46);
+var setInnerHTML = __webpack_require__(45);
 
 /**
  * Set the textContent property of a node, ensuring that whitespace is preserved
@@ -12602,7 +12602,7 @@ var _prodInvariant = __webpack_require__(6);
 var DOMLazyTree = __webpack_require__(29);
 var DOMProperty = __webpack_require__(20);
 var React = __webpack_require__(25);
-var ReactBrowserEventEmitter = __webpack_require__(46);
+var ReactBrowserEventEmitter = __webpack_require__(47);
 var ReactCurrentOwner = __webpack_require__(16);
 var ReactDOMComponentTree = __webpack_require__(8);
 var ReactDOMContainerInfo = __webpack_require__(259);
@@ -12618,7 +12618,7 @@ var ReactUpdates = __webpack_require__(17);
 var emptyObject = __webpack_require__(38);
 var instantiateReactComponent = __webpack_require__(108);
 var invariant = __webpack_require__(3);
-var setInnerHTML = __webpack_require__(44);
+var setInnerHTML = __webpack_require__(45);
 var shouldUpdateReactComponent = __webpack_require__(69);
 var warning = __webpack_require__(4);
 
@@ -17288,7 +17288,7 @@ Redirect.contextTypes = {
 /* unused harmony reexport createHashHistory */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__createMemoryHistory__ = __webpack_require__(156);
 /* unused harmony reexport createMemoryHistory */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__LocationUtils__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__LocationUtils__ = __webpack_require__(40);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_3__LocationUtils__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_3__LocationUtils__["b"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__PathUtils__ = __webpack_require__(31);
@@ -17313,7 +17313,7 @@ Redirect.contextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PathUtils__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__createTransitionManager__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__DOMUtils__ = __webpack_require__(88);
@@ -17617,7 +17617,7 @@ var createBrowserHistory = function createBrowserHistory() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PathUtils__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__createTransitionManager__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__DOMUtils__ = __webpack_require__(88);
@@ -17937,7 +17937,7 @@ var createHashHistory = function createHashHistory() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__PathUtils__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__createTransitionManager__ = __webpack_require__(56);
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -18570,7 +18570,7 @@ var _Icon = __webpack_require__(18);
 
 var _Icon2 = _interopRequireDefault(_Icon);
 
-var _Row = __webpack_require__(40);
+var _Row = __webpack_require__(41);
 
 var _Row2 = _interopRequireDefault(_Row);
 
@@ -19996,7 +19996,7 @@ var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _Row = __webpack_require__(40);
+var _Row = __webpack_require__(41);
 
 var _Row2 = _interopRequireDefault(_Row);
 
@@ -22769,7 +22769,7 @@ module.exports = DefaultEventPluginOrder;
 
 var EventPropagators = __webpack_require__(33);
 var ReactDOMComponentTree = __webpack_require__(8);
-var SyntheticMouseEvent = __webpack_require__(43);
+var SyntheticMouseEvent = __webpack_require__(44);
 
 var eventTypes = {
   mouseEnter: {
@@ -23570,8 +23570,8 @@ var DOMNamespaces = __webpack_require__(64);
 var DOMProperty = __webpack_require__(20);
 var DOMPropertyOperations = __webpack_require__(105);
 var EventPluginHub = __webpack_require__(34);
-var EventPluginRegistry = __webpack_require__(41);
-var ReactBrowserEventEmitter = __webpack_require__(46);
+var EventPluginRegistry = __webpack_require__(42);
+var ReactBrowserEventEmitter = __webpack_require__(47);
 var ReactDOMComponentFlags = __webpack_require__(93);
 var ReactDOMComponentTree = __webpack_require__(8);
 var ReactDOMInput = __webpack_require__(220);
@@ -23583,7 +23583,7 @@ var ReactMultiChild = __webpack_require__(223);
 var ReactServerRenderingTransaction = __webpack_require__(232);
 
 var emptyFunction = __webpack_require__(12);
-var escapeTextContentForBrowser = __webpack_require__(45);
+var escapeTextContentForBrowser = __webpack_require__(46);
 var invariant = __webpack_require__(3);
 var isEventSupported = __webpack_require__(61);
 var shallowEqual = __webpack_require__(68);
@@ -25108,7 +25108,7 @@ module.exports = memoizeStringOnly;
 
 
 
-var escapeTextContentForBrowser = __webpack_require__(45);
+var escapeTextContentForBrowser = __webpack_require__(46);
 
 /**
  * Escapes attribute value to prevent scripting attacks.
@@ -27692,7 +27692,7 @@ module.exports = flattenChildren;
 var _assign = __webpack_require__(7);
 
 var PooledClass = __webpack_require__(24);
-var Transaction = __webpack_require__(42);
+var Transaction = __webpack_require__(43);
 var ReactInstrumentation = __webpack_require__(13);
 var ReactServerUpdateQueue = __webpack_require__(233);
 
@@ -28144,7 +28144,7 @@ var DOMChildrenOperations = __webpack_require__(63);
 var DOMLazyTree = __webpack_require__(29);
 var ReactDOMComponentTree = __webpack_require__(8);
 
-var escapeTextContentForBrowser = __webpack_require__(45);
+var escapeTextContentForBrowser = __webpack_require__(46);
 var invariant = __webpack_require__(3);
 var validateDOMNesting = __webpack_require__(72);
 
@@ -28308,7 +28308,7 @@ module.exports = ReactDOMTextComponent;
 var _assign = __webpack_require__(7);
 
 var ReactUpdates = __webpack_require__(17);
-var Transaction = __webpack_require__(42);
+var Transaction = __webpack_require__(43);
 
 var emptyFunction = __webpack_require__(12);
 
@@ -28587,7 +28587,7 @@ var EventPluginHub = __webpack_require__(34);
 var EventPluginUtils = __webpack_require__(58);
 var ReactComponentEnvironment = __webpack_require__(67);
 var ReactEmptyComponent = __webpack_require__(110);
-var ReactBrowserEventEmitter = __webpack_require__(46);
+var ReactBrowserEventEmitter = __webpack_require__(47);
 var ReactHostComponent = __webpack_require__(111);
 var ReactUpdates = __webpack_require__(17);
 
@@ -28625,10 +28625,10 @@ var _assign = __webpack_require__(7);
 
 var CallbackQueue = __webpack_require__(97);
 var PooledClass = __webpack_require__(24);
-var ReactBrowserEventEmitter = __webpack_require__(46);
+var ReactBrowserEventEmitter = __webpack_require__(47);
 var ReactInputSelection = __webpack_require__(114);
 var ReactInstrumentation = __webpack_require__(13);
-var Transaction = __webpack_require__(42);
+var Transaction = __webpack_require__(43);
 var ReactUpdateQueue = __webpack_require__(71);
 
 /**
@@ -29717,7 +29717,7 @@ var SyntheticClipboardEvent = __webpack_require__(251);
 var SyntheticEvent = __webpack_require__(19);
 var SyntheticFocusEvent = __webpack_require__(252);
 var SyntheticKeyboardEvent = __webpack_require__(253);
-var SyntheticMouseEvent = __webpack_require__(43);
+var SyntheticMouseEvent = __webpack_require__(44);
 var SyntheticDragEvent = __webpack_require__(255);
 var SyntheticTouchEvent = __webpack_require__(256);
 var SyntheticTransitionEvent = __webpack_require__(257);
@@ -30272,7 +30272,7 @@ module.exports = getEventKey;
 
 
 
-var SyntheticMouseEvent = __webpack_require__(43);
+var SyntheticMouseEvent = __webpack_require__(44);
 
 /**
  * @interface DragEvent
@@ -30407,7 +30407,7 @@ module.exports = SyntheticTransitionEvent;
 
 
 
-var SyntheticMouseEvent = __webpack_require__(43);
+var SyntheticMouseEvent = __webpack_require__(44);
 
 /**
  * @interface WheelEvent
@@ -30737,7 +30737,7 @@ module.exports = ReactMount.renderSubtreeIntoContainer;
 
 
 var DOMProperty = __webpack_require__(20);
-var EventPluginRegistry = __webpack_require__(41);
+var EventPluginRegistry = __webpack_require__(42);
 var ReactComponentTreeHook = __webpack_require__(11);
 
 var warning = __webpack_require__(4);
@@ -32606,7 +32606,7 @@ var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _Row = __webpack_require__(40);
+var _Row = __webpack_require__(41);
 
 var _Row2 = _interopRequireDefault(_Row);
 
@@ -33728,8 +33728,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 306 */,
-/* 307 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33749,7 +33748,98 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactRouterDom = __webpack_require__(47);
+var _ViewCard = __webpack_require__(319);
+
+var _ViewCard2 = _interopRequireDefault(_ViewCard);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+To be used in Search and FollowView
+-----------------------------------
+CardList is provided a prop, an array of objects with `email` key for
+which a ViewCard will be rendered. The cards are rendered in the array order.
+*/
+
+var CardList = function (_React$Component) {
+    _inherits(CardList, _React$Component);
+
+    function CardList(props) {
+        _classCallCheck(this, CardList);
+
+        var _this = _possibleConstructorReturn(this, (CardList.__proto__ || Object.getPrototypeOf(CardList)).call(this, props));
+
+        _this.updateAllCards = _this.updateAllCards.bind(_this);
+        return _this;
+    }
+
+    _createClass(CardList, [{
+        key: 'updateAllCards',
+        value: function updateAllCards() {
+            this.props.updateInfo();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var renderedContent;
+
+            var view_cards = []; // USING A LINKED LIST IS BETTER HERE
+            for (var i = 0; i < this.props.emails.length; i++) {
+                view_cards.push(_react2.default.createElement(_ViewCard2.default, { key: i + 1,
+                    targetEmail: this.props.emails[i].email,
+                    handleToast: this.props.handleToast,
+                    updateInfo: this.updateAllCards }));
+            }
+            renderedContent = view_cards;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                renderedContent
+            );
+        }
+    }]);
+
+    return CardList;
+}(_react2.default.Component);
+
+CardList.PropTypes = {
+    emails: _propTypes2.default.array.isRequired,
+    handleToast: _propTypes2.default.func.isRequired,
+    updateInfo: _propTypes2.default.func.isRequired
+};
+
+exports.default = CardList;
+
+/***/ }),
+/* 307 */,
+/* 308 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRouterDom = __webpack_require__(39);
 
 var _reactMaterialize = __webpack_require__(32);
 
@@ -33856,7 +33946,7 @@ var Navbar = function (_React$Component) {
                             { id: 'nav-mobile', className: 'right' },
                             _react2.default.createElement(
                                 'li',
-                                null,
+                                { key: 1 },
                                 _react2.default.createElement(
                                     'form',
                                     { onSubmit: this.handleSearch },
@@ -33872,7 +33962,7 @@ var Navbar = function (_React$Component) {
                             ),
                             _react2.default.createElement(
                                 'li',
-                                null,
+                                { key: 2 },
                                 authButton
                             )
                         )
@@ -33893,7 +33983,7 @@ Navbar.propTypes = {
 exports.default = (0, _reactRouterDom.withRouter)(Navbar);
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33915,9 +34005,13 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(39);
 
-var _FollowButton = __webpack_require__(309);
+var _axios = __webpack_require__(48);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _FollowButton = __webpack_require__(310);
 
 var _FollowButton2 = _interopRequireDefault(_FollowButton);
 
@@ -33935,41 +34029,29 @@ var ProfileCard = function (_React$Component) {
     function ProfileCard(props) {
         _classCallCheck(this, ProfileCard);
 
-        var _this = _possibleConstructorReturn(this, (ProfileCard.__proto__ || Object.getPrototypeOf(ProfileCard)).call(this, props));
-
-        _this.handleFollowClick = _this.handleFollowClick.bind(_this);
-        return _this;
+        return _possibleConstructorReturn(this, (ProfileCard.__proto__ || Object.getPrototypeOf(ProfileCard)).call(this, props));
     }
 
     _createClass(ProfileCard, [{
-        key: 'handleFollowClick',
-        value: function handleFollowClick() {
-            console.log('follow request!');
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.props.updateProfileData();
-        }
-    }, {
         key: 'render',
         value: function render() {
+            // 0 - Get image path [DURING DEBUG PROCEDURE]
             var pathArray = window.location.href.split('/');
             var image_location = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
 
-            var profile_display;
-            var profile_data = this.props.data;
-            if (profile_data) {
-                profile_display = _react2.default.createElement(
+            // 1 - Get profile card
+            var renderedContent;
+            if (this.props.data) {
+                renderedContent = _react2.default.createElement(
                     _reactMaterialize.Card,
                     {
                         className: 'medium',
                         header: _react2.default.createElement(
                             _reactMaterialize.CardTitle,
                             { image: image_location },
-                            profile_data.fname,
+                            this.props.data.fname,
                             ' ',
-                            profile_data.lname,
+                            this.props.data.lname,
                             ' ',
                             _react2.default.createElement('br', null),
                             _react2.default.createElement(
@@ -33977,20 +34059,20 @@ var ProfileCard = function (_React$Component) {
                                 { style: { fontSize: '17px', fontWeight: '300' },
                                     className: 'grey-text text-lighten-2' },
                                 'Student at ',
-                                profile_data.school
+                                this.props.data.school
                             ),
                             ' '
                         ),
 
                         actions: [_react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: '/followers', key: 1 },
-                            profile_data.followers.length,
+                            { to: '/profile/followers', key: 1 },
+                            this.props.data.followers.length,
                             ' followers'
                         ), _react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: '/following', key: 2 },
-                            profile_data.following.length,
+                            { to: '/profile/following', key: 2 },
+                            this.props.data.following.length,
                             ' following'
                         ), this.props.follow_status && _react2.default.createElement(_FollowButton2.default, { key: 3, onClick: this.handleFollowClick })],
 
@@ -34001,18 +34083,18 @@ var ProfileCard = function (_React$Component) {
                         null,
                         _react2.default.createElement(
                             'li',
-                            { key: 1 },
-                            new Date(profile_data.bday).toISOString().substring(0, 10)
+                            null,
+                            new Date(this.props.data.bday).toISOString().substring(0, 10)
                         ),
                         _react2.default.createElement(
                             'li',
-                            { key: 2 },
-                            profile_data.sex
+                            null,
+                            this.props.data.sex
                         )
                     )
                 );
             } else {
-                profile_display = _react2.default.createElement(
+                renderedContent = _react2.default.createElement(
                     _reactMaterialize.Card,
                     { style: { width: '800px', height: '300px', margin: 'auto' }, className: 'small' },
                     'Loading'
@@ -34022,7 +34104,7 @@ var ProfileCard = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 null,
-                profile_display
+                renderedContent
             );
         }
     }]);
@@ -34031,14 +34113,13 @@ var ProfileCard = function (_React$Component) {
 }(_react2.default.Component);
 
 ProfileCard.PropTypes = {
-    data: _propTypes2.default.object.isRequired,
-    follow_status: _propTypes2.default.bool
+    data: _propTypes2.default.object.isRequired
 };
 
 exports.default = ProfileCard;
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34116,7 +34197,7 @@ FollowButton.PropTypes = {
 exports.default = FollowButton;
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var invariant = __webpack_require__(15);
@@ -34323,86 +34404,6 @@ function invariantMerge(target, specValue) {
 
 
 /***/ }),
-/* 311 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(2);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _ViewCard = __webpack_require__(320);
-
-var _ViewCard2 = _interopRequireDefault(_ViewCard);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/*
-To be used in Search and FollowView
------------------------------------
-CardList is provided a prop, an array of objects with `email` key for
-which a ViewCard will be rendered. The cards are rendered in the array order.
-*/
-
-var CardList = function (_React$Component) {
-    _inherits(CardList, _React$Component);
-
-    function CardList() {
-        _classCallCheck(this, CardList);
-
-        return _possibleConstructorReturn(this, (CardList.__proto__ || Object.getPrototypeOf(CardList)).apply(this, arguments));
-    }
-
-    _createClass(CardList, [{
-        key: 'render',
-        value: function render() {
-            var renderedContent;
-
-            var view_cards = []; // USING A LINKED LIST IS BETTER HERE
-            for (var i = 0; i < this.props.emails.length; i++) {
-                view_cards.push(_react2.default.createElement(_ViewCard2.default, { key: i + 1,
-                    targetEmail: this.props.emails[i].email,
-                    handleToast: this.props.handleToast }));
-            }
-            renderedContent = view_cards;
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                renderedContent
-            );
-        }
-    }]);
-
-    return CardList;
-}(_react2.default.Component);
-
-CardList.PropTypes = {
-    emails: _propTypes2.default.array.isRequired,
-    handleToast: _propTypes2.default.func.isRequired
-};
-
-exports.default = CardList;
-
-/***/ }),
 /* 312 */,
 /* 313 */,
 /* 314 */,
@@ -34424,13 +34425,13 @@ var _reactDom = __webpack_require__(92);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(39);
 
 var _axios = __webpack_require__(48);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _Navbar = __webpack_require__(307);
+var _Navbar = __webpack_require__(308);
 
 var _Navbar2 = _interopRequireDefault(_Navbar);
 
@@ -34438,7 +34439,7 @@ var _Profile = __webpack_require__(318);
 
 var _Profile2 = _interopRequireDefault(_Profile);
 
-var _Search = __webpack_require__(319);
+var _Search = __webpack_require__(320);
 
 var _Search2 = _interopRequireDefault(_Search);
 
@@ -34467,13 +34468,14 @@ var Authenticated = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Authenticated.__proto__ || Object.getPrototypeOf(Authenticated)).call(this, props));
 
         _this.state = {
-            profile_data: null,
-            progress: 0,
-            search_query: ''
+            search_query: '',
+            profile_data: null
         };
-        _this.getProfileData = _this.getProfileData.bind(_this);
+
         _this.handleSearch = _this.handleSearch.bind(_this);
         _this.performToast = _this.performToast.bind(_this);
+        _this.getProfileData = _this.getProfileData.bind(_this);
+        _this.updateInfo = _this.updateInfo.bind(_this);
         return _this;
     }
 
@@ -34483,18 +34485,20 @@ var Authenticated = function (_React$Component) {
             Materialize.toast(message, 4000);
         }
     }, {
+        key: 'handleSearch',
+        value: function handleSearch(search_query) {
+            this.setState({
+                search_query: search_query
+            });
+        }
+    }, {
         key: 'getProfileData',
         value: function getProfileData() {
             var _this2 = this;
 
             var request = {
                 method: 'get',
-                url: '/api/profile',
-                onDownloadProgress: function onDownloadProgress(progressEvent) {
-                    _this2.setState({
-                        progress: progressEvent.loaded / progressEvent.total
-                    });
-                }
+                url: '/api/profile/'
             };
 
             (0, _axios2.default)(request).then(function (response) {
@@ -34506,11 +34510,11 @@ var Authenticated = function (_React$Component) {
             });
         }
     }, {
-        key: 'handleSearch',
-        value: function handleSearch(search_query) {
-            this.setState({
-                search_query: search_query
-            });
+        key: 'updateInfo',
+        value: function updateInfo() {
+            console.log('before updateInfo:\n', this.state.profile_data);
+            this.getProfileData();
+            console.log('after updateInfo:\n', this.state.profile_data);
         }
     }, {
         key: 'componentDidMount',
@@ -34520,20 +34524,6 @@ var Authenticated = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var FollowerView;
-            var FollowingView;
-            if (this.state.profile_data) {
-                FollowerView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.followers,
-                    handleToast: this.performToast });
-                FollowingView = _react2.default.createElement(_FollowView2.default, { data: this.state.profile_data.following,
-                    handleToast: this.performToast });
-            } else {
-                FollowerView = _react2.default.createElement(_FollowView2.default, { data: null,
-                    handleToast: this.performToast });
-                FollowingView = _react2.default.createElement(_FollowView2.default, { data: null,
-                    handleToast: this.performToast });
-            }
-
             return _react2.default.createElement(
                 'div',
                 null,
@@ -34550,9 +34540,10 @@ var Authenticated = function (_React$Component) {
                         null,
                         _react2.default.createElement(
                             _reactRouterDom.Route,
-                            { exact: true, path: '/profile' },
+                            { path: '/profile' },
                             _react2.default.createElement(_Profile2.default, { data: this.state.profile_data,
-                                updateProfileData: this.getProfileData })
+                                handleToast: this.performToast,
+                                updateInfo: this.updateInfo })
                         ),
                         _react2.default.createElement(
                             _reactRouterDom.Route,
@@ -34564,16 +34555,6 @@ var Authenticated = function (_React$Component) {
                             _reactRouterDom.Route,
                             { path: '/view/:target_email' },
                             _react2.default.createElement(_View2.default, { handleToast: this.performToast })
-                        ),
-                        _react2.default.createElement(
-                            _reactRouterDom.Route,
-                            { path: '/followers' },
-                            FollowerView
-                        ),
-                        _react2.default.createElement(
-                            _reactRouterDom.Route,
-                            { path: '/following' },
-                            FollowingView
                         )
                     )
                 )
@@ -34607,11 +34588,21 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _ProfileCard = __webpack_require__(308);
+var _reactRouterDom = __webpack_require__(39);
+
+var _reactMaterialize = __webpack_require__(32);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _ProfileCard = __webpack_require__(309);
 
 var _ProfileCard2 = _interopRequireDefault(_ProfileCard);
 
-var _reactMaterialize = __webpack_require__(32);
+var _CardList = __webpack_require__(306);
+
+var _CardList2 = _interopRequireDefault(_CardList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34635,9 +34626,43 @@ var Profile = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'div',
-                { style: { marginTop: '50px' } },
-                _react2.default.createElement(_ProfileCard2.default, { data: this.props.data,
-                    updateProfileData: this.props.updateProfileData })
+                null,
+                _react2.default.createElement(
+                    'div',
+                    { style: { marginTop: '50px' } },
+                    _react2.default.createElement(_ProfileCard2.default, { data: this.props.data })
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { style: { marginTop: '50px' } },
+                    _react2.default.createElement(
+                        _reactRouterDom.Switch,
+                        null,
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { exact: true, path: '/profile' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'center' },
+                                'Your events will show up here'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { path: '/profile/followers' },
+                            _react2.default.createElement(_CardList2.default, { emails: this.props.data && this.props.data.followers,
+                                handleToast: this.props.handleToast,
+                                updateInfo: this.props.updateInfo })
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { path: '/profile/following' },
+                            _react2.default.createElement(_CardList2.default, { emails: this.props.data && this.props.data.following,
+                                handleToast: this.props.handleToast,
+                                updateInfo: this.props.updateInfo })
+                        )
+                    )
+                )
             );
         }
     }]);
@@ -34645,10 +34670,258 @@ var Profile = function (_React$Component) {
     return Profile;
 }(_react2.default.Component);
 
+Profile.PropTypes = {
+    data: _propTypes2.default.object.isRequired,
+    handleToast: _propTypes2.default.func.isRequired,
+    updateInfo: _propTypes2.default.func.isRequired
+};
+
 exports.default = Profile;
 
 /***/ }),
 /* 319 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Navbar = __webpack_require__(308);
+
+var _Navbar2 = _interopRequireDefault(_Navbar);
+
+var _reactMaterialize = __webpack_require__(32);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactRouterDom = __webpack_require__(39);
+
+var _FollowButton = __webpack_require__(310);
+
+var _FollowButton2 = _interopRequireDefault(_FollowButton);
+
+var _axios = __webpack_require__(48);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _immutabilityHelper = __webpack_require__(311);
+
+var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+The ViewCard is supplied a `targetEmail` prop for which it is aimed to render the data of
+the user with the email provided. If the card is rendered for an authorized user, then
+an extra prop, namely `selfData`, is passed to the component so that additional info and
+subcomponents such as the FollowButton can be rendered with respect to this data.
+*/
+
+var ViewCard = function (_React$Component) {
+    _inherits(ViewCard, _React$Component);
+
+    function ViewCard(props) {
+        _classCallCheck(this, ViewCard);
+
+        var _this = _possibleConstructorReturn(this, (ViewCard.__proto__ || Object.getPrototypeOf(ViewCard)).call(this, props));
+
+        _this.state = {
+            data_pending: true,
+            follow_status_pending: false,
+            data: null
+        };
+
+        _this.handleFollowAction = _this.handleFollowAction.bind(_this);
+        return _this;
+    }
+
+    _createClass(ViewCard, [{
+        key: 'fetchTargetData',
+        value: function fetchTargetData(email) {
+            var _this2 = this;
+
+            _axios2.default.get('/api/card/' + email).then(function (response) {
+                _this2.setState({
+                    data_pending: false,
+                    data: response.data
+                });
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }, {
+        key: 'handleFollowAction',
+        value: function handleFollowAction(unfollow, targetEmail, target_name) {
+            var _this3 = this;
+
+            this.setState({
+                follow_status_pending: true
+            });
+
+            var url = unfollow ? '/api/unfollow' : '/api/follow';
+
+            _axios2.default.post(url, {
+                target_email: targetEmail
+            }).then(function (response) {
+                if (!response.data.success) {
+                    console.error('Error with successful response:\n', response.data.error);
+                    _this3.props.handleToast('Cannot perform this action!');
+                } else {
+                    // SUCCESS!
+                    _this3.props.handleToast(unfollow ? 'Unfollowed ' + target_name : 'Following ' + target_name);
+                    if (_this3.props.updateInfo) {
+                        _this3.props.updateInfo();
+                    }
+                }
+                _this3.setState({
+                    follow_status_pending: false
+                });
+            }).catch(function (err) {
+                console.error('Error for response:', err);
+                _this3.props.handleToast('Something has gone wrong!');
+                _this3.setState({
+                    follow_status_pending: false
+                });
+            });
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.fetchTargetData(this.props.targetEmail);
+        }
+    }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            console.log('nextProps.targetEmail:', nextProps.targetEmail);
+            this.fetchTargetData(nextProps.targetEmail);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this4 = this;
+
+            // 1 - Prepare the FollowButton
+            var follow_button;
+            if (this.state.data && this.state.data.authData && !this.state.follow_status_pending) {
+                if (this.state.data.authData.distance == 1) {
+                    follow_button = _react2.default.createElement(_FollowButton2.default, { unfollow: true, onClick: function onClick() {
+                            _this4.handleFollowAction(true, _this4.props.targetEmail, _this4.state.data.fname);
+                        } });
+                } else {
+                    follow_button = _react2.default.createElement(_FollowButton2.default, { onClick: function onClick() {
+                            _this4.handleFollowAction(false, _this4.props.targetEmail, _this4.state.data.fname);
+                        } });
+                }
+            } else if (this.state.follow_status_pending) {
+                follow_button = _react2.default.createElement(
+                    'div',
+                    { className: 'center' },
+                    _react2.default.createElement(_reactMaterialize.Preloader, { size: 'small' })
+                );
+            }
+
+            // 2 - Prepare the ViewCard
+            var renderedContent;
+            var distance = this.state.data ? this.state.data.authData.distance : null;
+            if (!this.state.data_pending) {
+                renderedContent = _react2.default.createElement(
+                    _reactMaterialize.Card,
+                    { style: { height: '100px', width: '600px', margin: 'auto' } },
+                    _react2.default.createElement(
+                        _reactMaterialize.Row,
+                        null,
+                        _react2.default.createElement(
+                            _reactMaterialize.Col,
+                            { s: 9 },
+                            _react2.default.createElement(
+                                _reactRouterDom.Link,
+                                { to: 'view/' + this.props.targetEmail },
+                                _react2.default.createElement(
+                                    'span',
+                                    { style: { float: 'left', fontWeight: 400 } },
+                                    this.state.data.fname,
+                                    ' ',
+                                    this.state.data.lname
+                                )
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactMaterialize.Col,
+                            { s: 3 },
+                            this.state.data.authData && _react2.default.createElement(
+                                'span',
+                                { style: { float: 'right' } },
+                                follow_button
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactMaterialize.Col,
+                            { s: 9 },
+                            _react2.default.createElement(
+                                'span',
+                                { style: { fontSize: '17px', fontWeight: '300' },
+                                    className: 'grey-text' },
+                                'Student at ',
+                                this.state.data.school
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactMaterialize.Col,
+                            { s: 3 },
+                            distance > 1 && _react2.default.createElement(
+                                'div',
+                                { style: { float: 'right' } },
+                                'distance: ',
+                                distance
+                            )
+                        )
+                    )
+                );
+            } else {
+                renderedContent = _react2.default.createElement(
+                    _reactMaterialize.Card,
+                    { style: { width: '600px', height: '100px', margin: 'auto' }, className: 'small' },
+                    'Loading'
+                );
+            }
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                renderedContent
+            );
+        }
+    }]);
+
+    return ViewCard;
+}(_react2.default.Component);
+
+ViewCard.PropTypes = {
+    targetEmail: _propTypes2.default.object.isRequired,
+    handleToast: _propTypes2.default.func.isRequired
+};
+
+exports.default = ViewCard;
+
+/***/ }),
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34670,7 +34943,7 @@ var _axios2 = _interopRequireDefault(_axios);
 
 var _reactMaterialize = __webpack_require__(32);
 
-var _immutabilityHelper = __webpack_require__(310);
+var _immutabilityHelper = __webpack_require__(311);
 
 var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
 
@@ -34678,7 +34951,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _CardList = __webpack_require__(311);
+var _CardList = __webpack_require__(306);
 
 var _CardList2 = _interopRequireDefault(_CardList);
 
@@ -34790,243 +35063,6 @@ Search.PropTypes = {
 exports.default = Search;
 
 /***/ }),
-/* 320 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Navbar = __webpack_require__(307);
-
-var _Navbar2 = _interopRequireDefault(_Navbar);
-
-var _reactMaterialize = __webpack_require__(32);
-
-var _propTypes = __webpack_require__(2);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _reactRouterDom = __webpack_require__(47);
-
-var _FollowButton = __webpack_require__(309);
-
-var _FollowButton2 = _interopRequireDefault(_FollowButton);
-
-var _axios = __webpack_require__(48);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _immutabilityHelper = __webpack_require__(310);
-
-var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/*
-The ViewCard is supplied a `targetEmail` prop for which it is aimed to render the data of
-the user with the email provided. If the card is rendered for an authorized user, then
-an extra prop, namely `selfData`, is passed to the component so that additional info and
-subcomponents such as the FollowButton can be rendered with respect to this data.
-*/
-
-var ViewCard = function (_React$Component) {
-    _inherits(ViewCard, _React$Component);
-
-    function ViewCard(props) {
-        _classCallCheck(this, ViewCard);
-
-        var _this = _possibleConstructorReturn(this, (ViewCard.__proto__ || Object.getPrototypeOf(ViewCard)).call(this, props));
-
-        _this.state = {
-            data_pending: true,
-            follow_status_pending: false,
-            data: null
-        };
-
-        _this.handleFollowAction = _this.handleFollowAction.bind(_this);
-        return _this;
-    }
-
-    _createClass(ViewCard, [{
-        key: 'fetchTargetData',
-        value: function fetchTargetData() {
-            var _this2 = this;
-
-            _axios2.default.get('/api/card/' + this.props.targetEmail).then(function (response) {
-                _this2.setState({
-                    data_pending: false,
-                    data: response.data
-                });
-            }).catch(function (err) {
-                console.error(err);
-            });
-        }
-    }, {
-        key: 'handleFollowAction',
-        value: function handleFollowAction(unfollow, targetEmail, target_name) {
-            var _this3 = this;
-
-            this.setState({
-                follow_status_pending: true
-            });
-
-            var url = unfollow ? '/api/unfollow' : '/api/follow';
-
-            _axios2.default.post(url, {
-                target_email: targetEmail
-            }).then(function (response) {
-                if (!response.data.success) {
-                    console.error('Error with successful response:\n', response.data.error);
-                    _this3.props.handleToast('Cannot perform this action!');
-                } else {
-                    // SUCCESS!
-                    console.log('SUCCESS!');
-                    _this3.fetchTargetData();
-                    console.log('distance after follow action:', _this3.state.data.authData.distance);
-                    _this3.props.handleToast(unfollow ? 'Unfollowed ' + target_name : 'Following ' + target_name);
-                }
-                _this3.setState({
-                    follow_status_pending: false
-                });
-            }).catch(function (err) {
-                console.error('Error for response:', err);
-                _this3.props.handleToast('Something has gone wrong!');
-                _this3.setState({
-                    follow_status_pending: false
-                });
-            });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            console.log('ViewCard got targetEmail:', this.props.targetEmail);
-            this.fetchTargetData();
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this4 = this;
-
-            // 1 - Prepare the FollowButton
-            var follow_button;
-            if (this.state.data && this.state.data.authData && !this.state.follow_status_pending) {
-                if (this.state.data.authData.distance == 1) {
-                    follow_button = _react2.default.createElement(_FollowButton2.default, { unfollow: true, onClick: function onClick() {
-                            _this4.handleFollowAction(true, _this4.props.targetEmail, _this4.state.data.fname);
-                        } });
-                } else {
-                    follow_button = _react2.default.createElement(_FollowButton2.default, { onClick: function onClick() {
-                            _this4.handleFollowAction(false, _this4.props.targetEmail, _this4.state.data.fname);
-                        } });
-                }
-            } else if (this.state.follow_status_pending) {
-                follow_button = _react2.default.createElement(
-                    'div',
-                    { className: 'center' },
-                    _react2.default.createElement(_reactMaterialize.Preloader, { size: 'small' })
-                );
-            }
-
-            // 2 - Prepare the ViewCard
-            var renderedContent;
-            var distance = this.state.data ? this.state.data.authData.distance : null;
-            if (!this.state.data_pending) {
-                renderedContent = _react2.default.createElement(
-                    _reactMaterialize.Card,
-                    { style: { height: '100px', width: '600px', margin: 'auto' } },
-                    _react2.default.createElement(
-                        _reactMaterialize.Row,
-                        null,
-                        _react2.default.createElement(
-                            _reactMaterialize.Col,
-                            { s: 9 },
-                            _react2.default.createElement(
-                                _reactRouterDom.Link,
-                                { to: 'view/' + this.state.data.email },
-                                _react2.default.createElement(
-                                    'span',
-                                    { style: { float: 'left', fontWeight: 400 } },
-                                    this.state.data.fname,
-                                    ' ',
-                                    this.state.data.lname
-                                )
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactMaterialize.Col,
-                            { s: 3 },
-                            this.state.data.authData && _react2.default.createElement(
-                                'span',
-                                { style: { float: 'right' } },
-                                follow_button
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactMaterialize.Col,
-                            { s: 9 },
-                            _react2.default.createElement(
-                                'span',
-                                { style: { fontSize: '17px', fontWeight: '300' },
-                                    className: 'grey-text' },
-                                'Student at ',
-                                this.state.data.school
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactMaterialize.Col,
-                            { s: 3 },
-                            distance > 1 && _react2.default.createElement(
-                                'div',
-                                { style: { float: 'right' } },
-                                'distance: ',
-                                distance
-                            )
-                        )
-                    )
-                );
-            } else {
-                renderedContent = _react2.default.createElement(
-                    _reactMaterialize.Card,
-                    { style: { width: '800px', height: '300px', margin: 'auto' }, className: 'small' },
-                    'Loading'
-                );
-            }
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                renderedContent
-            );
-        }
-    }]);
-
-    return ViewCard;
-}(_react2.default.Component);
-
-ViewCard.PropTypes = {
-    targetEmail: _propTypes2.default.object.isRequired,
-    handleToast: _propTypes2.default.func.isRequired
-};
-
-exports.default = ViewCard;
-
-/***/ }),
 /* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -35043,7 +35079,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _ProfileCard = __webpack_require__(308);
+var _ProfileCard = __webpack_require__(309);
 
 var _ProfileCard2 = _interopRequireDefault(_ProfileCard);
 
@@ -35142,7 +35178,7 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactMaterialize = __webpack_require__(32);
 
-var _CardList = __webpack_require__(311);
+var _CardList = __webpack_require__(306);
 
 var _CardList2 = _interopRequireDefault(_CardList);
 
@@ -35166,7 +35202,6 @@ var FollowView = function (_React$Component) {
     _createClass(FollowView, [{
         key: 'render',
         value: function render() {
-            console.log('FollowView got data:', this.props.data);
             var renderedContent;
             if (this.props.data.length == 0) {
                 renderedContent = _react2.default.createElement(
@@ -35192,7 +35227,6 @@ var FollowView = function (_React$Component) {
 
 FollowView.PropTypes = {
     data: _propTypes2.default.array.isRequired,
-    is_followers: _propTypes2.default.bool,
     handleToast: _propTypes2.default.func.isRequired
 };
 

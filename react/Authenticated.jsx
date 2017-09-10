@@ -14,28 +14,30 @@ class Authenticated extends React.Component {
         super(props);
 
         this.state = {
-            profile_data: null,
-            progress: 0,
-            search_query: ''
+            search_query: '',
+            profile_data: null
         }
-        this.getProfileData = this.getProfileData.bind(this);
+        
         this.handleSearch = this.handleSearch.bind(this);
         this.performToast = this.performToast.bind(this);
+        this.getProfileData = this.getProfileData.bind(this);
+        this.updateInfo = this.updateInfo.bind(this);
     }
 
     performToast(message) {
         Materialize.toast(message, 4000);
     }
 
+    handleSearch(search_query) {
+        this.setState({
+            search_query: search_query
+        });
+    }
+
     getProfileData() {
         const request = {
             method: 'get',
-            url: '/api/profile',
-            onDownloadProgress: (progressEvent) => {
-                this.setState({
-                    progress: progressEvent.loaded / progressEvent.total
-                })
-            }
+            url: '/api/profile/'
         }
 
         axios(request)
@@ -46,35 +48,20 @@ class Authenticated extends React.Component {
             })
             .catch((err) => {
                 console.error(err);
-            });
-    }
-
-    handleSearch(search_query) {
-        this.setState({
-            search_query: search_query
         });
     }
 
-    componentDidMount() {
+    updateInfo() {
+        console.log('before updateInfo:\n', this.state.profile_data);
+        this.getProfileData();
+        console.log('after updateInfo:\n', this.state.profile_data);
+    }
+
+    componentDidMount()  {
         this.getProfileData();
     }
 
     render() {
-        var FollowerView;
-        var FollowingView;
-        if (this.state.profile_data) {
-            FollowerView = <FollowView data={this.state.profile_data.followers} 
-                            handleToast={this.performToast}/>;
-            FollowingView = <FollowView data={this.state.profile_data.following}
-                            handleToast={this.performToast} />;
-        }
-        else {
-            FollowerView = <FollowView data={null} 
-                            handleToast={this.performToast} />;
-            FollowingView = <FollowView data={null} 
-                            handleToast={this.performToast} />;
-        }
-
         return (
             <div>
                 <header>
@@ -82,9 +69,10 @@ class Authenticated extends React.Component {
                 </header>
                 <main>
                     <Switch>
-                        <Route exact path='/profile'>
+                        <Route path='/profile'>
                             <Profile data={this.state.profile_data}
-                            updateProfileData={this.getProfileData} />
+                            handleToast={this.performToast}
+                            updateInfo={this.updateInfo}/>
                         </Route>
                         <Route exact path='/search'>
                             <Search query={this.state.search_query} 
@@ -92,12 +80,6 @@ class Authenticated extends React.Component {
                         </Route>
                         <Route path='/view/:target_email'>
                             <View handleToast={this.performToast} />
-                        </Route>
-                        <Route path='/followers'>
-                            { FollowerView }
-                        </Route>
-                        <Route path='/following'>
-                            { FollowingView }
                         </Route>
                     </Switch>
                 </main>

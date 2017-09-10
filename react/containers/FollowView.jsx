@@ -6,7 +6,6 @@ import CardList from './CardList.jsx';
 
 class FollowView extends React.Component {
     render() {
-        console.log('FollowView got data:', this.props.data);
         var renderedContent;
         if (this.props.data.length == 0) {
             renderedContent = <p className='center'>No data</p>
@@ -26,7 +25,6 @@ class FollowView extends React.Component {
 
 FollowView.PropTypes = {
     data: PropTypes.array.isRequired,
-    is_followers: PropTypes.bool,
     handleToast: PropTypes.func.isRequired
 }
 

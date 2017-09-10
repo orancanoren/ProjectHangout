@@ -321,13 +321,38 @@ User.searchByName = function(name, callback) {
     });
 }
 
+User.getFollowCounts = function(email, callback) {
+    var qp = {
+        query: [
+            'MATCH (follower:User)-[:FOLLOWS]->(n:User)',
+            'WHERE n.email={email}',
+            'WITH COUNT(DISTINCT follower) AS followerCount, n',
+            'MATCH (n:user)-[:FOLLOWS]->(following:User)',
+            'RETURN COUNT(DISTINCT following.email) AS followingCount, followerCount'
+        ].join('\n'),
+        params: {
+            email: email
+        }
+    }
+
+    db.cypher(qp, (err, result) => {
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+        else {
+            return callback(null, result);
+        }
+    })
+}
+
 User.getCardData = function(email, self_email, callback) {
-    // Returns name, school and distance for <email>
+    // Returns name, school, follower/following counts and distance for <email>
     async.parallel([
         function(callback) {
             // PostgreSQL query
             const query = [
-                'SELECT fname, lname, school',
+                'SELECT fname, lname, school, dob',
                 'FROM Users',
                 'WHERE email=$1'
             ].join('\n');
@@ -342,6 +367,15 @@ User.getCardData = function(email, self_email, callback) {
             });
         },
         function(callback) {
+            const qp = {
+                query: [
+                    ''
+                ].join('\n'),
+                params: {
+
+                }
+            }
+
             // Neo4j query - get distance
             if (self_email) {
                 var authData = {};

@@ -149,21 +149,32 @@ router.post('/search', (req, res) => {
     });
 });
 
-router.get('/profile', ensureAuthenticated, (req, res) => {
+router.get('/profile/:email?', (req, res) => {
+    var email;
+    if (!req.params.email) {
+        if (!req.user) {
+            return res.json({ error: 'Not authenticated'});
+        }
+        email = req.user.email;
+    }
+    else {
+        email = req.params.email;
+    }
 
     async.parallel({
         followers: function(callback) {
-            User.getFollowers(req.user.email, (err, result) => {
+            User.getFollowers(email, (err, result) => {
                 return callback(err, result);
             }) 
         },
         following: function(callback) {
-            User.getFollowing(req.user.email, (err, result) => {
+            User.getFollowing(email, (err, result) => {
                 return callback(err, result);
             });
         },
-        notifications: function (callback) {
-            User.getNotifications(req.user.email, (err, result) => {
+        cardData: function(callback) {
+            User.getCardData(email, (req.user && email != req.user.email) ? 
+                                req.user.email : null, (err, result) => {
                 return callback(err, result);
             });
         }
@@ -174,18 +185,31 @@ router.get('/profile', ensureAuthenticated, (req, res) => {
         }
         
         const sex = req.user.sex ? "female" : "male";
+        console.log('api/profile returns following:\n', results.following);
         res.json({
-            fname: req.user.fname,
-            lname: req.user.lname,
-            school: req.user.school,
-            bday: req.user.dob,
+            fname: results.cardData.fname,
+            lname: results.cardData.lname,
+            school: results.cardData.school,
+            bday: results.cardData.dob,
             sex: sex,
-            email: req.user.email,
             following: results.following,
-            followers: results.followers,
-            notifications: results.notifications,
-            message: req.flash('profileMessage')
+            followers: results.followers
         });
+    });
+});
+
+router.get('/notifications', ensureAuthenticated, (req, res) => {
+    User.getNotifications(req.user.email, (err, results) => {
+        if (err) {
+            res.json({
+                error: err
+            });
+        }
+        else {
+            res.json({
+                notifications: results
+            });
+        }
     });
 });
 

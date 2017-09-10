@@ -27,8 +27,8 @@ class ViewCard extends React.Component {
         this.handleFollowAction = this.handleFollowAction.bind(this);
     }
 
-    fetchTargetData() {
-        axios.get('/api/card/'  + this.props.targetEmail)
+    fetchTargetData(email) {
+        axios.get('/api/card/'  + email)
             .then((response) => {
                 this.setState({
                     data_pending: false,
@@ -57,10 +57,10 @@ class ViewCard extends React.Component {
             }
             else {
                 // SUCCESS!
-                console.log('SUCCESS!');
-                this.fetchTargetData();
-                console.log('distance after follow action:', this.state.data.authData.distance);
                 this.props.handleToast(unfollow ? 'Unfollowed ' + target_name : 'Following ' + target_name);
+                if (this.props.updateInfo) {
+                    this.props.updateInfo();
+                }
             }
             this.setState({
                 follow_status_pending: false
@@ -76,8 +76,12 @@ class ViewCard extends React.Component {
     }
 
     componentDidMount() {
-        console.log('ViewCard got targetEmail:', this.props.targetEmail);
-        this.fetchTargetData();
+        this.fetchTargetData(this.props.targetEmail);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('nextProps.targetEmail:', nextProps.targetEmail);
+        this.fetchTargetData(nextProps.targetEmail);
     }
 
     render() {
@@ -104,7 +108,7 @@ class ViewCard extends React.Component {
             <Card style={{ height: '100px', width: '600px', margin: 'auto'}}>
                 <Row>
                     <Col s={9}>
-                        <Link to = {'view/' + this.state.data.email}>
+                        <Link to = {'view/' + this.props.targetEmail}>
                             <span  style={{ float: 'left', fontWeight: 400 }}>{this.state.data.fname} {this.state.data.lname}</span>
                         </Link>
                     </Col>
@@ -132,7 +136,7 @@ class ViewCard extends React.Component {
             </Card>;
         }
         else {
-            renderedContent = <Card style={{ width: '800px', height: '300px', margin: 'auto' }} className='small'>Loading</Card>;
+            renderedContent = <Card style={{ width: '600px', height: '100px', margin: 'auto' }} className='small'>Loading</Card>;
         }
 
         return (

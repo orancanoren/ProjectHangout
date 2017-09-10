@@ -62,7 +62,7 @@ class Navbar extends React.Component {
                             </div>
                         </Link>
                         <ul id="nav-mobile" className="right">
-                            <li>
+                            <li key={1}>
                                 <form onSubmit={this.handleSearch}>
                                     <div className="input-field">
                                         <input id="search" type="search" placeholder='Search' 
@@ -72,7 +72,7 @@ class Navbar extends React.Component {
                                     </div>
                                 </form>
                             </li>
-                            <li>{authButton}</li>
+                            <li key={2}>{authButton}</li>
                         </ul>
                     </div>
                 </div>
