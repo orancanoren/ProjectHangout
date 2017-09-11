@@ -76,9 +76,7 @@ class Authenticated extends React.Component {
                             <Search query={this.state.search_query} 
                             handleToast={this.performToast} />
                         </Route>
-                        <Route path='/view/:target_email'>
-                            <View handleToast={this.performToast} />
-                        </Route>
+                        <Route path='/view/:target_email' component={View} handleToast={this.performToast} />
                     </Switch>
                 </main>
             </div>

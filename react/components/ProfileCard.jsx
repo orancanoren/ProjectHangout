@@ -10,6 +10,13 @@ class ProfileCard extends React.Component {
         super(props);
     }
 
+    componentDidMount() {
+        if (this.props.updateInfo) {
+            this.props.updateInfo();
+        }
+        console.log('this:', this);
+    }
+
     render() {
         // 0 - Get image path [DURING DEBUG PROCEDURE]
         const pathArray = window.location.href.split('/');
@@ -37,7 +44,6 @@ class ProfileCard extends React.Component {
                     <li>{this.props.data.sex}</li>
                 </ul>
             </Card>;
-            
         }
         else {
             renderedContent = <Card style={{ width: '800px', height: '300px', margin: 'auto' }} className='small'>Loading</Card>;
@@ -52,7 +58,8 @@ class ProfileCard extends React.Component {
 }
 
 ProfileCard.PropTypes = {
-    data: PropTypes.object.isRequired
+    data: PropTypes.object.isRequired,
+    updateInfo: PropTypes.object
 }
 
 export default ProfileCard;

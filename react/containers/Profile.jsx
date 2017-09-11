@@ -10,7 +10,8 @@ class Profile extends React.Component {
         return (
             <div>
                 <div style={{ marginTop: '50px' }}>
-                    <ProfileCard data={this.props.data} />
+                    <ProfileCard data={this.props.data}
+                    updateInfo={this.props.updateInfo} />
                 </div>
                 <div style={{ marginTop: '50px' }}>
                     <Switch>
@@ -19,12 +20,12 @@ class Profile extends React.Component {
                                 Your events will show up here
                             </div>
                         </Route>
-                        <Route path='/profile/followers'>
+                        <Route path={this.context.location + '/followers'}>
                             <CardList emails={this.props.data && this.props.data.followers} 
                             handleToast={this.props.handleToast}
                             updateInfo={this.props.updateInfo}/>
                         </Route>
-                        <Route path = '/profile/following'>
+                        <Route path={this.context.location + '/following'}>
                             <CardList emails={this.props.data && this.props.data.following}
                             handleToast={this.props.handleToast}
                             updateInfo={this.props.updateInfo}/>

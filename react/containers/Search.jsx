@@ -27,7 +27,6 @@ class Search extends React.Component {
             search_query: query
         })
         .then((response) => {
-            console.log('search_results:\n', response.data);
             this.setState({
                 search_results: response.data
             })

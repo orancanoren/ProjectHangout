@@ -34033,11 +34033,20 @@ var ProfileCard = function (_React$Component) {
     }
 
     _createClass(ProfileCard, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            if (this.props.updateInfo) {
+                this.props.updateInfo();
+            }
+            console.log('this:', this);
+        }
+    }, {
         key: 'render',
         value: function render() {
-            // 0 - Get image path [DURING DEBUG PROCEDURE]
+            // 0 - Get image path [DURING DEBUG PROCEDURE] & follow paths
             var pathArray = window.location.href.split('/');
             var image_location = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
+            var follow_base = pathArray[3] == 'view' ? 'view/' + pathArray[4] : pathArray[3];
 
             // 1 - Get profile card
             var renderedContent;
@@ -34066,12 +34075,12 @@ var ProfileCard = function (_React$Component) {
 
                         actions: [_react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: '/profile/followers', key: 1 },
+                            { to: follow_base + '/followers', key: 1 },
                             this.props.data.followers.length,
                             ' followers'
                         ), _react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: '/profile/following', key: 2 },
+                            { to: follow_base + '/following', key: 2 },
                             this.props.data.following.length,
                             ' following'
                         ), this.props.follow_status && _react2.default.createElement(_FollowButton2.default, { key: 3, onClick: this.handleFollowClick })],
@@ -34113,7 +34122,8 @@ var ProfileCard = function (_React$Component) {
 }(_react2.default.Component);
 
 ProfileCard.PropTypes = {
-    data: _propTypes2.default.object.isRequired
+    data: _propTypes2.default.object.isRequired,
+    updateInfo: _propTypes2.default.object
 };
 
 exports.default = ProfileCard;
@@ -34549,11 +34559,7 @@ var Authenticated = function (_React$Component) {
                             _react2.default.createElement(_Search2.default, { query: this.state.search_query,
                                 handleToast: this.performToast })
                         ),
-                        _react2.default.createElement(
-                            _reactRouterDom.Route,
-                            { path: '/view/:target_email' },
-                            _react2.default.createElement(_View2.default, { handleToast: this.performToast })
-                        )
+                        _react2.default.createElement(_reactRouterDom.Route, { path: '/view/:target_email', component: _View2.default, handleToast: this.performToast })
                     )
                 )
             );
@@ -34628,7 +34634,8 @@ var Profile = function (_React$Component) {
                 _react2.default.createElement(
                     'div',
                     { style: { marginTop: '50px' } },
-                    _react2.default.createElement(_ProfileCard2.default, { data: this.props.data })
+                    _react2.default.createElement(_ProfileCard2.default, { data: this.props.data,
+                        updateInfo: this.props.updateInfo })
                 ),
                 _react2.default.createElement(
                     'div',
@@ -34647,14 +34654,14 @@ var Profile = function (_React$Component) {
                         ),
                         _react2.default.createElement(
                             _reactRouterDom.Route,
-                            { path: '/profile/followers' },
+                            { path: this.context.location + '/followers' },
                             _react2.default.createElement(_CardList2.default, { emails: this.props.data && this.props.data.followers,
                                 handleToast: this.props.handleToast,
                                 updateInfo: this.props.updateInfo })
                         ),
                         _react2.default.createElement(
                             _reactRouterDom.Route,
-                            { path: '/profile/following' },
+                            { path: this.context.location + '/following' },
                             _react2.default.createElement(_CardList2.default, { emails: this.props.data && this.props.data.following,
                                 handleToast: this.props.handleToast,
                                 updateInfo: this.props.updateInfo })
@@ -34990,7 +34997,6 @@ var Search = function (_React$Component) {
             _axios2.default.post('/api/search', {
                 search_query: query
             }).then(function (response) {
-                console.log('search_results:\n', response.data);
                 _this2.setState({
                     search_results: response.data
                 });
