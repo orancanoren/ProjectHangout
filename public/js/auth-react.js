@@ -34043,10 +34043,9 @@ var ProfileCard = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            // 0 - Get image path [DURING DEBUG PROCEDURE] & follow paths
+            // 0 - Get image path [DURING DEBUG PROCEDURE]
             var pathArray = window.location.href.split('/');
             var image_location = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
-            var follow_base = pathArray[3] == 'view' ? 'view/' + pathArray[4] : pathArray[3];
 
             // 1 - Get profile card
             var renderedContent;
@@ -34075,12 +34074,12 @@ var ProfileCard = function (_React$Component) {
 
                         actions: [_react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: follow_base + '/followers', key: 1 },
+                            { to: '/profile/followers', key: 1 },
                             this.props.data.followers.length,
                             ' followers'
                         ), _react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: follow_base + '/following', key: 2 },
+                            { to: '/profile/following', key: 2 },
                             this.props.data.following.length,
                             ' following'
                         ), this.props.follow_status && _react2.default.createElement(_FollowButton2.default, { key: 3, onClick: this.handleFollowClick })],
@@ -34654,14 +34653,14 @@ var Profile = function (_React$Component) {
                         ),
                         _react2.default.createElement(
                             _reactRouterDom.Route,
-                            { path: this.context.location + '/followers' },
+                            { path: '/profile/followers' },
                             _react2.default.createElement(_CardList2.default, { emails: this.props.data && this.props.data.followers,
                                 handleToast: this.props.handleToast,
                                 updateInfo: this.props.updateInfo })
                         ),
                         _react2.default.createElement(
                             _reactRouterDom.Route,
-                            { path: this.context.location + '/following' },
+                            { path: '/profile/following' },
                             _react2.default.createElement(_CardList2.default, { emails: this.props.data && this.props.data.following,
                                 handleToast: this.props.handleToast,
                                 updateInfo: this.props.updateInfo })

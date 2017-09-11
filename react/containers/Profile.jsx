@@ -20,12 +20,12 @@ class Profile extends React.Component {
                                 Your events will show up here
                             </div>
                         </Route>
-                        <Route path={this.context.location + '/followers'}>
+                        <Route path='/profile/followers'>
                             <CardList emails={this.props.data && this.props.data.followers} 
                             handleToast={this.props.handleToast}
                             updateInfo={this.props.updateInfo}/>
                         </Route>
-                        <Route path={this.context.location + '/following'}>
+                        <Route path='/profile/following'>
                             <CardList emails={this.props.data && this.props.data.following}
                             handleToast={this.props.handleToast}
                             updateInfo={this.props.updateInfo}/>
