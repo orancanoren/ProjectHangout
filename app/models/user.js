@@ -397,6 +397,9 @@ User.getCardData = function(email, self_email, callback) {
         if (err) {
             return callback(err);
         }
+        if (email == self_email) {
+            results.selfData = true;
+        }
         return callback(null, results);
     });
 }

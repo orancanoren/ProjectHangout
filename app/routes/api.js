@@ -71,8 +71,6 @@ router.get('/badsignup', (req, res) => {
 
 router.get('/view/:target_email', (req, res) => {
     var target_email = req.params.target_email;
-    if (req.isAuthenticated() && req.user.email == target_email)
-        return res.redirect('/profile');
 
     async.parallel({
         user: function(callback) {
@@ -91,9 +89,8 @@ router.get('/view/:target_email', (req, res) => {
             })
         },
         distance: function(callback) {
-            if (req.isAuthenticated()) {
+            if (req.isAuthenticated() && req.user.email != target_email) {
                 User.getDistance(req.user.email, target_email, (err, dist) => {
-                    console.log('returning distance!');
                     return callback(err, dist);
                 });
             }
@@ -106,6 +103,11 @@ router.get('/view/:target_email', (req, res) => {
             console.error(err);
             return res.json({ error: internal_err_msg(err) });
         }
+        
+        var selfData = false;
+        if (req.isAuthenticated() && req.user.email == target_email) {
+            selfData = true;
+        }
         res.json({
             fname: results.user['fname'],
             lname: results.user['lname'],
@@ -116,7 +118,8 @@ router.get('/view/:target_email', (req, res) => {
             school: results.user.school,
             distance: results.distance,
             current_user_follows: results.dist == 1,
-            bio: results.user.bio
+            bio: results.user.bio,
+            selfData: selfData
         });
     });
 });
@@ -144,6 +147,17 @@ router.post('/search', (req, res) => {
             });
         }
         else {
+            if (req.user) {
+                var user_email_index;
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].email == req.user.email) {
+                        user_email_index = i;
+                        break;
+                    }
+                }
+                result.splice(user_email_index, 1);
+            }
+
             res.json(result);
         }
     });

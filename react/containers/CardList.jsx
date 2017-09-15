@@ -21,16 +21,18 @@ class CardList extends React.Component {
     }
 
     render() {
-        var renderedContent;
+        var renderedContent = <p>Loading</p>;
 
-        var view_cards = []; // USING A LINKED LIST IS BETTER HERE
-        for (var i = 0; i < this.props.emails.length; i++) {
-            view_cards.push(<ViewCard key={i + 1} 
-                targetEmail={this.props.emails[i].email} 
-                handleToast={this.props.handleToast} 
-                updateInfo={this.updateAllCards}/>);
+        if (this.props.emails) {
+            var view_cards = []; // USING A LINKED LIST IS BETTER HERE
+            for (var i = 0; i < this.props.emails.length; i++) {
+                view_cards.push(<ViewCard key={i + 1} 
+                    targetEmail={this.props.emails[i].email} 
+                    handleToast={this.props.handleToast} 
+                    updateInfo={this.updateAllCards}/>);
+            }
+            renderedContent = view_cards;
         }
-        renderedContent = view_cards;
 
         return (
             <div>

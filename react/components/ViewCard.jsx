@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '../components/Navbar.jsx';
 import { Card, Button, Row, Col, Preloader } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -9,9 +8,8 @@ import update from 'immutability-helper';
 
 /*
 The ViewCard is supplied a `targetEmail` prop for which it is aimed to render the data of
-the user with the email provided. If the card is rendered for an authorized user, then
-an extra prop, namely `selfData`, is passed to the component so that additional info and
-subcomponents such as the FollowButton can be rendered with respect to this data.
+the user with the email provided. The card handles the case where the ViewCard belongs to that
+of the authenticated user.
 */
 
 class ViewCard extends React.Component {
@@ -54,6 +52,9 @@ class ViewCard extends React.Component {
             if (!response.data.success) {
                 console.error('Error with successful response:\n',response.data.error);
                 this.props.handleToast('Cannot perform this action!');
+                this.setState({
+                    follow_status_pending: true
+                });
             }
             else {
                 // SUCCESS!
@@ -85,8 +86,8 @@ class ViewCard extends React.Component {
 
     render() {
         // 1 - Prepare the FollowButton
-        var follow_button;
-        if (this.state.data && this.state.data.authData && !this.state.follow_status_pending) {
+        var follow_button = null;
+        if (this.state.data && !this.state.data.selfData && this.state.data.authData && !this.state.follow_status_pending) {
             if (this.state.data.authData.distance == 1) {
                 follow_button = <FollowButton unfollow onClick={ () => {this.handleFollowAction(true, this.props.targetEmail, this.state.data.fname)} } />
             }
@@ -107,13 +108,13 @@ class ViewCard extends React.Component {
             <Card style={{ height: '100px', width: '600px', margin: 'auto'}}>
                 <Row>
                     <Col s={9}>
-                        <Link to = {'view/' + this.props.targetEmail}>
+                        <Link to = {'/view/' + this.props.targetEmail}>
                             <span  style={{ float: 'left', fontWeight: 400 }}>{this.state.data.fname} {this.state.data.lname}</span>
                         </Link>
                     </Col>
                     <Col s={3}>
                     {
-                        this.state.data.authData &&
+                        this.state.data.authData && !this.state.data.selfData && 
                         <span style={{ float: 'right' }}>
                             { follow_button }
                         </span>
@@ -125,7 +126,7 @@ class ViewCard extends React.Component {
                         </span>
                     </Col>
                     <Col s={3}>
-                    { distance > 1 &&
+                    { !this.state.data.selfData && distance > 1 &&
                         <div style={{ float: 'right' }}>
                             distance: {distance}
                         </div>

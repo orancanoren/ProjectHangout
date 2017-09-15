@@ -6,36 +6,35 @@ import axios from 'axios';
 import FollowButton from './FollowButton.jsx';
 
 class ProfileCard extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         if (this.props.updateInfo) {
             this.props.updateInfo();
         }
-        console.log('this:', this);
     }
 
     render() {
-        // 0 - Get image path [DURING DEBUG PROCEDURE]
-        const pathArray = window.location.href.split('/');
-        const image_location = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
-
         // 1 - Get profile card
+        const pathArray = window.location.href.split('/');
+        const image_url = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
+
+        const profile_index = '/' + (pathArray[3] == 'view' ? 'view/' + pathArray[4] + '/' : 'profile/');
+
         var renderedContent;
         if (this.props.data) {
             renderedContent =
             <Card
                 className='medium'
-                header={<CardTitle image={image_location}>
+                header={<CardTitle image={image_url}>
                     {this.props.data.fname} {this.props.data.lname} <br />
                     <span style={{fontSize: '17px', fontWeight: '300'}} 
                     className='grey-text text-lighten-2'>Student at {this.props.data.school}</span> </CardTitle>}
                 
-                actions={[<Link to='/profile/followers' key={1}>{this.props.data.followers.length} followers</Link>,
-                    <Link to='/profile/following' key={2}>{this.props.data.following.length} following</Link>, 
-                    this.props.follow_status && <FollowButton key={3} onClick={this.handleFollowClick}/>  ]}
+                actions={[
+                    <Link to={profile_index} key={1}>Events</Link>,
+                    <Link to={profile_index + 'followers'} key={2}>{this.props.data.followers.length} followers</Link>,
+                    <Link to={profile_index + 'following'} key={3}>{this.props.data.following.length} following</Link>, 
+                    this.props.follow_status && <FollowButton key={4} onClick={this.handleFollowClick}/>  
+                ]}
                     
                 style={{ width: '800px', height: '300px', margin: 'auto' }}
                     >

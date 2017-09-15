@@ -25,7 +25,7 @@ class Authenticated extends React.Component {
     }
 
     performToast(message) {
-        Materialize.toast(message, 4000);
+        Materialize.toast(message, 3000);
     }
 
     handleSearch(search_query) {
@@ -76,7 +76,8 @@ class Authenticated extends React.Component {
                             <Search query={this.state.search_query} 
                             handleToast={this.performToast} />
                         </Route>
-                        <Route path='/view/:target_email' component={View} handleToast={this.performToast} />
+                        <Route path='/view/:target_email' 
+                        render={ (props) => <View handleToast={this.performToast} {...props} />} />
                     </Switch>
                 </main>
             </div>

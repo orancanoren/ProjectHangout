@@ -1,13 +1,15 @@
 import React from 'react';
-import ProfileCard from '../components/ProfileCard.jsx';
 import axios from 'axios';
+import { Switch, Route } from 'react-router-dom';
+import ProfileCard from '../components/ProfileCard.jsx';
+import CardList from './CardList.jsx';
 
 class View extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            profile_data: null
+            data: null
         }
     }
 
@@ -19,9 +21,8 @@ class View extends React.Component {
 
         axios(request)
             .then((response) => {
-                console.log('axios response:\n', response);
                 this.setState({
-                    profile_data: response.data
+                    data: response.data
                 });
             })
             .catch((err) => {
@@ -30,15 +31,39 @@ class View extends React.Component {
     }
 
     componentDidMount() {
-        console.log('this.props:\n', this.props);
         this.getViewData(this.props.match.params.target_email);
+    }
+
+    componentWillReceiveProps(newProps) {
+        this.getViewData(newProps.match.params.target_email);
     }
 
     render() {
         return (
-            <div style={{ marginTop: '50px' }}>
-                <ProfileCard handleToast={this.handleToast}
-                follow_status data={this.state.profile_data} />
+            <div>
+                <div style={{ marginTop: '50px' }}>
+                    <ProfileCard handleToast={this.props.handleToast}
+                    follow_status data={this.state.data} />
+                </div>
+                <div style={{ marginTop: '50px' }}>
+                    <Switch>
+                        <Route exact path='/view/:target'>
+                            <div className='center'>
+                                Events will show up here
+                            </div>
+                        </Route>
+                        <Route exact path='/view/:target/followers'>
+                            <CardList emails={this.state.data && this.state.data.followers} 
+                            handleToast={this.props.handleToast}
+                            updateInfo={this.getViewData}/>
+                        </Route>
+                        <Route exact path='/view/:target/following'>
+                            <CardList emails={this.state.data && this.state.data.following}
+                            handleToast={this.props.handleToast}
+                            updateInfo={() => this.getViewData(this.props.match.params.target_email)}/>
+                        </Route>
+                    </Switch>
+                </div>
             </div>
         );
     }
