@@ -14,6 +14,7 @@ class View extends React.Component {
     }
 
     getViewData(target_email) {
+        console.log('View match params:', this.props.match.params);
         const request = {
             method: 'get',
             url: '/api/view/' + target_email,
@@ -55,7 +56,7 @@ class View extends React.Component {
                         <Route exact path='/view/:target/followers'>
                             <CardList emails={this.state.data && this.state.data.followers} 
                             handleToast={this.props.handleToast}
-                            updateInfo={this.getViewData}/>
+                            updateInfo={() => this.getViewData(this.props.match.params.target_email)}/>
                         </Route>
                         <Route exact path='/view/:target/following'>
                             <CardList emails={this.state.data && this.state.data.following}

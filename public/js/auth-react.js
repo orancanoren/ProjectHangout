@@ -35149,6 +35149,7 @@ var View = function (_React$Component) {
         value: function getViewData(target_email) {
             var _this2 = this;
 
+            console.log('View match params:', this.props.match.params);
             var request = {
                 method: 'get',
                 url: '/api/view/' + target_email
@@ -35206,7 +35207,9 @@ var View = function (_React$Component) {
                             { exact: true, path: '/view/:target/followers' },
                             _react2.default.createElement(_CardList2.default, { emails: this.state.data && this.state.data.followers,
                                 handleToast: this.props.handleToast,
-                                updateInfo: this.getViewData })
+                                updateInfo: function updateInfo() {
+                                    return _this3.getViewData(_this3.props.match.params.target_email);
+                                } })
                         ),
                         _react2.default.createElement(
                             _reactRouterDom.Route,
