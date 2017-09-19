@@ -72,7 +72,13 @@ class Navbar extends React.Component {
                                     </div>
                                 </form>
                             </li>
-                            <li key={2}>{authButton}</li>
+                            <li key={2}>
+                                <div style={{ height: logo_len, lineHeight: navbar_height,
+                                marginTop: normalizer + 'px', marginBottom: normalizer + 'px'}}>
+                                <span className='badge new'>{this.props.notifications && this.props.notifications.length}</span>
+                                </div>
+                            </li>
+                            <li key={3}>{authButton}</li>
                         </ul>
                     </div>
                 </div>
@@ -83,7 +89,9 @@ class Navbar extends React.Component {
 
 Navbar.propTypes = {
     title: PropTypes.string.isRequired,
-    logged_in: PropTypes.bool.isRequired
+    logged_in: PropTypes.bool.isRequired,
+    search_handler: PropTypes.func.isRequired,
+    notifications: PropTypes.array
 };
 
 export default withRouter(Navbar);

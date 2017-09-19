@@ -15,7 +15,8 @@ class Authenticated extends React.Component {
 
         this.state = {
             search_query: '',
-            profile_data: null
+            profile_data: null,
+            notifications: null
         }
         
         this.handleSearch = this.handleSearch.bind(this);
@@ -35,12 +36,10 @@ class Authenticated extends React.Component {
     }
 
     getProfileData() {
-        const request = {
-            method: 'get',
-            url: '/api/profile/'
-        }
-
-        axios(request)
+        axios({
+                method: 'get',
+                url: '/api/profile/'
+            })
             .then((response) => {
                 this.setState({
                     profile_data: response.data
@@ -48,6 +47,19 @@ class Authenticated extends React.Component {
             })
             .catch((err) => {
                 console.error(err);
+        });
+
+        axios({
+            method: 'get',
+            url: '/api/notifications'
+        })
+        .then((response) => {
+            this.setState({
+                notifications: response.data.notifications
+            });
+        })
+        .catch((err) => {
+            console.error(err);
         });
     }
 
@@ -63,7 +75,10 @@ class Authenticated extends React.Component {
         return (
             <div>
                 <header>
-                    <Navbar title='Project Hangout' logged_in={true} search_handler={this.handleSearch} />
+                    <Navbar title='Project Hangout'
+                    logged_in={true}
+                    search_handler={this.handleSearch}
+                    notifications={this.state.notifications} />
                 </header>
                 <main>
                     <Switch>

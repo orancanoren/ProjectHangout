@@ -44,7 +44,9 @@ class View extends React.Component {
             <div>
                 <div style={{ marginTop: '50px' }}>
                     <ProfileCard handleToast={this.props.handleToast}
-                    follow_status data={this.state.data} />
+                    follow_status
+                    data={this.state.data}
+                    updateInfo={() => this.getViewData(this.props.match.params.target_email)} />
                 </div>
                 <div style={{ marginTop: '50px' }}>
                     <Switch>

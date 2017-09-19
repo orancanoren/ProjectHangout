@@ -148,14 +148,15 @@ router.post('/search', (req, res) => {
         }
         else {
             if (req.user) {
-                var user_email_index;
+                var user_email_index = null;
                 for (var i = 0; i < result.length; i++) {
                     if (result[i].email == req.user.email) {
                         user_email_index = i;
                         break;
                     }
                 }
-                result.splice(user_email_index, 1);
+                if (user_email_index)
+                    result.splice(user_email_index, 1);
             }
 
             res.json(result);
@@ -164,6 +165,7 @@ router.post('/search', (req, res) => {
 });
 
 router.get('/profile/:email?', (req, res) => {
+    // FOR NOW, ASSUMES REQUEST IS AUTHENTICATED
     var email;
     if (!req.params.email) {
         if (!req.user) {
@@ -206,7 +208,8 @@ router.get('/profile/:email?', (req, res) => {
             bday: results.cardData.dob,
             sex: sex,
             following: results.following,
-            followers: results.followers
+            followers: results.followers,
+            notifications: results.notifications
         });
     });
 });

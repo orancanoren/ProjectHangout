@@ -33868,10 +33868,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ProfileCard = function (_React$Component) {
     _inherits(ProfileCard, _React$Component);
 
-    function ProfileCard() {
+    function ProfileCard(props) {
         _classCallCheck(this, ProfileCard);
 
-        return _possibleConstructorReturn(this, (ProfileCard.__proto__ || Object.getPrototypeOf(ProfileCard)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (ProfileCard.__proto__ || Object.getPrototypeOf(ProfileCard)).call(this, props));
+
+        _this.state = {
+            follow_status_pending: false
+        };
+        return _this;
     }
 
     _createClass(ProfileCard, [{
@@ -33884,12 +33889,35 @@ var ProfileCard = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            // 1 - Get profile card
+            var _this2 = this;
+
+            // 0 - Prepare the link URL's
             var pathArray = window.location.href.split('/');
             var image_url = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
 
             var profile_index = '/' + (pathArray[3] == 'view' ? 'view/' + pathArray[4] + '/' : 'profile/');
 
+            // 1 - Prepare the FolloButton
+            var follow_button = null;
+            if (this.props.follow_status && !this.state.follow_status_pending && this.props.authData) {
+                if (this.props.data.authData.distance == 1) {
+                    follow_button = _react2.default.createElement(_FollowButton2.default, { unfollow: true, onClick: function onClick() {
+                            _this2.handleFollowAction(true, _this2.props.targetEmail, _this2.state.data.fname);
+                        } });
+                } else {
+                    follow_button = _react2.default.createElement(_FollowButton2.default, { onClick: function onClick() {
+                            _this2.handleFollowAction(false, _this2.props.targetEmail, _this2.state.data.fname);
+                        } });
+                }
+            } else if (this.state.follow_status_pending) {
+                follow_button = _react2.default.createElement(
+                    'div',
+                    { className: 'center' },
+                    _react2.default.createElement(Preloader, { size: 'small' })
+                );
+            }
+
+            // 2 - Prepare the ProfileCard
             var renderedContent;
             if (this.props.data) {
                 renderedContent = _react2.default.createElement(
@@ -33968,7 +33996,8 @@ var ProfileCard = function (_React$Component) {
 
 ProfileCard.PropTypes = {
     data: _propTypes2.default.object.isRequired,
-    updateInfo: _propTypes2.default.object
+    updateInfo: _propTypes2.default.object,
+    follow_status: _propTypes2.default.bool
 };
 
 exports.default = ProfileCard;
@@ -34326,7 +34355,8 @@ var Authenticated = function (_React$Component) {
 
         _this.state = {
             search_query: '',
-            profile_data: null
+            profile_data: null,
+            notifications: null
         };
 
         _this.handleSearch = _this.handleSearch.bind(_this);
@@ -34353,14 +34383,23 @@ var Authenticated = function (_React$Component) {
         value: function getProfileData() {
             var _this2 = this;
 
-            var request = {
+            (0, _axios2.default)({
                 method: 'get',
                 url: '/api/profile/'
-            };
-
-            (0, _axios2.default)(request).then(function (response) {
+            }).then(function (response) {
                 _this2.setState({
                     profile_data: response.data
+                });
+            }).catch(function (err) {
+                console.error(err);
+            });
+
+            (0, _axios2.default)({
+                method: 'get',
+                url: '/api/notifications'
+            }).then(function (response) {
+                _this2.setState({
+                    notifications: response.data.notifications
                 });
             }).catch(function (err) {
                 console.error(err);
@@ -34387,7 +34426,10 @@ var Authenticated = function (_React$Component) {
                 _react2.default.createElement(
                     'header',
                     null,
-                    _react2.default.createElement(_Navbar2.default, { title: 'Project Hangout', logged_in: true, search_handler: this.handleSearch })
+                    _react2.default.createElement(_Navbar2.default, { title: 'Project Hangout',
+                        logged_in: true,
+                        search_handler: this.handleSearch,
+                        notifications: this.state.notifications })
                 ),
                 _react2.default.createElement(
                     'main',
@@ -34572,6 +34614,20 @@ var Navbar = function (_React$Component) {
                             _react2.default.createElement(
                                 'li',
                                 { key: 2 },
+                                _react2.default.createElement(
+                                    'div',
+                                    { style: { height: logo_len, lineHeight: navbar_height,
+                                            marginTop: normalizer + 'px', marginBottom: normalizer + 'px' } },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'badge new' },
+                                        this.props.notifications && this.props.notifications.length
+                                    )
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'li',
+                                { key: 3 },
                                 authButton
                             )
                         )
@@ -34586,7 +34642,9 @@ var Navbar = function (_React$Component) {
 
 Navbar.propTypes = {
     title: _propTypes2.default.string.isRequired,
-    logged_in: _propTypes2.default.bool.isRequired
+    logged_in: _propTypes2.default.bool.isRequired,
+    search_handler: _propTypes2.default.func.isRequired,
+    notifications: _propTypes2.default.array
 };
 
 exports.default = (0, _reactRouterDom.withRouter)(Navbar);
@@ -35185,7 +35243,11 @@ var View = function (_React$Component) {
                     'div',
                     { style: { marginTop: '50px' } },
                     _react2.default.createElement(_ProfileCard2.default, { handleToast: this.props.handleToast,
-                        follow_status: true, data: this.state.data })
+                        follow_status: true,
+                        data: this.state.data,
+                        updateInfo: function updateInfo() {
+                            return _this3.getViewData(_this3.props.match.params.target_email);
+                        } })
                 ),
                 _react2.default.createElement(
                     'div',

@@ -6,6 +6,14 @@ import axios from 'axios';
 import FollowButton from './FollowButton.jsx';
 
 class ProfileCard extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            follow_status_pending: false
+        }
+    }
+
     componentDidMount() {
         if (this.props.updateInfo) {
             this.props.updateInfo();
@@ -13,12 +21,28 @@ class ProfileCard extends React.Component {
     }
 
     render() {
-        // 1 - Get profile card
+        // 0 - Prepare the link URL's
         const pathArray = window.location.href.split('/');
         const image_url = pathArray[0] + '//' + pathArray[2] + '/assets/profile_cover.jpg';
 
         const profile_index = '/' + (pathArray[3] == 'view' ? 'view/' + pathArray[4] + '/' : 'profile/');
 
+        // 1 - Prepare the FolloButton
+        var follow_button = null;
+        if (this.props.follow_status && !this.state.follow_status_pending && this.props.authData) {
+            if (this.props.data.authData.distance == 1) {
+                follow_button = <FollowButton unfollow onClick={ () => {this.handleFollowAction(true, this.props.targetEmail, this.state.data.fname)} } />
+            }
+            else {
+                follow_button = <FollowButton onClick={ () => {this.handleFollowAction(false, this.props.targetEmail, this.state.data.fname)} } />
+            }
+        }
+        else if (this.state.follow_status_pending) {
+            follow_button = <div className='center'>
+                <Preloader size='small' /></div>;
+        }
+
+        // 2 - Prepare the ProfileCard
         var renderedContent;
         if (this.props.data) {
             renderedContent =
@@ -58,7 +82,8 @@ class ProfileCard extends React.Component {
 
 ProfileCard.PropTypes = {
     data: PropTypes.object.isRequired,
-    updateInfo: PropTypes.object
+    updateInfo: PropTypes.object,
+    follow_status: PropTypes.bool
 }
 
 export default ProfileCard;
