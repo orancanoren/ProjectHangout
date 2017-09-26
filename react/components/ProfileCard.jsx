@@ -62,10 +62,7 @@ class ProfileCard extends React.Component {
                     
                 style={{ width: '800px', height: '300px', margin: 'auto' }}
                     >
-                <ul>
-                    <li>{new Date(this.props.data.bday).toISOString().substring(0, 10)}</li>
-                    <li>{this.props.data.sex}</li>
-                </ul>
+                    {new Date(this.props.data.bday).toISOString().substring(0, 10)}
             </Card>;
         }
         else {

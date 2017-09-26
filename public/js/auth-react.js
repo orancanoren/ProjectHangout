@@ -33960,20 +33960,7 @@ var ProfileCard = function (_React$Component) {
 
                         style: { width: '800px', height: '300px', margin: 'auto' }
                     },
-                    _react2.default.createElement(
-                        'ul',
-                        null,
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            new Date(this.props.data.bday).toISOString().substring(0, 10)
-                        ),
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            this.props.data.sex
-                        )
-                    )
+                    new Date(this.props.data.bday).toISOString().substring(0, 10)
                 );
             } else {
                 renderedContent = _react2.default.createElement(
@@ -34535,100 +34522,230 @@ var Navbar = function (_React$Component) {
         key: 'componentDidMount',
         value: function componentDidMount() {
             document.getElementById('search').value = '';
+            $(".sideNavActivator").sideNav();
+
+            $('.button-collapse').sideNav({
+                menuWidth: 300, // Default is 300
+                edge: 'right', // Choose the horizontal origin
+                closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+                draggable: true // Choose whether you can drag to open on touch screens,
+            });
+
+            $(".dropdown-button").dropdown();
+
+            $(".dropdown-button").dropdown({
+                inDuration: 300,
+                outDuration: 225,
+                constrain_width: false, // Does not change width of dropdown to that of the activator
+                hover: false, // Activate on click
+                alignment: "right", // Aligns dropdown to left or right edge (works with constrain_width)
+                gutter: 20, // Spacing from edge
+                belowOrigin: true
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var authButton;
-            if (this.props.logged_in) authButton = _react2.default.createElement(
-                'li',
-                null,
-                _react2.default.createElement(
-                    'a',
-                    { href: '/logout' },
-                    'Logout'
-                )
-            );else authButton = _react2.default.createElement(
-                'li',
-                null,
-                _react2.default.createElement(
-                    'a',
-                    { href: '/' },
-                    'Login'
-                )
-            );
-
             var navbar_height = 44;
             var logo_len = 35;
             var normalizer = (navbar_height - logo_len) / 2;
 
-            return _react2.default.createElement(
-                'nav',
-                { className: 'light-blue darken-4', style: { height: navbar_height } },
-                this.state.redirect_target && _react2.default.createElement(Redirect, { to: this.state.redirect_target }),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'container' },
+            var notifs = [];
+            console.log('prop notifications:\n', this.props.notifications);
+            if (this.props.notifications) for (var i = 0; i < this.props.notifications.length; i++) {
+                var current_notif = '';
+                var blob_counter = 0;
+                for (var j = 0; j < this.props.notifications[i].notif_text.length; j++) {
+                    console.log('current notif text:', this.props.notifications[i].notif_text[j]);
+                    if (this.props.notifications[i].notif_text[j] == '') {
+                        current_notif += this.props.notifications[i].value_arr[blob_counter] + ' ';
+                        blob_counter++;
+                    } else {
+                        console.log('adding notif text value');
+                        current_notif += this.props.notifications[i].notif_text[j];
+                    }
+                }
+
+                notifs.push(_react2.default.createElement(
+                    'li',
+                    { key: i },
                     _react2.default.createElement(
-                        'div',
-                        { className: 'nav-wrapper', style: { lineHeight: navbar_height + 'px' } },
+                        'a',
+                        null,
+                        current_notif
+                    )
+                ));
+            }
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'ul',
+                    { id: 'notification-dropdown', className: 'dropdown-content' },
+                    notifs
+                ),
+                _react2.default.createElement(
+                    'ul',
+                    { id: 'slide-out', className: 'side-nav' },
+                    _react2.default.createElement(
+                        'li',
+                        null,
                         _react2.default.createElement(
-                            _reactRouterDom.Link,
-                            { to: '/profile', className: 'left' },
+                            'div',
+                            { className: 'user-view' },
                             _react2.default.createElement(
-                                'div',
-                                { id: 'brand-logo' },
-                                _react2.default.createElement('img', { src: '/assets/BrandLogo.png',
-                                    style: { width: logo_len + 'px', height: logo_len + 'px', marginTop: normalizer + "px",
-                                        marginBottom: normalizer + "px", marginLeft: normalizer + "px", marginRight: normalizer + "px" },
-                                    className: 'valign'
-                                }),
+                                'a',
+                                { href: '#!user' },
+                                _react2.default.createElement('img', { className: 'circle', src: '/assets/yuna.jpg', style: {
+                                        height: '80px',
+                                        width: '80px'
+                                    } })
+                            ),
+                            _react2.default.createElement(
+                                'a',
+                                { href: '#!name' },
                                 _react2.default.createElement(
-                                    'div',
-                                    { className: 'brand-logo hide-on-med-and-down', style: { fontSize: '17px', height: logo_len + 'px', marginTop: normalizer + "px",
-                                            marginBottom: normalizer + "px", marginLeft: normalizer + "px",
-                                            marginRight: normalizer + "px", lineHeight: logo_len + 'px' } },
-                                    this.props.title
+                                    'span',
+                                    { className: 'black-text name' },
+                                    'John Appleseed'
+                                )
+                            ),
+                            _react2.default.createElement('br', null),
+                            _react2.default.createElement(
+                                'a',
+                                { href: '#!email' },
+                                _react2.default.createElement(
+                                    'span',
+                                    { className: 'black-text email' },
+                                    'appleseed@gmail.com'
                                 )
                             )
-                        ),
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
                         _react2.default.createElement(
-                            'ul',
-                            { id: 'nav-mobile', className: 'right' },
+                            'a',
+                            { href: '#!', className: 'waves-effect' },
                             _react2.default.createElement(
-                                'li',
-                                { key: 1 },
-                                _react2.default.createElement(
-                                    'form',
-                                    { onSubmit: this.handleSearch },
-                                    _react2.default.createElement(
-                                        'div',
-                                        { className: 'input-field' },
-                                        _react2.default.createElement('input', { id: 'search', type: 'search', placeholder: 'Search',
-                                            style: { width: '300px', height: logo_len, lineHeight: navbar_height,
-                                                marginTop: normalizer + "px", marginBottom: normalizer + "px"
-                                            } })
-                                    )
-                                )
+                                'i',
+                                { className: 'material-icons' },
+                                'cloud'
                             ),
+                            'First Link With Icon'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            { href: '#!' },
+                            'Some setting'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('div', { className: 'divider' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            { className: 'subheader' },
+                            'Authentication'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            { className: '', href: '/logout' },
+                            'Logout'
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    'nav',
+                    { className: 'light-blue darken-4', style: { height: navbar_height } },
+                    this.state.redirect_target && _react2.default.createElement(Redirect, { to: this.state.redirect_target }),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'container' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'nav-wrapper', style: { lineHeight: navbar_height + 'px' } },
                             _react2.default.createElement(
-                                'li',
-                                { key: 2 },
+                                _reactRouterDom.Link,
+                                { to: '/profile', className: 'left' },
                                 _react2.default.createElement(
                                     'div',
-                                    { style: { height: logo_len, lineHeight: navbar_height,
-                                            marginTop: normalizer + 'px', marginBottom: normalizer + 'px' } },
+                                    { id: 'brand-logo' },
+                                    _react2.default.createElement('img', { src: '/assets/BrandLogo.png',
+                                        style: { width: logo_len + 'px', height: logo_len + 'px', marginTop: normalizer + "px",
+                                            marginBottom: normalizer + "px", marginLeft: normalizer + "px", marginRight: normalizer + "px" },
+                                        className: 'valign'
+                                    }),
                                     _react2.default.createElement(
-                                        'span',
-                                        { className: 'badge new' },
-                                        this.props.notifications && this.props.notifications.length
+                                        'div',
+                                        { className: 'brand-logo hide-on-med-and-down', style: { fontSize: '17px', height: logo_len + 'px', marginTop: normalizer + "px",
+                                                marginBottom: normalizer + "px", marginLeft: normalizer + "px",
+                                                marginRight: normalizer + "px", lineHeight: logo_len + 'px' } },
+                                        this.props.title
                                     )
                                 )
                             ),
                             _react2.default.createElement(
-                                'li',
-                                { key: 3 },
-                                authButton
+                                'ul',
+                                { id: 'nav-mobile', className: 'right' },
+                                _react2.default.createElement(
+                                    'li',
+                                    { key: 1 },
+                                    _react2.default.createElement(
+                                        'form',
+                                        { onSubmit: this.handleSearch },
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'input-field' },
+                                            _react2.default.createElement('input', { id: 'search', type: 'search', placeholder: 'Search',
+                                                style: { width: '300px', height: logo_len, lineHeight: navbar_height,
+                                                    marginTop: normalizer + "px", marginBottom: normalizer + "px"
+                                                } })
+                                        )
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'li',
+                                    { key: 2 },
+                                    _react2.default.createElement(
+                                        'a',
+                                        { style: { height: logo_len,
+                                                marginTop: normalizer + 'px', marginBottom: normalizer + 'px' },
+                                            className: 'valign dropdown-button', 'data-activates': 'notification-dropdown' },
+                                        this.props.notifications && this.props.notifications.length
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'li',
+                                    { key: 3 },
+                                    this.props.logged_in && _react2.default.createElement(
+                                        'a',
+                                        { style: { height: logo_len,
+                                                marginTop: normalizer + 'px', marginBottom: normalizer + 'px' },
+                                            'data-activates': 'slide-out', className: 'sideNavActivator' },
+                                        'menu'
+                                    ),
+                                    !this.props.logged_in && _react2.default.createElement(
+                                        'a',
+                                        { href: '/' },
+                                        'Login'
+                                    )
+                                )
                             )
                         )
                     )

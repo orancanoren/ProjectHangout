@@ -44,7 +44,11 @@ button.picker__today, button.picker__close {
 }
 
 input[type="search"] {
-    height: 64px !important;
+    background-color: #E4E4E4;
+}
+
+input[type="search"]::-webkit-input-placeholder {
+    color: #5C5C5C;
 }
 
 .checkbox-white[type="checkbox"] + label:before{

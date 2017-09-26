@@ -4,6 +4,7 @@ html {
 
 body {
     height: auto;
+    min-width: 850px;
 }
 
 video { 

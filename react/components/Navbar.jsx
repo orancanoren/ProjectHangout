@@ -29,60 +29,129 @@ class Navbar extends React.Component {
 
     componentDidMount() {
         document.getElementById('search').value = '';
+        $(".sideNavActivator").sideNav();
+
+        $('.button-collapse').sideNav({
+            menuWidth: 300, // Default is 300
+            edge: 'right', // Choose the horizontal origin
+            closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            draggable: true, // Choose whether you can drag to open on touch screens,
+          }
+        );
+
+        $(".dropdown-button").dropdown();
+
+        $(".dropdown-button").dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrain_width: false, // Does not change width of dropdown to that of the activator
+            hover: false, // Activate on click
+            alignment: "right", // Aligns dropdown to left or right edge (works with constrain_width)
+            belowOrigin: true,
+          });
     }
 
     render() {
-        var authButton;
-        if (this.props.logged_in)
-            authButton = <li><a href="/logout">Logout</a></li>;
-        else
-            authButton = <li><a href="/">Login</a></li>;
-
         const navbar_height = 44;
         const logo_len = 35;
         const normalizer = ((navbar_height - logo_len)/2);
-        
+
+        var notifs = [];
+        console.log('prop notifications:\n', this.props.notifications);
+        if (this.props.notifications)
+            for (var i = 0; i < this.props.notifications.length; i++) {
+                var current_notif = '';
+                var blob_counter = 0;
+                for (var j = 0; j < this.props.notifications[i].notif_text.length; j++) {
+                    console.log('current notif text:', this.props.notifications[i].notif_text[j]);
+                    if (this.props.notifications[i].notif_text[j] == '') {
+                        current_notif += this.props.notifications[i].value_arr[blob_counter] + ' ';
+                        blob_counter++;
+                    }
+                    else {
+                        console.log('adding notif text value');
+                        current_notif += this.props.notifications[i].notif_text[j];
+                    }
+                }
+                
+                notifs.push(<li key={i}><a>{current_notif}</a></li>)
+            }
+
         return (
-            <nav className="light-blue darken-4" style={{ height: navbar_height }}>
-                { this.state.redirect_target && <Redirect to={this.state.redirect_target} />}
-                <div className="container">
-                    <div className="nav-wrapper" style={{ lineHeight: navbar_height + 'px'}}>
-                        <Link to='/profile' className='left'>
-                            <div id='brand-logo'>
-                                <img src="/assets/BrandLogo.png" 
-                                style={{width: logo_len + 'px', height: logo_len + 'px', marginTop: normalizer + "px", 
-                                marginBottom: normalizer + "px", marginLeft: normalizer + "px", marginRight: normalizer + "px"}}
-                                className='valign'
-                                />
-                                <div className='brand-logo hide-on-med-and-down' style=
-                                {{ fontSize: '17px', height: logo_len + 'px',  marginTop: normalizer + "px", 
-                                marginBottom: normalizer + "px", marginLeft: normalizer + "px",
-                                 marginRight: normalizer + "px", lineHeight: logo_len + 'px'}}>
-                                    {this.props.title}</div>
-                            </div>
-                        </Link>
-                        <ul id="nav-mobile" className="right">
-                            <li key={1}>
-                                <form onSubmit={this.handleSearch}>
-                                    <div className="input-field">
-                                        <input id="search" type="search" placeholder='Search' 
-                                        style={{ width: '300px', height: logo_len, lineHeight: navbar_height,
-                                        marginTop: normalizer + "px", marginBottom: normalizer + "px"
-                                     }} />
-                                    </div>
-                                </form>
-                            </li>
-                            <li key={2}>
-                                <div style={{ height: logo_len, lineHeight: navbar_height,
-                                marginTop: normalizer + 'px', marginBottom: normalizer + 'px'}}>
-                                <span className='badge new'>{this.props.notifications && this.props.notifications.length}</span>
+            <div>
+                <ul id='notification-dropdown' className='dropdown-content'>
+                    {notifs}
+                </ul>
+                <ul id="slide-out" className="side-nav">
+                <li><div className="user-view">
+                    <a href="#!user">
+                      <img className="circle" src="/assets/yuna.jpg" style={{
+                        height: '80px',
+                        width: '80px'
+                      }}/>
+                    </a>
+                  <a href="#!name"><span className="black-text name">John Appleseed</span></a><br />
+                  <a href="#!email"><span className="black-text email">appleseed@gmail.com</span></a>
+                </div></li>
+                <li><a href="#!" className='waves-effect'><i className="material-icons">cloud</i>First Link With Icon</a></li>
+                <li><a href="#!">Some setting</a></li>
+                <li><div className="divider"></div></li>
+                <li><a className="subheader">Authentication</a></li>
+                <li><a className="" href="/logout">Logout</a></li>
+                </ul>
+                <nav className="light-blue darken-4" style={{ height: navbar_height }}>
+                    { this.state.redirect_target && <Redirect to={this.state.redirect_target} />}
+                    <div className="container">
+                        <div className="nav-wrapper" style={{ lineHeight: navbar_height + 'px'}}>
+                            <Link to='/profile' className='left'>
+                                <div id='brand-logo'>
+                                    <img src="/assets/BrandLogo.png" 
+                                    style={{width: logo_len + 'px', height: logo_len + 'px', marginTop: normalizer + "px", 
+                                    marginBottom: normalizer + "px", marginLeft: normalizer + "px", marginRight: normalizer + "px"}}
+                                    className='valign'
+                                    />
+                                    <div className='brand-logo hide-on-med-and-down' style=
+                                    {{ fontSize: '17px', height: logo_len + 'px',  marginTop: normalizer + "px", 
+                                    marginBottom: normalizer + "px", marginLeft: normalizer + "px",
+                                    marginRight: normalizer + "px", lineHeight: logo_len + 'px'}}>
+                                        {this.props.title}</div>
                                 </div>
-                            </li>
-                            <li key={3}>{authButton}</li>
-                        </ul>
+                            </Link>
+                            <ul id="nav-mobile" className="right">
+                                <li key={1}>
+                                    <form onSubmit={this.handleSearch}>
+                                        <div className="input-field">
+                                            <input id="search" type="search" placeholder='Search' 
+                                            style={{ width: '300px', height: logo_len, lineHeight: navbar_height,
+                                            marginTop: normalizer + "px", marginBottom: normalizer + "px"
+                                        }} />
+                                        </div>
+                                    </form>
+                                </li>
+                                <li key={2}>
+                                    <a style={{ height: logo_len,
+                                    marginTop: normalizer + 'px', marginBottom: normalizer + 'px'}}
+                                    className='valign dropdown-button' data-activates='notification-dropdown'>
+                                    {this.props.notifications && this.props.notifications.length}
+                                    </a>
+                                </li>
+                                <li key={3}>
+                                    { this.props.logged_in &&
+                                        <a style={{ height: logo_len,
+                                        marginTop: normalizer + 'px', marginBottom: normalizer + 'px'}}
+                                        data-activates='slide-out' className='sideNavActivator'>
+                                            menu
+                                        </a>
+                                    }
+                                    { !this.props.logged_in &&
+                                        <a href="/">Login</a>
+                                    }
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </nav>
+                </nav>
+            </div>
         );
     }
 }
