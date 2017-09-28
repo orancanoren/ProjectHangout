@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardTitle } from 'react-materialize';
+import { Card, CardTitle, Preloader } from 'react-materialize';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -12,12 +12,50 @@ class ProfileCard extends React.Component {
         this.state = {
             follow_status_pending: false
         }
+
+        this.handleFollowAction = this.handleFollowAction.bind(this);
     }
 
     componentDidMount() {
-        if (this.props.updateInfo) {
-            this.props.updateInfo();
-        }
+        this.props.updateInfo();
+    }
+
+    handleFollowAction(unfollow) {
+        this.setState({
+            follow_status_pending: true
+        });
+
+        const url = unfollow ? '/api/unfollow' : '/api/follow';
+
+        axios.post(url, {
+            target_email: this.props.email
+        })
+        .then((response) => {
+            if (!response.data.success) {
+                console.error('Error with successful response:\n',response.data.error);
+                this.props.handleToast('Cannot perform this action!');
+                this.setState({
+                    follow_status_pending: true
+                });
+            }
+            else {
+                // SUCCESS!
+                this.props.handleToast(unfollow ? 'Unfollowed ' + this.props.data.fname : 'Following ' + this.props.data.fname);
+                if (this.props.updateInfo) {
+                    this.props.updateInfo();
+                }
+            }
+            this.setState({
+                follow_status_pending: false
+            });
+        })
+        .catch((err) => {
+            console.error('Error for response:', err);
+            this.props.handleToast('Something has gone wrong!');
+            this.setState({
+                follow_status_pending: false
+            });
+        });
     }
 
     render() {
@@ -27,14 +65,15 @@ class ProfileCard extends React.Component {
 
         const profile_index = '/' + (pathArray[3] == 'view' ? 'view/' + pathArray[4] + '/' : 'profile/');
 
-        // 1 - Prepare the FolloButton
+        // 1 - Prepare the FollowButton
         var follow_button = null;
-        if (this.props.follow_status && !this.state.follow_status_pending && this.props.authData) {
-            if (this.props.data.authData.distance == 1) {
-                follow_button = <FollowButton unfollow onClick={ () => {this.handleFollowAction(true, this.props.targetEmail, this.state.data.fname)} } />
+        // POSSIBLE BUG BELOW - CONDITION IS MET BY DISRTANCE DATA
+        if (!this.state.follow_status_pending && this.props.data && this.props.data.distance != null) {
+            if (this.props.data.distance == 1) {
+                follow_button = <FollowButton unfollow onClick={ () => {this.handleFollowAction(true)} } />;
             }
             else {
-                follow_button = <FollowButton onClick={ () => {this.handleFollowAction(false, this.props.targetEmail, this.state.data.fname)} } />
+                follow_button = <FollowButton onClick={ () => {this.handleFollowAction()} } />;
             }
         }
         else if (this.state.follow_status_pending) {
@@ -57,7 +96,7 @@ class ProfileCard extends React.Component {
                     <Link to={profile_index} key={1}>Events</Link>,
                     <Link to={profile_index + 'followers'} key={2}>{this.props.data.followers.length} followers</Link>,
                     <Link to={profile_index + 'following'} key={3}>{this.props.data.following.length} following</Link>, 
-                    this.props.follow_status && <FollowButton key={4} onClick={this.handleFollowClick}/>  
+                    <span key={4}>{follow_button}</span>
                 ]}
                     
                 style={{ width: '800px', height: '300px', margin: 'auto' }}
@@ -79,8 +118,8 @@ class ProfileCard extends React.Component {
 
 ProfileCard.PropTypes = {
     data: PropTypes.object.isRequired,
-    updateInfo: PropTypes.object,
-    follow_status: PropTypes.bool
+    updateInfo: PropTypes.func.isRequired,
+    email: PropTypes.string.isRequired
 }
 
 export default ProfileCard;

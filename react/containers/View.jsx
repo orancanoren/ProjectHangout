@@ -14,7 +14,6 @@ class View extends React.Component {
     }
 
     getViewData(target_email) {
-        console.log('View match params:', this.props.match.params);
         const request = {
             method: 'get',
             url: '/api/view/' + target_email,
@@ -44,9 +43,9 @@ class View extends React.Component {
             <div>
                 <div style={{ marginTop: '50px' }}>
                     <ProfileCard handleToast={this.props.handleToast}
-                    follow_status
                     data={this.state.data}
-                    updateInfo={() => this.getViewData(this.props.match.params.target_email)} />
+                    updateInfo={() => this.getViewData(this.props.match.params.target_email)}
+                    email={this.props.match.params.target_email} />
                 </div>
                 <div style={{ marginTop: '50px' }}>
                     <Switch>

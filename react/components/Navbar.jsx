@@ -57,19 +57,16 @@ class Navbar extends React.Component {
         const normalizer = ((navbar_height - logo_len)/2);
 
         var notifs = [];
-        console.log('prop notifications:\n', this.props.notifications);
         if (this.props.notifications)
             for (var i = 0; i < this.props.notifications.length; i++) {
                 var current_notif = '';
                 var blob_counter = 0;
                 for (var j = 0; j < this.props.notifications[i].notif_text.length; j++) {
-                    console.log('current notif text:', this.props.notifications[i].notif_text[j]);
                     if (this.props.notifications[i].notif_text[j] == '') {
                         current_notif += this.props.notifications[i].value_arr[blob_counter] + ' ';
                         blob_counter++;
                     }
                     else {
-                        console.log('adding notif text value');
                         current_notif += this.props.notifications[i].notif_text[j];
                     }
                 }

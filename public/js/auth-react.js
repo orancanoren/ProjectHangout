@@ -33876,20 +33876,58 @@ var ProfileCard = function (_React$Component) {
         _this.state = {
             follow_status_pending: false
         };
+
+        _this.handleFollowAction = _this.handleFollowAction.bind(_this);
         return _this;
     }
 
     _createClass(ProfileCard, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            if (this.props.updateInfo) {
-                this.props.updateInfo();
-            }
+            this.props.updateInfo();
+        }
+    }, {
+        key: 'handleFollowAction',
+        value: function handleFollowAction(unfollow) {
+            var _this2 = this;
+
+            this.setState({
+                follow_status_pending: true
+            });
+
+            var url = unfollow ? '/api/unfollow' : '/api/follow';
+
+            _axios2.default.post(url, {
+                target_email: this.props.email
+            }).then(function (response) {
+                if (!response.data.success) {
+                    console.error('Error with successful response:\n', response.data.error);
+                    _this2.props.handleToast('Cannot perform this action!');
+                    _this2.setState({
+                        follow_status_pending: true
+                    });
+                } else {
+                    // SUCCESS!
+                    _this2.props.handleToast(unfollow ? 'Unfollowed ' + _this2.props.data.fname : 'Following ' + _this2.props.data.fname);
+                    if (_this2.props.updateInfo) {
+                        _this2.props.updateInfo();
+                    }
+                }
+                _this2.setState({
+                    follow_status_pending: false
+                });
+            }).catch(function (err) {
+                console.error('Error for response:', err);
+                _this2.props.handleToast('Something has gone wrong!');
+                _this2.setState({
+                    follow_status_pending: false
+                });
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this3 = this;
 
             // 0 - Prepare the link URL's
             var pathArray = window.location.href.split('/');
@@ -33897,23 +33935,24 @@ var ProfileCard = function (_React$Component) {
 
             var profile_index = '/' + (pathArray[3] == 'view' ? 'view/' + pathArray[4] + '/' : 'profile/');
 
-            // 1 - Prepare the FolloButton
+            // 1 - Prepare the FollowButton
             var follow_button = null;
-            if (this.props.follow_status && !this.state.follow_status_pending && this.props.authData) {
-                if (this.props.data.authData.distance == 1) {
+            // POSSIBLE BUG BELOW - CONDITION IS MET BY DISRTANCE DATA
+            if (!this.state.follow_status_pending && this.props.data && this.props.data.distance != null) {
+                if (this.props.data.distance == 1) {
                     follow_button = _react2.default.createElement(_FollowButton2.default, { unfollow: true, onClick: function onClick() {
-                            _this2.handleFollowAction(true, _this2.props.targetEmail, _this2.state.data.fname);
+                            _this3.handleFollowAction(true);
                         } });
                 } else {
                     follow_button = _react2.default.createElement(_FollowButton2.default, { onClick: function onClick() {
-                            _this2.handleFollowAction(false, _this2.props.targetEmail, _this2.state.data.fname);
+                            _this3.handleFollowAction();
                         } });
                 }
             } else if (this.state.follow_status_pending) {
                 follow_button = _react2.default.createElement(
                     'div',
                     { className: 'center' },
-                    _react2.default.createElement(Preloader, { size: 'small' })
+                    _react2.default.createElement(_reactMaterialize.Preloader, { size: 'small' })
                 );
             }
 
@@ -33956,7 +33995,11 @@ var ProfileCard = function (_React$Component) {
                             { to: profile_index + 'following', key: 3 },
                             this.props.data.following.length,
                             ' following'
-                        ), this.props.follow_status && _react2.default.createElement(_FollowButton2.default, { key: 4, onClick: this.handleFollowClick })],
+                        ), _react2.default.createElement(
+                            'span',
+                            { key: 4 },
+                            follow_button
+                        )],
 
                         style: { width: '800px', height: '300px', margin: 'auto' }
                     },
@@ -33983,8 +34026,8 @@ var ProfileCard = function (_React$Component) {
 
 ProfileCard.PropTypes = {
     data: _propTypes2.default.object.isRequired,
-    updateInfo: _propTypes2.default.object,
-    follow_status: _propTypes2.default.bool
+    updateInfo: _propTypes2.default.func.isRequired,
+    email: _propTypes2.default.string.isRequired
 };
 
 exports.default = ProfileCard;
@@ -34539,7 +34582,6 @@ var Navbar = function (_React$Component) {
                 constrain_width: false, // Does not change width of dropdown to that of the activator
                 hover: false, // Activate on click
                 alignment: "right", // Aligns dropdown to left or right edge (works with constrain_width)
-                gutter: 20, // Spacing from edge
                 belowOrigin: true
             });
         }
@@ -34551,17 +34593,14 @@ var Navbar = function (_React$Component) {
             var normalizer = (navbar_height - logo_len) / 2;
 
             var notifs = [];
-            console.log('prop notifications:\n', this.props.notifications);
             if (this.props.notifications) for (var i = 0; i < this.props.notifications.length; i++) {
                 var current_notif = '';
                 var blob_counter = 0;
                 for (var j = 0; j < this.props.notifications[i].notif_text.length; j++) {
-                    console.log('current notif text:', this.props.notifications[i].notif_text[j]);
                     if (this.props.notifications[i].notif_text[j] == '') {
                         current_notif += this.props.notifications[i].value_arr[blob_counter] + ' ';
                         blob_counter++;
                     } else {
-                        console.log('adding notif text value');
                         current_notif += this.props.notifications[i].notif_text[j];
                     }
                 }
@@ -35324,7 +35363,6 @@ var View = function (_React$Component) {
         value: function getViewData(target_email) {
             var _this2 = this;
 
-            console.log('View match params:', this.props.match.params);
             var request = {
                 method: 'get',
                 url: '/api/view/' + target_email
@@ -35360,11 +35398,11 @@ var View = function (_React$Component) {
                     'div',
                     { style: { marginTop: '50px' } },
                     _react2.default.createElement(_ProfileCard2.default, { handleToast: this.props.handleToast,
-                        follow_status: true,
                         data: this.state.data,
                         updateInfo: function updateInfo() {
                             return _this3.getViewData(_this3.props.match.params.target_email);
-                        } })
+                        },
+                        email: this.props.match.params.target_email })
                 ),
                 _react2.default.createElement(
                     'div',
