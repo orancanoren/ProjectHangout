@@ -78,7 +78,8 @@ class Authenticated extends React.Component {
                     <Navbar title='Project Hangout'
                     logged_in={true}
                     search_handler={this.handleSearch}
-                    notifications={this.state.notifications} />
+                    notifications={this.state.notifications}
+                    profile_data={this.state.profile_data} />
                 </header>
                 <main>
                     <Switch>

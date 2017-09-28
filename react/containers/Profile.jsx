@@ -20,6 +20,11 @@ class Profile extends React.Component {
                                 Your events will show up here
                             </div>
                         </Route>
+                        <Route exact path='/profile/circle'>
+                            <div className='center'>
+                                Your current circle will show up here
+                            </div>
+                        </Route>
                         <Route path='/profile/followers'>
                             <CardList emails={this.props.data && this.props.data.followers} 
                             handleToast={this.props.handleToast}

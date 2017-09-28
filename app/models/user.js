@@ -492,6 +492,46 @@ User.validPassword = function(password, pass, next) {
     return bcrypt.compareSync(password, pass, next);
 }
 
+User.addToCircle = function(email1, email2, callback) {
+    const qp = {
+        query: [
+            'MATCH (u1:User), (u2:User)',
+            'WHERE u1.email={email1} AND u2.email={email2}',
+            'MATCH (u1)-[:CIRCLE]->(u2)'
+        ].join('\n'),
+        params: {
+            email1: email1,
+            email2: email2
+        }
+    }
+
+    db.cypher(qp, (err) => {
+        if (err)
+            console.error(err);
+        return callback(err);
+    });
+}
+
+User.removeFromCircle = function(email1, email2, callback) {
+    const qp = {
+        query: [
+            'MATCH (u1:User)-[rel:CIRCLE]-(u2:User)',
+            'WHERE u1.email={email1} AND u2.email={email2}',
+            'DELETE rel'
+        ].join('\n'),
+        params: {
+            email1: email1,
+            email2: email2
+        }
+    }
+
+    db.cypher(qp, (err) => {
+        if (err)
+            console.error(err);
+        return callback(err);
+    })
+}
+
 var getNameByEmails = function(emails, callback) {
     var pg_query = [
         'SELECT fname, lname, school, email',

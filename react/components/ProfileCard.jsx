@@ -94,9 +94,10 @@ class ProfileCard extends React.Component {
                 
                 actions={[
                     <Link to={profile_index} key={1}>Events</Link>,
-                    <Link to={profile_index + 'followers'} key={2}>{this.props.data.followers.length} followers</Link>,
-                    <Link to={profile_index + 'following'} key={3}>{this.props.data.following.length} following</Link>, 
-                    <span key={4}>{follow_button}</span>
+                    <Link to={profile_index + 'circle'} key={2}>Circle</Link>,
+                    <Link to={profile_index + 'followers'} key={3}>{this.props.data.followers.length} followers</Link>,
+                    <Link to={profile_index + 'following'} key={4}>{this.props.data.following.length} following</Link>, 
+                    <span key={5}>{follow_button}</span>
                 ]}
                     
                 style={{ width: '800px', height: '300px', margin: 'auto' }}

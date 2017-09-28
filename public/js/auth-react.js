@@ -33987,17 +33987,21 @@ var ProfileCard = function (_React$Component) {
                             'Events'
                         ), _react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: profile_index + 'followers', key: 2 },
+                            { to: profile_index + 'circle', key: 2 },
+                            'Circle'
+                        ), _react2.default.createElement(
+                            _reactRouterDom.Link,
+                            { to: profile_index + 'followers', key: 3 },
                             this.props.data.followers.length,
                             ' followers'
                         ), _react2.default.createElement(
                             _reactRouterDom.Link,
-                            { to: profile_index + 'following', key: 3 },
+                            { to: profile_index + 'following', key: 4 },
                             this.props.data.following.length,
                             ' following'
                         ), _react2.default.createElement(
                             'span',
-                            { key: 4 },
+                            { key: 5 },
                             follow_button
                         )],
 
@@ -34459,7 +34463,8 @@ var Authenticated = function (_React$Component) {
                     _react2.default.createElement(_Navbar2.default, { title: 'Project Hangout',
                         logged_in: true,
                         search_handler: this.handleSearch,
-                        notifications: this.state.notifications })
+                        notifications: this.state.notifications,
+                        profile_data: this.state.profile_data })
                 ),
                 _react2.default.createElement(
                     'main',
@@ -34647,17 +34652,17 @@ var Navbar = function (_React$Component) {
                                 _react2.default.createElement(
                                     'span',
                                     { className: 'black-text name' },
-                                    'John Appleseed'
+                                    this.props.profile_data && this.props.profile_data.fname + ' ' + this.props.profile_data.lname
                                 )
                             ),
                             _react2.default.createElement('br', null),
                             _react2.default.createElement(
                                 'a',
-                                { href: '#!email' },
+                                { href: '#!school' },
                                 _react2.default.createElement(
                                     'span',
                                     { className: 'black-text email' },
-                                    'appleseed@gmail.com'
+                                    this.props.profile_data && this.props.profile_data.school
                                 )
                             )
                         )
@@ -34800,7 +34805,8 @@ Navbar.propTypes = {
     title: _propTypes2.default.string.isRequired,
     logged_in: _propTypes2.default.bool.isRequired,
     search_handler: _propTypes2.default.func.isRequired,
-    notifications: _propTypes2.default.array
+    notifications: _propTypes2.default.array,
+    profile_data: _propTypes2.default.object
 };
 
 exports.default = (0, _reactRouterDom.withRouter)(Navbar);
@@ -34880,6 +34886,15 @@ var Profile = function (_React$Component) {
                                 'div',
                                 { className: 'center' },
                                 'Your events will show up here'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { exact: true, path: '/profile/circle' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'center' },
+                                'Your current circle will show up here'
                             )
                         ),
                         _react2.default.createElement(
@@ -35416,7 +35431,16 @@ var View = function (_React$Component) {
                             _react2.default.createElement(
                                 'div',
                                 { className: 'center' },
-                                'Events will show up here'
+                                this.state.data && this.state.data.fname + "'s events will show up here"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactRouterDom.Route,
+                            { exact: true, path: '/view/:target/circle' },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'center' },
+                                this.state.data && this.state.data.fname + "'s circle will show up here"
                             )
                         ),
                         _react2.default.createElement(

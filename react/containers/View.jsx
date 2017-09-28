@@ -51,7 +51,12 @@ class View extends React.Component {
                     <Switch>
                         <Route exact path='/view/:target'>
                             <div className='center'>
-                                Events will show up here
+                            {this.state.data && this.state.data.fname + "'s events will show up here"}
+                            </div>
+                        </Route>
+                        <Route exact path='/view/:target/circle'>
+                            <div className='center'>
+                                {this.state.data && this.state.data.fname + "'s circle will show up here"}
                             </div>
                         </Route>
                         <Route exact path='/view/:target/followers'>

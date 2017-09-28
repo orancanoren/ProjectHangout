@@ -12,7 +12,8 @@ module.exports = function(passport) {
 		done(null, user.email);
 	});
 
-	passport.deserializeUser((email, done) => {
+	passport.deserializeUser((user, done) => {
+		const email = user.email ? user.email : user;
 		User.getByEmail({email: email, getPw: false }, function(err, user) {
 			done(err, user);
 		});

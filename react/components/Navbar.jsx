@@ -82,14 +82,22 @@ class Navbar extends React.Component {
                 <ul id="slide-out" className="side-nav">
                 <li><div className="user-view">
                     <a href="#!user">
-                      <img className="circle" src="/assets/yuna.jpg" style={{
-                        height: '80px',
-                        width: '80px'
-                      }}/>
+                        <img className="circle" src="/assets/yuna.jpg" style={{
+                            height: '80px',
+                            width: '80px'
+                        }}/>
                     </a>
-                  <a href="#!name"><span className="black-text name">John Appleseed</span></a><br />
-                  <a href="#!email"><span className="black-text email">appleseed@gmail.com</span></a>
-                </div></li>
+                    <a href="#!name">
+                        <span className="black-text name">
+                            {this.props.profile_data && this.props.profile_data.fname + ' ' + this.props.profile_data.lname}
+                        </span>
+                    </a>
+                    <br />
+                    <a href="#!school"><span className="black-text email">
+                        {this.props.profile_data && this.props.profile_data.school}
+                    </span></a>
+                    </div>
+                </li>
                 <li><a href="#!" className='waves-effect'><i className="material-icons">cloud</i>First Link With Icon</a></li>
                 <li><a href="#!">Some setting</a></li>
                 <li><div className="divider"></div></li>
@@ -157,7 +165,8 @@ Navbar.propTypes = {
     title: PropTypes.string.isRequired,
     logged_in: PropTypes.bool.isRequired,
     search_handler: PropTypes.func.isRequired,
-    notifications: PropTypes.array
+    notifications: PropTypes.array,
+    profile_data: PropTypes.object
 };
 
 export default withRouter(Navbar);

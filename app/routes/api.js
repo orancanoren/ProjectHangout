@@ -295,6 +295,10 @@ router.post('/unfollow/', ensureAuthenticated, (req, res) => {
     }
 });
 
+router.post('/circle', ensureAuthenticated, (req, res) => {
+    
+})
+
 router.post('/event', ensureAuthenticated, (req, res) => {
     const eventObject = {
         title: req.body.title,
