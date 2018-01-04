@@ -66,6 +66,7 @@ router.route('/')
         console.log(req.body);
         if (req.isAuthenticated()) {
             if (req.body.rememberMe) {
+                console.log("user requests rememberMe token");
                 Token.issue(req.user.email, (err, token) => {
                     if (err) { 
                         console.error(err);
@@ -84,11 +85,15 @@ router.route('/')
 });
 
 router.route('/signup')
-    .post((req, res, next) => { ( passport.authenticate('local-signup', {
+    .post((req, res, next) => {
+        console.log("inside route::/signup");
+        next(); 
+    },
+    passport.authenticate('local-signup', {
             successRedirect: '/profile',
             failureRedirect: '/signup',
-            failureFlash: true })) 
-    })
+            failureFlash: true })
+    )
     .get((req, res, next) => {
         res.redirect('/');
     })
