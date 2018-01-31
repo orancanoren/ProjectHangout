@@ -76,38 +76,44 @@ class Navbar extends React.Component {
 
         return (
             <div>
+                {/* 1 - NOTIFICATION DROPDOWN */}
                 <ul id='notification-dropdown' className='dropdown-content'>
                     {notifs}
                 </ul>
+
+                {/* 2 - SIDE MENU */}
                 <ul id="slide-out" className="side-nav">
-                <li><div className="user-view">
-                    <a href="#!user">
-                        <img className="circle" src="/assets/yuna.jpg" style={{
-                            height: '80px',
-                            width: '80px'
-                        }}/>
-                    </a>
-                    <a href="#!name">
-                        <span className="black-text name">
-                            {this.props.profile_data && this.props.profile_data.fname + ' ' + this.props.profile_data.lname}
-                        </span>
-                    </a>
-                    <br />
-                    <a href="#!school"><span className="black-text email">
-                        {this.props.profile_data && this.props.profile_data.school}
-                    </span></a>
-                    </div>
-                </li>
-                <li><a href="#!" className='waves-effect'><i className="material-icons">cloud</i>First Link With Icon</a></li>
-                <li><a href="#!">Some setting</a></li>
-                <li><div className="divider"></div></li>
-                <li><a className="subheader">Authentication</a></li>
-                <li><a className="" href="/logout">Logout</a></li>
+                    <li><div className="user-view">
+                        <a href="#!user">
+                            <img className="circle" src="/assets/yuna.jpg" style={{
+                                height: '80px',
+                                width: '80px'
+                            }}/>
+                        </a>
+                        <a href="#!name">
+                            <span className="black-text name">
+                                {this.props.profile_data && this.props.profile_data.fname + ' ' + this.props.profile_data.lname}
+                            </span>
+                        </a>
+                        <br />
+                        <a href="#!school"><span className="black-text email">
+                            {this.props.profile_data && this.props.profile_data.school}
+                        </span></a>
+                        </div>
+                    </li>
+                    <li><a href="#!" className='waves-effect'><i className="material-icons">cloud</i>First Link With Icon</a></li>
+                    <li><a href="#!">Some setting</a></li>
+                    <li><div className="divider"></div></li>
+                    <li><a className="subheader">Authentication</a></li>
+                    <li><a className="" href="/logout">Logout</a></li>
                 </ul>
+
+                {/* 3 - NAVBAR CONTENT */}
                 <nav className="light-blue darken-4" style={{ height: navbar_height }}>
                     { this.state.redirect_target && <Redirect to={this.state.redirect_target} />}
                     <div className="container">
                         <div className="nav-wrapper" style={{ lineHeight: navbar_height + 'px'}}>
+                            {/* 3.1 - Project Hangout Banner */}
                             <Link to='/profile' className='left'>
                                 <div id='brand-logo'>
                                     <img src="/assets/BrandLogo.png" 
@@ -122,6 +128,8 @@ class Navbar extends React.Component {
                                         {this.props.title}</div>
                                 </div>
                             </Link>
+
+                            {/* 3.2 - Search Bar */}
                             <ul id="nav-mobile" className="right">
                                 <li key={1}>
                                     <form onSubmit={this.handleSearch}>
@@ -137,7 +145,9 @@ class Navbar extends React.Component {
                                     <a style={{ height: logo_len,
                                     marginTop: normalizer + 'px', marginBottom: normalizer + 'px'}}
                                     className='valign dropdown-button' data-activates='notification-dropdown'>
-                                    {this.props.notifications && this.props.notifications.length}
+                                    {this.props.notifications && <div className="notifs" data-count={this.props.notifications.length}>
+                                    <i className="material-icons" id="notif_icon">notifications</i>
+                                    </div>}
                                     </a>
                                 </li>
                                 <li key={3}>

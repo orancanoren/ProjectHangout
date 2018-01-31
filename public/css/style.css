@@ -105,3 +105,28 @@ h2 {
 .frosted_card.up, .glass.up::before {
     transform: translateY(0);
 }
+
+#notif_icon {
+    font-size: 30px;
+    height: 30px;
+    line-height: 35px;
+}
+
+.notifs {
+    height: 30px;
+}
+
+.notifs[data-count]:after {
+    content:attr(data-count);
+    position:absolute;
+    top:5px;
+    right:75px;
+    font-size:.7em;
+    background:red;
+    color:white;
+    width:18px;height:18px;
+    text-align:center;
+    line-height:18px;
+    border-radius:50%;
+    box-shadow:0 0 1px #333;
+ }

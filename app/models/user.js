@@ -3,14 +3,14 @@ var bcrypt = require('bcrypt-nodejs');
 const { Pool } = require('pg');
 var async = require('async');
 
-const ENV = process.env.NODE_ENV || 'development';
+var ENV = process.env.NODE_ENV || 'development';
 
 var postgresql_config = {};
 if (ENV == 'development') {
     postgresql_config = {
         host: 'localhost',
         user: 'postgres',
-        password: 'admin',
+        password: '',
         database: 'hangoutsdb',
         port: 5432
     }
