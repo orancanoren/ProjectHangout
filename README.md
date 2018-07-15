@@ -1,5 +1,7 @@
 # Project Hangout
 
+Project hangout is a social application aiming to plan and execute social activities with ease. Please refer [here](https://documenter.getpostman.com/view/2347717/RWMCu9ix) for the API documentation.
+
 ## Short Term TODO List
 
 - [ ] Devise a documentation
