@@ -25,3 +25,9 @@ __A user must be able to__
 - add and receive frienship invitations
 - quickly plan a social activity and invite other users to this plan
 - retrieve a feed consisting of friends' activities
+
+### Detailed description of event planning
+
+When a user starts a new event, the event creator will enter the time (date) and place of the app (arbitrary string, e.g. "our favorite Starbucks"); location will be chosen from a map API and all event participants will be able to view the location. Following these basic details of the event, the creator will be provided with the user search view, where the creator will be able to invite others to the event. Following this seconds phase, the event will be created and a chat room for the event participants will be created. In this chat view, participants will be able to:
+1. Propose an invitation for a new member to the event
+2. Propose a time/location change

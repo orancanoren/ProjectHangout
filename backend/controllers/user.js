@@ -1,42 +1,184 @@
-var neo4j = require('neo4j');
-var bcrypt = require('bcrypt-nodejs');
-const { Pool } = require('pg');
+var bcrypt = require('bcrypt');
 var async = require('async');
+var sequelize = require('sequelize');
+//var transporter = require('../config/transporter');
 
-var ENV = process.env.NODE_ENV || 'development';
+var UserItem = require('../models/UserItem');
 
-var postgresql_config = {};
-if (ENV == 'development') {
-    postgresql_config = {
-        host: 'localhost',
-        user: 'postgres',
-        password: '',
-        database: 'hangoutsdb',
-        port: 5432
+const notificationTypes = [
+	'friend_request_sent',
+	'friend_request_received',
+	'event_invitation_received',
+	'event_invitation_accepted'
+]
+
+class User {
+    constructor(eventModel, notificationModel, userModel, activationModel, graphDB) {
+        this.eventModel = eventModel,
+        this.notificationModel = notificationModel,
+        this.userModel = userModel,
+        this.activationModel = activationModel,
+        this.graphDB = graphDB
+
+        this.db = db;
     }
-} else {
 
-    postgresql_config = {
-        host: 'ec2-54-247-81-76.eu-west-1.compute.amazonaws.com',
-        user: 'riprxfgafvjxqy',
-        password: '879a37c83dc5fe36d2013e8ac85a9d92dc0910b41ce4f0325d683397f87c77e5',
-        database: 'd3npn811pmr6n2',
-        port: 5432
-    };
+    // MARK: Authentication
+    login(key, password, callback) {
+        this.userModel.findOne({ where: { [sequelize.Op.or]: [ { username: key }, { email: key } ] }})
+        .then(user => {
+            if (!user) { // username or email not found
+                return callback('Invalid combination');
+            } else if (user.isActive != 1) { // user not active
+                return callback('User not activated');
+            } else {
+                bcrypt.compare(password, user.password, (err, res) => {
+                    if (err) {
+                        return callback(err);
+                    } else if (res) {
+                        return callback(null, user);
+                    } else { // wrong password
+                        return callback('Invalid combination');
+                    }
+                })
+            }
+        })
+        .catch(err => callback(err));
+    }
+
+    register(username, email, password, callback) {
+        // 1 - check if registration inputs match expected formats
+		if ((typeof(email) === 'undefined') || (email === null) ||
+		!email.match(/.+\@.+\..+/) || !email.match(/(.){1,64}\@(.){1,255}/)) {
+            return callback('Invalid input');
+        }
+        
+        // 2 - check if email exists or not and act accordingly
+        this.userModel.count({ where: { email: email } })
+        .then(count => {
+            if (count) {
+                return callback('Email exists');
+            } else {
+                bcrypt.hash(password, 12, (err, hash) => {
+                    if (err) {
+                        return callback(err);
+                    } else {
+                        this.userModel.build({ 
+                            username: username,
+                            email: email,
+                            password: hash
+                        }).save()
+                        .then(user => {
+                            // TODO: send an email to the user for account activation
+                            
+                        })
+                    }
+                })
+            }
+        })
+    }
+
+    activate(userId, activationKey, callback) {
+        this.activationModel.findOne({ where: { id: userId, activationKey: activationKey }})
+        .then(userActivation => {
+            // TODO: these actions should take place in a DB transaction!
+            if (userActivation) {
+                userActivation.destroy();
+            
+                this.userModel.findOne({ where: { id: userId }})
+                then(user => {
+                    user.isActive = true;
+                    user.save();
+                    return callback(null);
+                })
+            } else {
+                return callback('Activation record not found');
+            }
+        })
+        .catch(err => callback(err));
+    }
+
+    // MARK: User interaction
+    addFriend(inviterId, receiverId, callback) {
+        session = this.graphDB.session();
+        
+        // create an edge directed from the user having smaller id to the other one
+        const relationQuery = (inviterId < receiverId ? 
+            'CREATE UNIQUE (inviter)-[rel:FRIEND]->(receiver)' : 'CREATE UNIQUE (receiver)-[rel:FRIEND]->(inviter)')
+        if (follo)
+        session.run([
+            'MATCH (inviter :User), (receiver :User)',
+            'WHERE inviter.uid = {inviterId} AND receiver.uid = {receiverId}',
+            relationQuery,
+            'SET rel.since={since}',
+            'SET rel.active=true',
+            'SET rel.deleted=false'
+        ].join('\n'), {
+            inviterId: inviterId,
+            receiverId: receiverId
+        })
+        .then(result => {
+            if (result) {
+                session.close();
+                callback(null);
+            } else {
+                callback('User::addFriend query returned:\n' + result);
+            }
+        })
+        .catch(err => callback(err));
+
+        // issue a notification for the followed user
+        async.waterfall([
+            (done) => {
+                this.userModel.findOne({ where: { id: followerId }})
+                .then(followerUser => {
+                    if (!followerUser) {
+                        return done('Follower user "' + followerUser + '" could not be found');
+                    }
+                    done(null, followerUser.username)
+                });
+            },
+            (followerUser, done) => {
+                this.notificationModel.build({
+                    userId: followedId,
+                    notificationType: notificationTypes[1],
+                    values: [followerUser]
+                })
+            }
+        ]);
+    }
+
+    removeFriend(removerId, oldFriendId, callback) {
+        session = this.graphDB.session();
+        session.run([
+            'MATCH (remover :User), (oldFriend :User)',
+            'WHERE remover.uid = {removerId} AND oldFriend.uid = {oldFriendId}',
+            'SET rel.active = false',
+            'SET rel.removeDate = {removeDate}',
+            'SET removedBy = {removedBy}'
+        ].join(' '), {
+            removerId: removerId,
+            oldFriendId: oldFriendId,
+            removeDate: new Date(),
+            removedBy: removerId
+        })
+        .then(result => {
+            if (result) {
+                session.close();
+                callback(null);
+            } else {
+                callback('User::removeFriend query returned:\n' + result);
+            }
+        })
+        .catch(err => callback(err));
+    }
 }
 
-// PostgreSQL connection
-const pool = new Pool(postgresql_config);
-// Important: Use a query builder in production to avoid SQL injection
+module.exports = User;
 
-// neo4j connection
-var db = new neo4j.GraphDatabase(
-    process.env['GRAPHENEDB_URL'] ||
-    'http://neo4j:admin@localhost:7474'
-);
 
 // private constructor
-var User = module.exports = function(_node) {
+var User = function(_node) {
     this._node = _node;
 }
 

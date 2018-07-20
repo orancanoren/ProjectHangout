@@ -4,13 +4,11 @@ var flash = require('connect-flash');
 var bodyParser = require('body-parser');
 var session = require('cookie-session');
 var cookieParser = require('cookie-parser');
-var morgan = require('morgan');
 
 var app = express();
 // CONFIGURE
 
 app.set('port', process.env.PORT || 3000);
-app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
 app.use(express.static('./public'));
@@ -35,10 +33,8 @@ require('./config/passport.js')(passport);
 
 
 // APP ROUTES
-var routes = require('./app/routes/route.js');
 var api_routes = require('./app/routes/api.js');
-app.use('/', routes);
-app.use('/api', api_routes);
+app.use('/', api_routes);
 app.all('*', (req, res) => {
     console.log('404:', req.method, req.url);
     res.render('404.ejs', {
