@@ -24,7 +24,7 @@ app.use(session({
 // configure passport
 app.use(passport.initialize());
 app.use(passport.session());
-require('./config/passport.js')(passport);
+require('./app/config/passport.js')(passport);
 
 
 // APP ROUTES

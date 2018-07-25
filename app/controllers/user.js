@@ -19,8 +19,6 @@ class UserController {
         this.userModel = userModel,
         this.activationModel = activationModel,
         this.graphDB = graphDB
-
-        this.db = db;
     }
 
     // MARK: Authentication

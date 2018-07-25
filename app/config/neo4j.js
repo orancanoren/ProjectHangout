@@ -1,7 +1,5 @@
 const neo4j = require('neo4j-driver').v1;
 
-var driver;
-
 // NEO4JCONN environment variable must be set for DB connection
 // Credentials must also be set as "NEO4JUSER" and "NEO4JPASS"
 

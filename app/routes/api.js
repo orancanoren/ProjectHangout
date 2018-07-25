@@ -1,6 +1,6 @@
 var router = require('express').Router();
 var passport = require('passport');
-var User = require('../models/user');
+var User = require('../models/DB/user');
 var Token = require('../utils/token');
 var async = require('async');
 

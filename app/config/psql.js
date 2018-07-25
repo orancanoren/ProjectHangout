@@ -12,13 +12,12 @@ var sqlite = require('sqlite3');
 */
 
 var db;
-if (process.env.NODE_ENV != 'PRODUCTION') {
-    db = new sequelize(process.env.PSCONN);
-    /*     db = new sequelize('ProjectHangout',
+if (process.env.NODE_ENV == 'PRODUCTION') {
+    db = new sequelize('ProjectHangout',
     process.env.PDSB, process.env.PSUSER, process.env.PSPASS, {
         host: process.env.PSCONN,
-        dialect: 'postgres'
-    }); */
+        dialect: 'postgresql'
+    });
 }
 else {
     var memoryDB = new sqlite.Database(':memory:');
