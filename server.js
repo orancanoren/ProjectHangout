@@ -1,6 +1,5 @@
 var express = require('express');
 var passport = require('passport');
-var flash = require('connect-flash');
 var bodyParser = require('body-parser');
 var session = require('cookie-session');
 var cookieParser = require('cookie-parser');
@@ -9,18 +8,15 @@ var app = express();
 // CONFIGURE
 
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
 
-app.use(express.static('./public'));
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(flash()); // for flash messages stored in session
+app.use(bodyParser.urlencoded({extended: false}));
 
 // for passport.js
 app.use(session({ 
     secret: "SuperSecretKey!" ,
-    name: "ProjectHangoutCookie",
+    name: "PROJECT_HANGOUT",
     resave: true,
     saveUninitialized: true
 }));
@@ -31,16 +27,8 @@ app.use(passport.session());
 require('./config/passport.js')(passport);
 
 
-
 // APP ROUTES
-var api_routes = require('./app/routes/api.js');
-app.use('/', api_routes);
-app.all('*', (req, res) => {
-    console.log('404:', req.method, req.url);
-    res.render('404.ejs', {
-        url: req.url
-    });
-});
+app.use('/', require('./app/routes/api.js'));
 
 // SERVER
 app.listen(app.get('port'), function() {

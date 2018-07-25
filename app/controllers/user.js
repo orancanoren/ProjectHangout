@@ -12,7 +12,7 @@ const notificationTypes = [
 	'event_invitation_accepted'
 ]
 
-class User {
+class UserController {
     constructor(eventModel, notificationModel, userModel, activationModel, graphDB) {
         this.eventModel = eventModel,
         this.notificationModel = notificationModel,
@@ -59,21 +59,52 @@ class User {
             if (count) {
                 return callback('Email exists');
             } else {
-                bcrypt.hash(password, 12, (err, hash) => {
-                    if (err) {
-                        return callback(err);
-                    } else {
-                        this.userModel.build({ 
-                            username: username,
-                            email: email,
-                            password: hash
-                        }).save()
-                        .then(user => {
-                            // TODO: send an email to the user for account activation
-                            
+                async.waterfall([
+                    (done) => {
+                        bcrypt.hash(password, 12, (err, hash) => {
+                            if (err) {
+                                return done(err);
+                            } else {
+                                this.userModel.build({ 
+                                    username: username,
+                                    email: email,
+                                    password: hash
+                                }).save()
+                                .then(user => {
+                                    // TODO: send an email to the user for account activation
+                                    done(null, user.id);
+                                })
+                            }
+                        })
+                    },
+                    (userId, done) => {
+                        var session = this.graphDB.session();
+                        session.run('CREATE UNIQUE (n: User { uid: {userId}, username: {username} })', {
+                            userId: userId,
+                            username: username
+                        })
+                        .then(result => {
+                            session.close();
+                            done(null, userId);
+                        })
+                        .catch(err => {
+                            done(err);
                         })
                     }
-                })
+                ], (err, userId) => {
+                    if (err) {
+                        // delete postgres entry
+                        this.userModel.findOne({ where: { username: username }})
+                        .then(user => {
+                            if (user) {
+                                user.destroy()
+                                .then(() => callback(err))
+                                .catch(err => callback(err)); // critical!!
+                            }
+                        })
+                    }
+                    callback(err, userId);
+                });
             }
         })
     }
@@ -105,9 +136,8 @@ class User {
         // create an edge directed from the user having smaller id to the other one
         const relationQuery = (inviterId < receiverId ? 
             'CREATE UNIQUE (inviter)-[rel:FRIEND]->(receiver)' : 'CREATE UNIQUE (receiver)-[rel:FRIEND]->(inviter)')
-        if (follo)
         session.run([
-            'MATCH (inviter :User), (receiver :User)',
+            'MATCH (inviter: User), (receiver: User)',
             'WHERE inviter.uid = {inviterId} AND receiver.uid = {receiverId}',
             relationQuery,
             'SET rel.since={since}',
@@ -120,7 +150,7 @@ class User {
         .then(result => {
             if (result) {
                 session.close();
-                callback(null);
+                callback();
             } else {
                 callback('User::addFriend query returned:\n' + result);
             }
@@ -172,9 +202,44 @@ class User {
         })
         .catch(err => callback(err));
     }
+
+    getProfile(userId, callback) {
+        async.parallel({
+            relationalData: (done) => {
+                this.userModel.findOne({ where: { id: userId }})
+                .then(user => {
+                    if (!user) {
+                        return callback('User with id ' + userId + ' not found')
+                    }
+                    done(null, new UserItem(user.username, ))
+                });
+            },
+            graphData: (done) => {
+                session = this.graphDB.session();
+                session.run([
+                    'MATCH (a: User)-[:FRIEND]-(friend: User)',
+                    'WHERE a.uid={userId}',
+                    'RETURN COUNT(friend) as friendCount'
+                ].join('\n'))
+                .then(result => {
+                    if (result) {
+                        session.close();
+                        callback();
+                    } else {
+                        callback('User::getProfile query returned:\n' + result);
+                    }
+                })
+            }
+        }, (err, results) => {
+            if (err) {
+                return callback(err);
+            }
+            return callback(null, new UserItem(results.relationalData.username, results.graphData.friendCount))
+        });
+    }
 }
 
-module.exports = User;
+module.exports = UserController;
 
 
 // private constructor
